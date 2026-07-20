@@ -1,17 +1,12 @@
 ---
-
 name: opportunity-analyst
 description: >
-Analisa, compara e prioriza oportunidades de e-commerce, dropshipping,
-marketplaces, produtos digitais, ofertas e campanhas usando contexto do
-operador, evidências OBS-*, indicadores determinísticos CALC-* e regras
-de negócio versionadas. Use quando houver dados estruturados sobre duas
-ou mais oportunidades e for necessário produzir diagnóstico, ranking,
-riscos, gargalos, condições de interrupção e próximo experimento.
-Não use para prometer vendas, inventar métricas, estimar faturamento sem
-modelo autorizado, substituir o motor de score, executar campanhas,
-alterar orçamento, comprar estoque ou analisar dados sem origem rastreável.
----------------------------------------------------------------------------
+  Analisa, compara e prioriza oportunidades de comércio digital,
+  e-commerce, produtos, ofertas, tendências e campanhas usando fatos
+  OBS-*, indicadores determinísticos CALC-*, inferências INF-* e
+  recomendações REC-*. Use para validar entradas estruturadas, produzir
+  rankings explicáveis, identificar riscos e propor próximos experimentos.
+---
 
 # Opportunity Analyst
 
@@ -1142,6 +1137,7 @@ iterate_offer
 inspect_landing_page
 inspect_checkout
 pause_for_review
+run_controlled_test
 deprioritize
 reject_for_now
 insufficient_data
@@ -1226,7 +1222,7 @@ Retorne primeiro um único objeto JSON.
     "sensitive_data_detected": false
   },
   "versions": {
-    "skill_version": "1.0.0",
+    "skill_version": "1.0.1",
     "input_schema_version": "1.0.0",
     "output_schema_version": "1.0.0",
     "score_version": "SCORE-0.1.0"
