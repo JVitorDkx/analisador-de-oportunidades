@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "score-config-schema.json",
+  "title": "Opportunity Analyst Score Configuration",
+  "type": "object",
+  "required": [
+    "config_schema_version",
+    "score_version",
+    "status",
+    "scale",
+    "dimensions",
+    "operational_fit_mapping",
+    "economic_indicators",
+    "eligibility",
+    "kill_switches"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "config_schema_version": {
+      "const": "1.0.0"
+    },
+    "score_version": {
+      "const": "SCORE-0.1.0"
+    },
+    "status": {
+      "const": "authorized"
+    },
+    "scale": {
+      "type": "object",
+      "required": [
+        "minimum",
+        "maximum",
+        "display_precision",
+        "missing_value_policy",
+        "missing_dimension_policy",
+        "tie_policy"
+      ],
+      "properties": {
+        "minimum": {
+          "const": 0
+        },
+        "maximum": {
+          "const": 100
+        },
+        "display_precision": {
+          "const": 2
+        },
+        "missing_value_policy": {
+          "const": "return_null"
+        },
+        "missing_dimension_policy": {
+          "const": "do_not_renormalize"
+        },
+        "tie_policy": {
+          "const": "shared_rank"
+        }
+      },
+      "additionalProperties": false
+    },
+    "dimensions": {
+      "type": "object",
+      "required": [
+        "demand",
+        "economics",
+        "competitive_attractiveness",
+        "operator_fit"
+      ],
+      "additionalProperties": {
+        "$ref": "#/$defs/dimension"
+      }
+    },
+    "operational_fit_mapping": {
+      "type": "object",
+      "required": [
+        "strong_fit",
+        "acceptable_fit",
+        "conditional_fit",
+        "poor_fit",
+        "unknown"
+      ]
+    },
+    "economic_indicators": {
+      "type": "object",
+      "minProperties": 4
+    },
+    "eligibility": {
+      "type": "object",
+      "required": [
+        "minimum_evidence_coverage_percent",
+        "maximum_demand_evidence_age_days",
+        "maximum_economic_data_age_days",
+        "maximum_logistics_lead_time_business_days",
+        "minimum_independent_sources"
+      ]
+    },
+    "kill_switches": {
+      "type": "object",
+      "required": [
+        "non_positive_contribution_margin",
+        "test_cost_exceeds_budget"
+      ]
+    }
+  },
+  "$defs": {
+    "dimension": {
+      "type": "object",
+      "required": [
+        "weight",
+        "required",
+        "score_source"
+      ],
+      "properties": {
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "score_source": {
+          "enum": [
+            "provided_normalized_calc",
+            "operational_fit_mapping"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

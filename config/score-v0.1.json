@@ -1,0 +1,82 @@
+{
+  "$schema": "schemas/score-config-schema.json",
+  "config_schema_version": "1.0.0",
+  "score_version": "SCORE-0.1.0",
+  "status": "authorized",
+  "scale": {
+    "minimum": 0,
+    "maximum": 100,
+    "display_precision": 2,
+    "missing_value_policy": "return_null",
+    "missing_dimension_policy": "do_not_renormalize",
+    "tie_policy": "shared_rank"
+  },
+  "dimensions": {
+    "demand": {
+      "weight": 0.30,
+      "required": true,
+      "score_source": "provided_normalized_calc"
+    },
+    "economics": {
+      "weight": 0.30,
+      "required": true,
+      "score_source": "provided_normalized_calc"
+    },
+    "competitive_attractiveness": {
+      "weight": 0.20,
+      "required": true,
+      "score_source": "provided_normalized_calc"
+    },
+    "operator_fit": {
+      "weight": 0.20,
+      "required": true,
+      "score_source": "operational_fit_mapping"
+    }
+  },
+  "operational_fit_mapping": {
+    "strong_fit": 100,
+    "acceptable_fit": 75,
+    "conditional_fit": 50,
+    "poor_fit": 20,
+    "unknown": null
+  },
+  "economic_indicators": {
+    "contribution_margin_amount": {
+      "calculation_method": "selling_price_minus_authorized_variable_costs_v1",
+      "unit": "currency"
+    },
+    "contribution_margin_percent": {
+      "calculation_method": "contribution_margin_amount_divided_by_selling_price_times_100_v1",
+      "unit": "percent",
+      "ideal_reference_minimum": 30
+    },
+    "break_even_cpa": {
+      "calculation_method": "equal_to_contribution_margin_amount_v1",
+      "unit": "currency"
+    },
+    "budget_fit_ratio": {
+      "calculation_method": "minimum_test_cost_divided_by_operator_test_budget_v1",
+      "unit": "ratio"
+    }
+  },
+  "eligibility": {
+    "minimum_evidence_coverage_percent": 70,
+    "maximum_demand_evidence_age_days": 30,
+    "maximum_economic_data_age_days": 60,
+    "maximum_logistics_lead_time_business_days": 20,
+    "minimum_independent_sources": 1
+  },
+  "kill_switches": {
+    "non_positive_contribution_margin": {
+      "enabled": true,
+      "operator": "less_than_or_equal",
+      "threshold": 0,
+      "reason": "non_positive_contribution_margin"
+    },
+    "test_cost_exceeds_budget": {
+      "enabled": true,
+      "operator": "greater_than",
+      "reason": "test_cost_exceeds_operator_budget"
+    }
+  }
+}
