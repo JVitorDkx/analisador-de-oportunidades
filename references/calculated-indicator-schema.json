@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "calculated-indicator-schema.json",
+  "title": "Opportunity Analyst Calculated Indicator",
+  "description": "Representação versionada de um indicador CALC-* produzido por código determinístico. Este schema não define fórmulas, pesos ou benchmarks.",
+  "type": "object",
+  "required": [
+    "indicator_id",
+    "opportunity_id",
+    "field",
+    "value",
+    "value_type",
+    "unit",
+    "calculation_method",
+    "calculation_version",
+    "calculated_at",
+    "source_evidence_ids",
+    "quality",
+    "warnings"
+  ],
+  "properties": {
+    "indicator_id": {
+      "type": "string",
+      "pattern": "^CALC-[A-Z0-9-]+$"
+    },
+    "opportunity_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "field": {
+      "type": "string",
+      "minLength": 1
+    },
+    "value": {},
+    "value_type": {
+      "enum": [
+        "integer",
+        "number",
+        "string",
+        "boolean",
+        "null"
+      ]
+    },
+    "unit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "calculation_method": {
+      "type": "string",
+      "minLength": 1
+    },
+    "calculation_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "calculated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^OBS-[A-Z0-9-]+$"
+      },
+      "uniqueItems": true
+    },
+    "quality": {
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ]
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}

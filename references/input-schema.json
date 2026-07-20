@@ -1,0 +1,350 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "input-schema.json",
+  "title": "Opportunity Analyst Input",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "analysis_id",
+    "generated_at",
+    "analysis_mode",
+    "user_context",
+    "opportunities",
+    "score_configuration",
+    "requested_output_language"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "analysis_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "analysis_mode": {
+      "enum": [
+        "pre_test",
+        "campaign_diagnosis",
+        "reassessment"
+      ]
+    },
+    "user_context": {
+      "$ref": "#/$defs/user_context"
+    },
+    "opportunities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/opportunity"
+      }
+    },
+    "score_configuration": {
+      "$ref": "#/$defs/score_configuration"
+    },
+    "requested_output_language": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "analysis_mode": {
+            "const": "pre_test"
+          }
+        },
+        "required": [
+          "analysis_mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "opportunities": {
+            "minItems": 2
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "user_context": {
+      "type": "object",
+      "required": [
+        "country",
+        "experience_level",
+        "business_model",
+        "primary_channel",
+        "test_budget_brl"
+      ],
+      "properties": {
+        "country": {
+          "type": "string",
+          "minLength": 2
+        },
+        "language": {
+          "type": "string"
+        },
+        "experience_level": {
+          "enum": [
+            "beginner",
+            "intermediate",
+            "advanced"
+          ]
+        },
+        "business_model": {
+          "enum": [
+            "ecommerce",
+            "dropshipping",
+            "marketplace",
+            "infoproduct",
+            "affiliate"
+          ]
+        },
+        "primary_channel": {
+          "enum": [
+            "meta",
+            "tiktok",
+            "google",
+            "organic",
+            "marketplace",
+            "mixed"
+          ]
+        },
+        "test_budget_brl": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maximum_test_days": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "target_margin_percent": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "maximum_acceptable_cpa": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "available_team": {
+          "type": "array"
+        },
+        "operational_constraints": {
+          "type": "array"
+        },
+        "excluded_categories": {
+          "type": "array"
+        },
+        "objectives": {
+          "type": "array"
+        }
+      }
+    },
+    "opportunity": {
+      "type": "object",
+      "required": [
+        "opportunity_id",
+        "name",
+        "observed_evidence",
+        "calculated_indicators",
+        "data_quality"
+      ],
+      "properties": {
+        "opportunity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "source_urls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observed_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/observed_evidence"
+          }
+        },
+        "calculated_indicators": {
+          "type": "array",
+          "items": {
+            "$ref": "calculated-indicator-schema.json"
+          }
+        },
+        "campaign_metrics": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "data_quality": {
+          "$ref": "#/$defs/data_quality"
+        },
+        "collection_errors": {
+          "type": "array"
+        },
+        "risk_flags": {
+          "type": "array"
+        }
+      }
+    },
+    "observed_evidence": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "opportunity_id",
+        "source_type",
+        "collected_at",
+        "field",
+        "value",
+        "value_type",
+        "collection_method",
+        "quality"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "pattern": "^OBS-[A-Z0-9-]+$"
+        },
+        "opportunity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {},
+        "value_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "collection_method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quality": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "data_quality": {
+      "type": "object",
+      "required": [
+        "status",
+        "coverage_percent",
+        "freshness",
+        "source_agreement"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "complete",
+            "partial",
+            "weak",
+            "invalid"
+          ]
+        },
+        "coverage_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "freshness": {
+          "enum": [
+            "current",
+            "aging",
+            "stale",
+            "unknown"
+          ]
+        },
+        "source_agreement": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "score_configuration": {
+      "type": "object",
+      "required": [
+        "version",
+        "weights",
+        "calculation_timestamp",
+        "engine"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "weights": {
+          "type": "object"
+        },
+        "calculation_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "engine": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

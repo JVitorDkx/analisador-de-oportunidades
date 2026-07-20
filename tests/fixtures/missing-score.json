@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "ANL-NEGATIVE-MISSING-SCORE",
+  "generated_at": "2026-07-19T12:00:00-03:00",
+  "analysis_mode": "pre_test",
+  "user_context": {
+    "country": "BR",
+    "experience_level": "beginner",
+    "business_model": "ecommerce",
+    "primary_channel": "meta",
+    "test_budget_brl": 500
+  },
+  "opportunities": [
+    {
+      "opportunity_id": "OPP-001",
+      "name": "Oportunidade sintética sem score A",
+      "observed_evidence": [
+        {
+          "evidence_id": "OBS-MISSING-SCORE-001",
+          "opportunity_id": "OPP-001",
+          "source_type": "synthetic_fixture",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "synthetic_signal",
+          "value": 1,
+          "value_type": "integer",
+          "collection_method": "synthetic_fixture",
+          "quality": "low"
+        }
+      ],
+      "calculated_indicators": [],
+      "data_quality": {
+        "status": "partial",
+        "coverage_percent": 20,
+        "freshness": "current",
+        "source_agreement": "unknown"
+      }
+    },
+    {
+      "opportunity_id": "OPP-002",
+      "name": "Oportunidade sintética sem score B",
+      "observed_evidence": [
+        {
+          "evidence_id": "OBS-MISSING-SCORE-002",
+          "opportunity_id": "OPP-002",
+          "source_type": "synthetic_fixture",
+          "collected_at": "2026-07-18T10:30:00-03:00",
+          "field": "synthetic_signal",
+          "value": 2,
+          "value_type": "integer",
+          "collection_method": "synthetic_fixture",
+          "quality": "low"
+        }
+      ],
+      "calculated_indicators": [],
+      "data_quality": {
+        "status": "partial",
+        "coverage_percent": 20,
+        "freshness": "current",
+        "source_agreement": "unknown"
+      }
+    }
+  ],
+  "score_configuration": {
+    "version": "SCORE-0.1.0",
+    "weights": {},
+    "calculation_timestamp": "2026-07-19T11:55:00-03:00",
+    "engine": "synthetic-fixture-engine"
+  },
+  "requested_output_language": "pt-BR"
+}

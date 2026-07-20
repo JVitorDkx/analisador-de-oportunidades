@@ -1,0 +1,214 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "ANL-FIXTURE-0001",
+  "generated_at": "2026-07-19T12:00:00-03:00",
+  "analysis_mode": "pre_test",
+  "user_context": {
+    "country": "BR",
+    "language": "pt-BR",
+    "experience_level": "beginner",
+    "business_model": "ecommerce",
+    "primary_channel": "meta",
+    "test_budget_brl": 500,
+    "maximum_test_days": 7,
+    "target_margin_percent": null,
+    "maximum_acceptable_cpa": null,
+    "available_team": [],
+    "operational_constraints": [
+      "operacao_individual"
+    ],
+    "excluded_categories": [],
+    "objectives": [
+      "comparar_oportunidades_para_coleta_adicional"
+    ]
+  },
+  "opportunities": [
+    {
+      "opportunity_id": "OPP-001",
+      "name": "Organizador Modular de Cabos",
+      "category": "organizacao_domestica",
+      "description": "Produto fictício criado exclusivamente para teste do validador.",
+      "source_urls": [],
+      "observed_evidence": [
+        {
+          "evidence_id": "OBS-FIXTURE-001",
+          "opportunity_id": "OPP-001",
+          "source_type": "synthetic_fixture",
+          "source_url": null,
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "listed_price_brl",
+          "value": 79.9,
+          "value_type": "number",
+          "collection_method": "synthetic_fixture",
+          "quality": "low",
+          "currency": "BRL",
+          "value_nature": "listed_price",
+          "value_status": "observed_in_fixture",
+          "reference_date": "2026-07-18",
+          "notes": "Valor inteiramente fictício; não representa oferta real."
+        },
+        {
+          "evidence_id": "OBS-FIXTURE-002",
+          "opportunity_id": "OPP-001",
+          "source_type": "synthetic_fixture",
+          "source_url": null,
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "creative_angle_count",
+          "value": 3,
+          "value_type": "integer",
+          "collection_method": "synthetic_fixture",
+          "quality": "low",
+          "notes": "Contagem fictícia para teste; não comprova demanda ou vendas."
+        }
+      ],
+      "calculated_indicators": [
+        {
+          "indicator_id": "CALC-OPPORTUNITY-SCORE-001",
+          "opportunity_id": "OPP-001",
+          "field": "official_score",
+          "value": 64,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_fixture_precomputed",
+          "calculation_version": "SCORE-0.1.0",
+          "calculated_at": "2026-07-19T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-FIXTURE-001",
+            "OBS-FIXTURE-002"
+          ],
+          "quality": "low",
+          "warnings": [
+            "synthetic_fixture_only"
+          ]
+        },
+        {
+          "indicator_id": "CALC-DEMAND-001",
+          "opportunity_id": "OPP-001",
+          "field": "demand_signal",
+          "value": 57,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_fixture_precomputed",
+          "calculation_version": "SCORE-0.1.0",
+          "calculated_at": "2026-07-19T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-FIXTURE-001",
+            "OBS-FIXTURE-002"
+          ],
+          "quality": "low",
+          "warnings": [
+            "synthetic_fixture_only"
+          ]
+        }
+      ],
+      "campaign_metrics": null,
+      "data_quality": {
+        "status": "partial",
+        "coverage_percent": 70,
+        "freshness": "current",
+        "source_agreement": "unknown"
+      },
+      "collection_errors": [],
+      "risk_flags": [
+        "offer_economics_missing"
+      ]
+    },
+    {
+      "opportunity_id": "OPP-002",
+      "name": "Suporte Dobrável para Leitura",
+      "category": "acessorios_domesticos",
+      "description": "Produto fictício criado exclusivamente para teste do validador.",
+      "source_urls": [],
+      "observed_evidence": [
+        {
+          "evidence_id": "OBS-FIXTURE-003",
+          "opportunity_id": "OPP-002",
+          "source_type": "synthetic_fixture",
+          "source_url": null,
+          "collected_at": "2026-07-18T10:30:00-03:00",
+          "field": "listed_price_brl",
+          "value": 69.9,
+          "value_type": "number",
+          "collection_method": "synthetic_fixture",
+          "quality": "low",
+          "currency": "BRL",
+          "value_nature": "listed_price",
+          "value_status": "observed_in_fixture",
+          "reference_date": "2026-07-18",
+          "notes": "Valor inteiramente fictício; não representa oferta real."
+        },
+        {
+          "evidence_id": "OBS-FIXTURE-004",
+          "opportunity_id": "OPP-002",
+          "source_type": "synthetic_fixture",
+          "source_url": null,
+          "collected_at": "2026-07-18T10:30:00-03:00",
+          "field": "supplier_lead_time_days",
+          "value": 12,
+          "value_type": "integer",
+          "collection_method": "synthetic_fixture",
+          "quality": "low",
+          "notes": "Prazo fictício para teste; não representa fornecedor real."
+        }
+      ],
+      "calculated_indicators": [
+        {
+          "indicator_id": "CALC-OPPORTUNITY-SCORE-002",
+          "opportunity_id": "OPP-002",
+          "field": "official_score",
+          "value": 58,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_fixture_precomputed",
+          "calculation_version": "SCORE-0.1.0",
+          "calculated_at": "2026-07-19T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-FIXTURE-003",
+            "OBS-FIXTURE-004"
+          ],
+          "quality": "low",
+          "warnings": [
+            "synthetic_fixture_only"
+          ]
+        },
+        {
+          "indicator_id": "CALC-DEMAND-002",
+          "opportunity_id": "OPP-002",
+          "field": "demand_signal",
+          "value": 53,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_fixture_precomputed",
+          "calculation_version": "SCORE-0.1.0",
+          "calculated_at": "2026-07-19T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-FIXTURE-003",
+            "OBS-FIXTURE-004"
+          ],
+          "quality": "low",
+          "warnings": [
+            "synthetic_fixture_only"
+          ]
+        }
+      ],
+      "campaign_metrics": null,
+      "data_quality": {
+        "status": "partial",
+        "coverage_percent": 65,
+        "freshness": "current",
+        "source_agreement": "unknown"
+      },
+      "collection_errors": [],
+      "risk_flags": [
+        "offer_economics_missing"
+      ]
+    }
+  ],
+  "score_configuration": {
+    "version": "SCORE-0.1.0",
+    "weights": {},
+    "calculation_timestamp": "2026-07-19T11:55:00-03:00",
+    "engine": "synthetic-fixture-engine"
+  },
+  "requested_output_language": "pt-BR"
+}

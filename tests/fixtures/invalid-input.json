@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-07-19T12:00:00-03:00",
+  "analysis_mode": "pre_test",
+  "user_context": {
+    "country": "BR",
+    "experience_level": "beginner",
+    "business_model": "ecommerce",
+    "primary_channel": "meta",
+    "test_budget_brl": -1
+  },
+  "opportunities": [],
+  "score_configuration": {
+    "version": "SCORE-0.1.0",
+    "weights": {},
+    "calculation_timestamp": "2026-07-19T11:55:00-03:00",
+    "engine": "synthetic-fixture-engine"
+  },
+  "requested_output_language": "pt-BR"
+}
