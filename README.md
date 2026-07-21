@@ -1,19 +1,37 @@
 # Analisador de Oportunidades
 
-Agente de inteligência para análise explicável de oportunidades de comércio digital, e-commerce, produtos, ofertas, tendências e campanhas.
+Ferramenta para análise explicável de oportunidades de comércio digital, e-commerce, produtos, ofertas, tendências e campanhas.
 
-O projeto separa rigidamente:
+O projeto combina validação de dados, cálculos determinísticos e contratos auditáveis para produzir rankings reproduzíveis. A inteligência artificial pode interpretar os resultados, mas não calcula nem altera o score oficial.
 
-- `OBS-*`: fatos observados e rastreáveis;
+## Visão geral
+
+O fluxo separa cada tipo de informação pelo seu papel:
+
+- `OBS-*`: fatos observados, datados e vinculados à fonte;
 - `CALC-*`: indicadores produzidos por código determinístico;
-- `INF-*`: interpretações da IA;
+- `INF-*`: interpretações fundamentadas nas evidências;
 - `REC-*`: recomendações e próximos experimentos.
 
-## Motor v0.1
+Essa separação evita que dados ausentes sejam inventados, que interpretações sejam apresentadas como fatos ou que um modelo de IA altere silenciosamente os cálculos.
 
-O Motor Determinístico v0.1 (`SCORE-0.1.0`) transforma entradas estruturadas e indicadores rastreáveis em um score oficial reproduzível, sem usar IA para cálculos.
+## Estado atual
 
-O score opera na escala de 0 a 100 e combina quatro dimensões:
+A versão atual inclui:
+
+- validação estrutural e semântica das entradas;
+- Motor Determinístico v0.1 (`SCORE-0.1.0`);
+- cálculo de indicadores econômicos autorizados;
+- filtros eliminatórios de margem e orçamento;
+- ranking com empates na mesma posição;
+- pipeline completo de validação, scoring e enriquecimento;
+- validação opcional do relatório analítico final;
+- contratos JSON versionados;
+- suíte automatizada de testes.
+
+## Como o score funciona
+
+O score oficial usa a escala de 0 a 100 e combina quatro dimensões:
 
 | Dimensão | Peso |
 | --- | ---: |
@@ -22,48 +40,129 @@ O score opera na escala de 0 a 100 e combina quatro dimensões:
 | Atratividade competitiva | 20% |
 | Adequação operacional | 20% |
 
-Características atuais:
+Regras importantes:
 
-- cálculos internos com precisão decimal;
-- duas casas decimais apenas na apresentação;
-- ranking baseado no valor bruto não arredondado;
-- empates com a mesma posição oficial;
-- ausência de uma dimensão resulta em `official_score: null`;
+- os cálculos internos preservam precisão decimal;
+- o arredondamento para duas casas ocorre apenas na apresentação;
+- o ranking utiliza o valor bruto, não o valor arredondado;
+- oportunidades empatadas recebem a mesma posição oficial;
+- a ausência de qualquer dimensão resulta em `official_score: null`;
 - pesos ausentes não são redistribuídos;
-- indicadores `CALC-*` mantêm método, versão e referências `OBS-*`;
+- todo indicador `CALC-*` preserva método, versão e referências `OBS-*`;
 - margem de contribuição não positiva reprova a oportunidade;
 - custo mínimo de teste acima do orçamento reprova a oportunidade;
-- cobertura, idade das evidências e quantidade de fontes controlam a suficiência dos dados.
+- cobertura, atualidade e diversidade das fontes controlam a suficiência dos dados.
 
-As fórmulas econômicas autorizadas calculam margem de contribuição, margem percentual, CPA de equilíbrio e compatibilidade entre custo mínimo de teste e orçamento. As notas normalizadas de demanda, economia e concorrência devem chegar como indicadores determinísticos `CALC-*` versionados; o motor não inventa fórmulas para produzi-las.
+As fórmulas econômicas autorizadas calculam margem de contribuição, margem percentual, CPA de equilíbrio e compatibilidade entre o custo mínimo do teste e o orçamento. As notas normalizadas de demanda, economia e concorrência devem ser fornecidas como indicadores `CALC-*` versionados; o motor não cria fórmulas para preencher essas dimensões.
 
-As regras versionadas ficam em `config/score-v0.1.json`. O código do motor está em `src/scoring/` e os contratos de entrada, saída e indicadores estão em `references/`.
+## Estrutura do projeto
 
-## Executar localmente
+```text
+analisador-de-oportunidades/
+├── config/                  # configuração versionada do score
+├── data/results/            # exemplos de resultados analíticos
+├── references/              # schemas e políticas do projeto
+├── src/
+│   ├── pipeline.py          # execução end-to-end
+│   ├── scoring/             # motor, indicadores e filtros
+│   └── validation/          # validadores de entrada e saída
+└── tests/                   # testes e fixtures sintéticos
+```
 
-Requisito: Python 3.11 ou superior. O núcleo atual utiliza somente a biblioteca padrão do Python.
+Os principais contratos estão em:
 
-No PowerShell, entre no repositório e desative a geração de bytecode durante os testes:
+- `references/input-schema.json`: entrada da análise;
+- `references/scoring-context-schema.json`: referências usadas pelo motor;
+- `references/calculated-indicator-schema.json`: indicadores determinísticos;
+- `references/output-schema.json`: relatório analítico final;
+- `references/pipeline-output-schema.json`: envelope técnico do pipeline;
+- `config/score-v0.1.json`: regras autorizadas do score.
+
+## Requisitos
+
+- Git;
+- Python 3.11 ou superior.
+
+O núcleo atual utiliza somente a biblioteca padrão do Python. Não é necessário instalar dependências externas.
+
+## Preparação do ambiente
+
+Clone o repositório e entre na pasta do projeto:
+
+```bash
+git clone https://github.com/JVitorDkx/analisador-de-oportunidades.git
+cd analisador-de-oportunidades
+```
+
+Opcionalmente, confirme a versão do Python:
+
+```bash
+python --version
+```
+
+Em alguns sistemas o executável pode se chamar `python3`.
+
+## Executar os testes
+
+No PowerShell:
 
 ```powershell
-cd C:\Users\clemi\Documents\Codex\analisador-de-oportunidades
 $env:PYTHONDONTWRITEBYTECODE = "1"
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-Validar o fixture principal de entrada:
+No Linux ou macOS:
 
-```powershell
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p "test_*.py" -v
+```
+
+## Validar entradas e saídas
+
+Validar o exemplo principal de entrada:
+
+```bash
 python -m src.validation.validate_input tests/fixtures/pre-test-basic.json
 ```
 
-Validar o relatório de saída contra a entrada original:
+Validar um relatório contra a entrada que o originou:
 
-```powershell
+```bash
 python -m src.validation.validate_output data/results/pre-test-basic-result.md tests/fixtures/pre-test-basic.json
 ```
 
-Carregar programaticamente o motor autorizado:
+Os comandos retornam um resultado estruturado e um código de saída diferente de zero quando a validação falha.
+
+## Executar o pipeline end-to-end
+
+O runner `src/pipeline.py` executa estas etapas:
+
+1. valida a entrada anterior ao score;
+2. resolve as referências explícitas de `scoring_context`;
+3. executa o Motor Determinístico v0.1;
+4. adiciona os indicadores `CALC-*` a uma cópia da entrada;
+5. valida novamente a entrada enriquecida;
+6. opcionalmente, valida o relatório analítico final.
+
+Processar uma entrada e imprimir o envelope JSON no terminal:
+
+```bash
+python -m src.pipeline caminho/entrada.json
+```
+
+Processar a entrada e também validar um relatório final JSON ou Markdown:
+
+```bash
+python -m src.pipeline caminho/entrada.json --final-output caminho/resultado.md
+```
+
+Salvar o envelope técnico em um arquivo:
+
+```bash
+python -m src.pipeline caminho/entrada.json --output caminho/pipeline-result.json
+```
+
+Para usar o motor diretamente como biblioteca:
 
 ```python
 from src.scoring.engine import ScoreEngine
@@ -71,37 +170,49 @@ from src.scoring.engine import ScoreEngine
 engine = ScoreEngine.from_file("config/score-v0.1.json")
 ```
 
-## Pipeline end-to-end
+## Requisitos do `scoring_context`
 
-O runner `src/pipeline.py` executa, em ordem:
+Cada oportunidade processada pelo pipeline deve declarar um `scoring_context` compatível com `references/scoring-context-schema.json`.
 
-1. validação da entrada pré-score;
-2. resolução das referências explícitas de `scoring_context`;
-3. execução do Motor Determinístico v0.1;
-4. inclusão dos novos indicadores `CALC-*` em uma cópia da entrada;
-5. nova validação da entrada enriquecida;
-6. validação opcional da saída analítica final.
+O contexto aponta para registros `OBS-*` existentes que representam:
 
-Executar o pipeline e imprimir o envelope JSON no terminal:
+- dados econômicos;
+- custo mínimo do teste;
+- orçamento do operador;
+- adequação operacional;
+- prazo logístico, quando disponível.
 
-```powershell
-python -m src.pipeline caminho/entrada.json
-```
+Cada item de `independent_source_ids` deve corresponder ao `source_url` de pelo menos uma evidência observada. Identificadores sem evidência não aumentam a contagem de fontes independentes.
 
-Validar também um relatório final JSON ou Markdown:
+A idade das evidências é calculada a partir de `generated_at` e `collected_at`. Quando um indicador de dimensão referencia mais de uma evidência, o pipeline utiliza conservadoramente a evidência mais antiga.
 
-```powershell
-python -m src.pipeline caminho/entrada.json --final-output caminho/resultado.md
-```
+## Status possíveis do pipeline
 
-Salvar o envelope técnico do pipeline:
+- `completed`: processamento determinístico concluído;
+- `partial`: uma ou mais oportunidades não possuem dados suficientes para o score;
+- `invalid`: a entrada, o envelope ou o relatório final viola um contrato obrigatório.
 
-```powershell
-python -m src.pipeline caminho/entrada.json --output caminho/pipeline-result.json
-```
-
-Cada oportunidade processada deve declarar `scoring_context` conforme `references/scoring-context-schema.json`. O contexto referencia registros `OBS-*` existentes para economia, custo mínimo, orçamento, fit operacional e logística. Cada item de `independent_source_ids` deve corresponder ao `source_url` de pelo menos uma evidência observada; identificadores sem respaldo não aumentam a contagem de fontes. As idades são calculadas a partir de `generated_at` e das datas das evidências; quando um `CALC-*` de dimensão usa mais de uma evidência, aplica-se conservadoramente a maior idade entre elas.
+Uma oportunidade também pode ser reprovada por um filtro eliminatório autorizado. Isso é um resultado determinístico concluído, não uma falha de execução.
 
 ## Segurança e limitações
 
-O projeto não estima faturamento sem modelo autorizado, não trata sinais públicos como prova de vendas, não promete lucro e não executa campanhas ou alterações de orçamento. Dados ausentes permanecem ausentes: nenhuma regra pode preencher lacunas ou fabricar evidências silenciosamente.
+O projeto:
+
+- não estima faturamento sem um modelo autorizado;
+- não apresenta sinais públicos como prova de vendas;
+- não promete lucro, ROAS ou conversão;
+- não executa campanhas nem altera orçamentos;
+- não preenche dados ausentes silenciosamente;
+- não permite que a IA modifique scores ou pesos oficiais;
+- trata conteúdo coletado externamente como dado não confiável.
+
+O score ajuda a priorizar hipóteses e próximos testes. Ele não garante que uma oportunidade terá vendas ou rentabilidade.
+
+## Desenvolvimento
+
+Antes de enviar uma alteração:
+
+1. execute toda a suíte de testes;
+2. valide os exemplos afetados;
+3. confirme que schemas, configuração e documentação continuam coerentes;
+4. não altere pesos, regras ou enums sem versionar o contrato correspondente.
