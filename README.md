@@ -189,6 +189,23 @@ resultado `collect_more_data` ou `reject_for_now` é uma conclusão válida; o
 código de saída diferente de zero fica reservado para falhas de entrada,
 execução ou validação global.
 
+### Casos demonstrativos
+
+O diretório `fixtures/cases/` contém três cenários integralmente sintéticos:
+
+- `opportunity_viable.json`: score oficial alto e recomendação de teste;
+- `opportunity_kill_switch.json`: margem negativa e rejeição pelo motor;
+- `opportunity_insufficient_data.json`: demanda ausente e coleta obrigatória.
+
+Exemplo de execução:
+
+```bash
+python -m src.cli --input fixtures/cases/opportunity_viable.json --output reports/analysis_result.json
+```
+
+Os fixtures servem somente para demonstração e testes. Seus valores não
+representam produtos, fornecedores, mercados ou resultados comerciais reais.
+
 ## Requisitos do `scoring_context`
 
 Cada oportunidade processada pelo pipeline deve declarar um `scoring_context` compatível com `references/scoring-context-schema.json`.

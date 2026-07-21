@@ -1,0 +1,225 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "ANL-CASE-VIABLE-001",
+  "generated_at": "2026-07-20T12:00:00-03:00",
+  "analysis_mode": "campaign_diagnosis",
+  "user_context": {
+    "country": "BR",
+    "language": "pt-BR",
+    "experience_level": "intermediate",
+    "business_model": "ecommerce",
+    "primary_channel": "meta",
+    "test_budget_brl": 1000,
+    "maximum_test_days": 7,
+    "target_margin_percent": 30,
+    "maximum_acceptable_cpa": null,
+    "available_team": [
+      "media_buyer",
+      "creative_designer"
+    ],
+    "operational_constraints": [],
+    "excluded_categories": [],
+    "objectives": [
+      "validate_demand_with_controlled_test"
+    ]
+  },
+  "opportunities": [
+    {
+      "opportunity_id": "OPP-CASE-VIABLE-001",
+      "name": "Organizador modular demonstrativo",
+      "category": "home_organization",
+      "description": "Fixture sintético completo para demonstrar uma oportunidade economicamente viável.",
+      "source_urls": [
+        "fixture://viable-supplier",
+        "fixture://viable-market-signals"
+      ],
+      "observed_evidence": [
+        {
+          "evidence_id": "OBS-VIABLE-ECONOMICS",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "source_type": "synthetic_supplier_fixture",
+          "source_url": "fixture://viable-supplier",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "economic_inputs",
+          "value": {
+            "selling_price": 149.9,
+            "product_cost": 35,
+            "variable_fees": 15,
+            "taxes": 12,
+            "shipping_subsidy": 10,
+            "other_variable_costs": 5,
+            "currency": "BRL"
+          },
+          "value_type": "object",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Valores exclusivamente demonstrativos; não representam oferta comercial real."
+        },
+        {
+          "evidence_id": "OBS-VIABLE-MINIMUM-TEST-COST",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://viable-supplier",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "minimum_test_cost",
+          "value": 400,
+          "value_type": "number",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Custo mínimo demonstrativo calculado fora do motor de score."
+        },
+        {
+          "evidence_id": "OBS-VIABLE-OPERATOR-BUDGET",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://viable-supplier",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "operator_test_budget",
+          "value": 1000,
+          "value_type": "number",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Orçamento demonstrativo informado no fixture."
+        },
+        {
+          "evidence_id": "OBS-VIABLE-OPERATIONAL-FIT",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://viable-supplier",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "operational_fit",
+          "value": "strong_fit",
+          "value_type": "string",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Fit demonstrativo baseado no contexto sintético do operador."
+        },
+        {
+          "evidence_id": "OBS-VIABLE-DEMAND-SIGNALS",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "source_type": "synthetic_market_fixture",
+          "source_url": "fixture://viable-market-signals",
+          "collected_at": "2026-07-18T11:00:00-03:00",
+          "field": "demand_signal_bundle",
+          "value": {
+            "signal_count": 3,
+            "window_days": 30,
+            "description": "Conjunto sintético de sinais relativos e concordantes."
+          },
+          "value_type": "object",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Sinais sintéticos não comprovam vendas, faturamento ou lucro."
+        },
+        {
+          "evidence_id": "OBS-VIABLE-COMPETITIVE-SIGNALS",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "source_type": "synthetic_market_fixture",
+          "source_url": "fixture://viable-market-signals",
+          "collected_at": "2026-07-18T11:00:00-03:00",
+          "field": "competitive_signal_bundle",
+          "value": {
+            "differentiation_angles": 4,
+            "advertiser_diversity": "medium",
+            "description": "Sinais sintéticos de espaço para diferenciação."
+          },
+          "value_type": "object",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Concorrência sintética não demonstra rentabilidade."
+        },
+        {
+          "evidence_id": "OBS-VIABLE-LOGISTICS",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "source_type": "synthetic_supplier_fixture",
+          "source_url": "fixture://viable-supplier",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "logistics_lead_time_business_days",
+          "value": 8,
+          "value_type": "integer",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Prazo exclusivamente demonstrativo."
+        }
+      ],
+      "calculated_indicators": [
+        {
+          "indicator_id": "CALC-VIABLE-DEMAND-SCORE",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "field": "demand_score",
+          "value": 92,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_normalized_demand_fixture_v1",
+          "calculation_version": "FIXTURE-1.0.0",
+          "calculated_at": "2026-07-20T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-VIABLE-DEMAND-SIGNALS"
+          ],
+          "quality": "high",
+          "warnings": []
+        },
+        {
+          "indicator_id": "CALC-VIABLE-ECONOMICS-SCORE",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "field": "economics_score",
+          "value": 88,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_normalized_economics_fixture_v1",
+          "calculation_version": "FIXTURE-1.0.0",
+          "calculated_at": "2026-07-20T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-VIABLE-ECONOMICS"
+          ],
+          "quality": "high",
+          "warnings": []
+        },
+        {
+          "indicator_id": "CALC-VIABLE-COMPETITIVE-SCORE",
+          "opportunity_id": "OPP-CASE-VIABLE-001",
+          "field": "competitive_attractiveness_score",
+          "value": 82,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_normalized_competition_fixture_v1",
+          "calculation_version": "FIXTURE-1.0.0",
+          "calculated_at": "2026-07-20T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-VIABLE-COMPETITIVE-SIGNALS"
+          ],
+          "quality": "high",
+          "warnings": []
+        }
+      ],
+      "campaign_metrics": null,
+      "data_quality": {
+        "status": "complete",
+        "coverage_percent": 95,
+        "freshness": "current",
+        "source_agreement": "high"
+      },
+      "collection_errors": [],
+      "risk_flags": [],
+      "scoring_context": {
+        "economic_inputs_evidence_id": "OBS-VIABLE-ECONOMICS",
+        "minimum_test_cost_evidence_id": "OBS-VIABLE-MINIMUM-TEST-COST",
+        "operator_budget_evidence_id": "OBS-VIABLE-OPERATOR-BUDGET",
+        "operational_fit_evidence_id": "OBS-VIABLE-OPERATIONAL-FIT",
+        "logistics_evidence_id": "OBS-VIABLE-LOGISTICS",
+        "independent_source_ids": [
+          "fixture://viable-supplier",
+          "fixture://viable-market-signals"
+        ],
+        "calculation_quality": "high"
+      }
+    }
+  ],
+  "score_configuration": {
+    "version": "SCORE-0.1.0",
+    "weights": {},
+    "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+    "engine": "deterministic-score-engine"
+  },
+  "requested_output_language": "pt-BR"
+}

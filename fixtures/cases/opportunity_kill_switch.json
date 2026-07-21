@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "ANL-CASE-KILL-SWITCH-001",
+  "generated_at": "2026-07-20T12:00:00-03:00",
+  "analysis_mode": "campaign_diagnosis",
+  "user_context": {
+    "country": "BR",
+    "language": "pt-BR",
+    "experience_level": "beginner",
+    "business_model": "ecommerce",
+    "primary_channel": "meta",
+    "test_budget_brl": 600,
+    "maximum_test_days": 7,
+    "target_margin_percent": 30,
+    "maximum_acceptable_cpa": null,
+    "available_team": [],
+    "operational_constraints": [
+      "limited_working_capital"
+    ],
+    "excluded_categories": [],
+    "objectives": [
+      "reject_economically_inviable_offer"
+    ]
+  },
+  "opportunities": [
+    {
+      "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+      "name": "Kit utilitário demonstrativo",
+      "category": "general_accessories",
+      "description": "Fixture sintético que ativa o filtro de margem de contribuição não positiva.",
+      "source_urls": [
+        "fixture://kill-switch-source"
+      ],
+      "observed_evidence": [
+        {
+          "evidence_id": "OBS-KILL-ECONOMICS",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "source_type": "synthetic_supplier_fixture",
+          "source_url": "fixture://kill-switch-source",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "economic_inputs",
+          "value": {
+            "selling_price": 80,
+            "product_cost": 60,
+            "variable_fees": 10,
+            "taxes": 5,
+            "shipping_subsidy": 8,
+            "other_variable_costs": 2,
+            "currency": "BRL"
+          },
+          "value_type": "object",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Os custos sintéticos totalizam mais que o preço de venda."
+        },
+        {
+          "evidence_id": "OBS-KILL-MINIMUM-TEST-COST",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://kill-switch-source",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "minimum_test_cost",
+          "value": 300,
+          "value_type": "number",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Custo demonstrativo dentro do orçamento; a reprovação deve ocorrer pela margem."
+        },
+        {
+          "evidence_id": "OBS-KILL-OPERATOR-BUDGET",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://kill-switch-source",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "operator_test_budget",
+          "value": 600,
+          "value_type": "number",
+          "collection_method": "synthetic_fixture",
+          "quality": "high",
+          "notes": "Orçamento demonstrativo."
+        },
+        {
+          "evidence_id": "OBS-KILL-OPERATIONAL-FIT",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://kill-switch-source",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "operational_fit",
+          "value": "acceptable_fit",
+          "value_type": "string",
+          "collection_method": "synthetic_fixture",
+          "quality": "medium",
+          "notes": "O fit não deve sobrepor o filtro econômico."
+        },
+        {
+          "evidence_id": "OBS-KILL-DEMAND-SIGNALS",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "source_type": "synthetic_market_fixture",
+          "source_url": "fixture://kill-switch-source",
+          "collected_at": "2026-07-18T11:00:00-03:00",
+          "field": "demand_signal_bundle",
+          "value": {
+            "signal_count": 2,
+            "description": "Sinais sintéticos que não compensam economia negativa."
+          },
+          "value_type": "object",
+          "collection_method": "synthetic_fixture",
+          "quality": "medium",
+          "notes": "Sinais não comprovam vendas."
+        },
+        {
+          "evidence_id": "OBS-KILL-COMPETITIVE-SIGNALS",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "source_type": "synthetic_market_fixture",
+          "source_url": "fixture://kill-switch-source",
+          "collected_at": "2026-07-18T11:00:00-03:00",
+          "field": "competitive_signal_bundle",
+          "value": {
+            "advertiser_diversity": "medium",
+            "description": "Concorrência sintética moderada."
+          },
+          "value_type": "object",
+          "collection_method": "synthetic_fixture",
+          "quality": "medium",
+          "notes": "Dado exclusivamente demonstrativo."
+        }
+      ],
+      "calculated_indicators": [
+        {
+          "indicator_id": "CALC-KILL-DEMAND-SCORE",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "field": "demand_score",
+          "value": 75,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_normalized_demand_fixture_v1",
+          "calculation_version": "FIXTURE-1.0.0",
+          "calculated_at": "2026-07-20T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-KILL-DEMAND-SIGNALS"
+          ],
+          "quality": "medium",
+          "warnings": []
+        },
+        {
+          "indicator_id": "CALC-KILL-ECONOMICS-SCORE",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "field": "economics_score",
+          "value": 40,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_normalized_economics_fixture_v1",
+          "calculation_version": "FIXTURE-1.0.0",
+          "calculated_at": "2026-07-20T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-KILL-ECONOMICS"
+          ],
+          "quality": "high",
+          "warnings": []
+        },
+        {
+          "indicator_id": "CALC-KILL-COMPETITIVE-SCORE",
+          "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+          "field": "competitive_attractiveness_score",
+          "value": 65,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_normalized_competition_fixture_v1",
+          "calculation_version": "FIXTURE-1.0.0",
+          "calculated_at": "2026-07-20T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-KILL-COMPETITIVE-SIGNALS"
+          ],
+          "quality": "medium",
+          "warnings": []
+        }
+      ],
+      "campaign_metrics": null,
+      "data_quality": {
+        "status": "complete",
+        "coverage_percent": 90,
+        "freshness": "current",
+        "source_agreement": "medium"
+      },
+      "collection_errors": [],
+      "risk_flags": [
+        {
+          "code": "negative_unit_economics",
+          "severity": "high"
+        }
+      ],
+      "scoring_context": {
+        "economic_inputs_evidence_id": "OBS-KILL-ECONOMICS",
+        "minimum_test_cost_evidence_id": "OBS-KILL-MINIMUM-TEST-COST",
+        "operator_budget_evidence_id": "OBS-KILL-OPERATOR-BUDGET",
+        "operational_fit_evidence_id": "OBS-KILL-OPERATIONAL-FIT",
+        "independent_source_ids": [
+          "fixture://kill-switch-source"
+        ],
+        "calculation_quality": "high"
+      }
+    }
+  ],
+  "score_configuration": {
+    "version": "SCORE-0.1.0",
+    "weights": {},
+    "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+    "engine": "deterministic-score-engine"
+  },
+  "requested_output_language": "pt-BR"
+}

@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "ANL-CASE-INSUFFICIENT-001",
+  "generated_at": "2026-07-20T12:00:00-03:00",
+  "analysis_mode": "campaign_diagnosis",
+  "user_context": {
+    "country": "BR",
+    "language": "pt-BR",
+    "experience_level": "beginner",
+    "business_model": "ecommerce",
+    "primary_channel": "meta",
+    "test_budget_brl": 500,
+    "maximum_test_days": 7,
+    "target_margin_percent": null,
+    "maximum_acceptable_cpa": null,
+    "available_team": [],
+    "operational_constraints": [
+      "demand_not_validated"
+    ],
+    "excluded_categories": [],
+    "objectives": [
+      "collect_demand_evidence"
+    ]
+  },
+  "opportunities": [
+    {
+      "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+      "name": "Oportunidade preliminar demonstrativa",
+      "category": "general_accessories",
+      "description": "Fixture sintético sem sinais ou indicador de demanda.",
+      "source_urls": [
+        "fixture://insufficient-known-data"
+      ],
+      "observed_evidence": [
+        {
+          "evidence_id": "OBS-INSUFFICIENT-ECONOMICS",
+          "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+          "source_type": "synthetic_supplier_fixture",
+          "source_url": "fixture://insufficient-known-data",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "economic_inputs",
+          "value": {
+            "selling_price": 100,
+            "product_cost": 40,
+            "variable_fees": 10,
+            "taxes": 5,
+            "shipping_subsidy": 5,
+            "other_variable_costs": 0,
+            "currency": "BRL"
+          },
+          "value_type": "object",
+          "collection_method": "synthetic_fixture",
+          "quality": "medium",
+          "notes": "Economia demonstrativa disponível; demanda permanece ausente."
+        },
+        {
+          "evidence_id": "OBS-INSUFFICIENT-MINIMUM-TEST-COST",
+          "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://insufficient-known-data",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "minimum_test_cost",
+          "value": 250,
+          "value_type": "number",
+          "collection_method": "synthetic_fixture",
+          "quality": "medium",
+          "notes": "Custo mínimo demonstrativo."
+        },
+        {
+          "evidence_id": "OBS-INSUFFICIENT-OPERATOR-BUDGET",
+          "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://insufficient-known-data",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "operator_test_budget",
+          "value": 500,
+          "value_type": "number",
+          "collection_method": "synthetic_fixture",
+          "quality": "medium",
+          "notes": "Orçamento demonstrativo."
+        },
+        {
+          "evidence_id": "OBS-INSUFFICIENT-OPERATIONAL-FIT",
+          "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+          "source_type": "synthetic_operator_fixture",
+          "source_url": "fixture://insufficient-known-data",
+          "collected_at": "2026-07-18T10:00:00-03:00",
+          "field": "operational_fit",
+          "value": "conditional_fit",
+          "value_type": "string",
+          "collection_method": "synthetic_fixture",
+          "quality": "medium",
+          "notes": "Fit condicional até que a demanda seja investigada."
+        },
+        {
+          "evidence_id": "OBS-INSUFFICIENT-COMPETITIVE-SIGNALS",
+          "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+          "source_type": "synthetic_market_fixture",
+          "source_url": "fixture://insufficient-known-data",
+          "collected_at": "2026-07-18T11:00:00-03:00",
+          "field": "competitive_signal_bundle",
+          "value": {
+            "advertiser_diversity": "unknown",
+            "description": "Sinal competitivo sintético de baixa cobertura."
+          },
+          "value_type": "object",
+          "collection_method": "synthetic_fixture",
+          "quality": "low",
+          "notes": "Não existe OBS-* de demanda neste fixture."
+        }
+      ],
+      "calculated_indicators": [
+        {
+          "indicator_id": "CALC-INSUFFICIENT-ECONOMICS-SCORE",
+          "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+          "field": "economics_score",
+          "value": 60,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_normalized_economics_fixture_v1",
+          "calculation_version": "FIXTURE-1.0.0",
+          "calculated_at": "2026-07-20T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-INSUFFICIENT-ECONOMICS"
+          ],
+          "quality": "medium",
+          "warnings": []
+        },
+        {
+          "indicator_id": "CALC-INSUFFICIENT-COMPETITIVE-SCORE",
+          "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+          "field": "competitive_attractiveness_score",
+          "value": 45,
+          "value_type": "integer",
+          "unit": "0-100",
+          "calculation_method": "synthetic_normalized_competition_fixture_v1",
+          "calculation_version": "FIXTURE-1.0.0",
+          "calculated_at": "2026-07-20T11:55:00-03:00",
+          "source_evidence_ids": [
+            "OBS-INSUFFICIENT-COMPETITIVE-SIGNALS"
+          ],
+          "quality": "low",
+          "warnings": []
+        }
+      ],
+      "campaign_metrics": null,
+      "data_quality": {
+        "status": "partial",
+        "coverage_percent": 45,
+        "freshness": "current",
+        "source_agreement": "unknown"
+      },
+      "collection_errors": [
+        "demand_signals_not_collected"
+      ],
+      "risk_flags": [],
+      "scoring_context": {
+        "economic_inputs_evidence_id": "OBS-INSUFFICIENT-ECONOMICS",
+        "minimum_test_cost_evidence_id": "OBS-INSUFFICIENT-MINIMUM-TEST-COST",
+        "operator_budget_evidence_id": "OBS-INSUFFICIENT-OPERATOR-BUDGET",
+        "operational_fit_evidence_id": "OBS-INSUFFICIENT-OPERATIONAL-FIT",
+        "independent_source_ids": [
+          "fixture://insufficient-known-data"
+        ],
+        "calculation_quality": "low"
+      }
+    }
+  ],
+  "score_configuration": {
+    "version": "SCORE-0.1.0",
+    "weights": {},
+    "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+    "engine": "deterministic-score-engine"
+  },
+  "requested_output_language": "pt-BR"
+}
