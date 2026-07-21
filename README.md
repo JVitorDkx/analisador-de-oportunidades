@@ -63,8 +63,11 @@ As fórmulas econômicas autorizadas calculam margem de contribuição, margem p
 analisador-de-oportunidades/
 ├── config/                  # configuração versionada do score
 ├── data/results/            # exemplos de resultados analíticos
+├── fixtures/cases/          # cenários sintéticos executáveis pela CLI e API
 ├── references/              # schemas e políticas do projeto
+├── requirements.txt         # dependências versionadas da camada Web
 ├── src/
+│   ├── api/                  # API REST desacoplada do núcleo determinístico
 │   ├── cli.py               # interface executável da ferramenta completa
 │   ├── pipeline.py          # execução end-to-end
 │   ├── interpretation/      # geração rastreável de INF-* e REC-*
@@ -87,7 +90,12 @@ Os principais contratos estão em:
 - Git;
 - Python 3.11 ou superior.
 
-O núcleo atual utiliza somente a biblioteca padrão do Python. Não é necessário instalar dependências externas.
+O núcleo determinístico utiliza somente a biblioteca padrão do Python. Para
+executar a API Web, instale as dependências versionadas do projeto:
+
+```bash
+python -m pip install -r requirements.txt
+```
 
 ## Preparação do ambiente
 
@@ -231,6 +239,28 @@ chama `python3`, substitua apenas `python` por `python3`.
 Os três fixtures são integralmente sintéticos e servem somente para
 demonstração e testes. Seus valores não representam produtos, fornecedores,
 mercados ou resultados comerciais reais.
+
+## Executar a API Web
+
+A API FastAPI expõe o mesmo pipeline usado pela CLI, sem duplicar ou alterar as
+regras do núcleo determinístico. Inicie o servidor de desenvolvimento:
+
+```bash
+python -m uvicorn src.api.app:app --reload
+```
+
+A documentação interativa ficará disponível em `http://127.0.0.1:8000/docs`.
+O endpoint inicial recebe diretamente o payload JSON de entrada:
+
+```text
+POST /api/v1/analyze
+Content-Type: application/json
+```
+
+Uma entrada válida retorna HTTP `200` com o relatório completo no schema
+`1.1.0`. Uma entrada que viola o contrato estrutural retorna HTTP `422` com os
+problemas de validação. O endpoint preserva `official_score`, indicadores
+`CALC-*`, kill switches e a rastreabilidade `OBS-*` → `CALC-*` → `REC-*`.
 
 ## Requisitos do `scoring_context`
 
