@@ -17,7 +17,7 @@ Essa separação evita que dados ausentes sejam inventados, que interpretações
 
 ## Estado atual
 
-A versão atual inclui:
+A versão funcional `1.1.0` inclui:
 
 - validação estrutural e semântica das entradas;
 - Motor Determinístico v0.1 (`SCORE-0.1.0`);
@@ -189,22 +189,48 @@ resultado `collect_more_data` ou `reject_for_now` é uma conclusão válida; o
 código de saída diferente de zero fica reservado para falhas de entrada,
 execução ou validação global.
 
-### Casos demonstrativos
+### Executar os três casos demonstrativos
 
-O diretório `fixtures/cases/` contém três cenários integralmente sintéticos:
+Execute os comandos abaixo a partir da raiz do repositório. A CLI cria a pasta
+`reports/` automaticamente quando ela ainda não existe.
 
-- `opportunity_viable.json`: score oficial alto e recomendação de teste;
-- `opportunity_kill_switch.json`: margem negativa e rejeição pelo motor;
-- `opportunity_insufficient_data.json`: demanda ausente e coleta obrigatória.
-
-Exemplo de execução:
+#### 1. Oportunidade viável
 
 ```bash
-python -m src.cli --input fixtures/cases/opportunity_viable.json --output reports/analysis_result.json
+python -m src.cli --input fixtures/cases/opportunity_viable.json --output reports/opportunity_viable_result.json
 ```
 
-Os fixtures servem somente para demonstração e testes. Seus valores não
-representam produtos, fornecedores, mercados ou resultados comerciais reais.
+Resultado esperado: score oficial `90.4`, status da oportunidade `scored` e
+recomendação `prioritize_test`, sustentada pelos registros `OBS-*` e `CALC-*`
+do fixture.
+
+#### 2. Oportunidade reprovada por kill switch
+
+```bash
+python -m src.cli --input fixtures/cases/opportunity_kill_switch.json --output reports/opportunity_kill_switch_result.json
+```
+
+Resultado esperado: `official_score: null`, status da oportunidade `rejected`,
+kill switch `non_positive_contribution_margin` e recomendação `reject_for_now`
+para descarte ou correção da inviabilidade econômica.
+
+#### 3. Oportunidade com dados insuficientes
+
+```bash
+python -m src.cli --input fixtures/cases/opportunity_insufficient_data.json --output reports/opportunity_insufficient_data_result.json
+```
+
+Resultado esperado: `official_score: null`, status global `insufficient` e
+recomendação `collect_more_data`. O relatório identifica exatamente
+`demand_signal_bundle` como a evidência necessária para destravar a análise.
+
+Cada comando apresenta um resumo legível no terminal e grava o relatório JSON
+completo no caminho informado por `--output`. Em sistemas onde o executável se
+chama `python3`, substitua apenas `python` por `python3`.
+
+Os três fixtures são integralmente sintéticos e servem somente para
+demonstração e testes. Seus valores não representam produtos, fornecedores,
+mercados ou resultados comerciais reais.
 
 ## Requisitos do `scoring_context`
 
