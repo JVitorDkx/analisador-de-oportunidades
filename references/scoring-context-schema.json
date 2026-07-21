@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scoring-context-schema.json",
+  "title": "Opportunity Scoring Context",
+  "description": "Referências explícitas usadas pelo pipeline para construir a entrada do Motor Determinístico v0.1 sem inventar valores.",
+  "type": "object",
+  "required": [
+    "economic_inputs_evidence_id",
+    "minimum_test_cost_evidence_id",
+    "operator_budget_evidence_id",
+    "operational_fit_evidence_id",
+    "independent_source_ids",
+    "calculation_quality"
+  ],
+  "properties": {
+    "economic_inputs_evidence_id": {
+      "type": "string",
+      "pattern": "^OBS-[A-Z0-9-]+$"
+    },
+    "minimum_test_cost_evidence_id": {
+      "type": "string",
+      "pattern": "^OBS-[A-Z0-9-]+$"
+    },
+    "operator_budget_evidence_id": {
+      "type": "string",
+      "pattern": "^OBS-[A-Z0-9-]+$"
+    },
+    "operational_fit_evidence_id": {
+      "type": "string",
+      "pattern": "^OBS-[A-Z0-9-]+$"
+    },
+    "logistics_evidence_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^OBS-[A-Z0-9-]+$"
+    },
+    "independent_source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "calculation_quality": {
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

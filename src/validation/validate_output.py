@@ -339,7 +339,7 @@ def _result(issues: list[dict[str, str]]) -> dict[str, Any]:
     }
 
 
-def _parse_output_text(text: str) -> Any:
+def parse_output_text(text: str) -> Any:
     stripped = text.lstrip("\ufeff\n\r\t ")
     if stripped.startswith("```json"):
         match = re.match(r"```json\s*\r?\n(.*?)\r?\n```", stripped, flags=re.DOTALL)
@@ -349,11 +349,15 @@ def _parse_output_text(text: str) -> Any:
     return json.loads(stripped)
 
 
+# Backward-compatible alias for existing callers.
+_parse_output_text = parse_output_text
+
+
 def validate_output_file(output_path: str | Path, input_path: str | Path) -> dict[str, Any]:
     """Parse an output JSON/Markdown file and validate it against an input JSON file."""
 
     try:
-        output_data = _parse_output_text(Path(output_path).read_text(encoding="utf-8"))
+        output_data = parse_output_text(Path(output_path).read_text(encoding="utf-8"))
         input_data = json.loads(Path(input_path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         return _result([_issue("invalid_json", "$", str(exc))])

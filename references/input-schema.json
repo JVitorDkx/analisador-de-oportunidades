@@ -212,6 +212,9 @@
         },
         "risk_flags": {
           "type": "array"
+        },
+        "scoring_context": {
+          "$ref": "scoring-context-schema.json"
         }
       }
     },

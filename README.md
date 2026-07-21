@@ -71,7 +71,36 @@ from src.scoring.engine import ScoreEngine
 engine = ScoreEngine.from_file("config/score-v0.1.json")
 ```
 
-O runner end-to-end ainda será implementado em uma etapa posterior. Até lá, o motor é consumido como biblioteca Python e os validadores possuem interfaces de linha de comando próprias.
+## Pipeline end-to-end
+
+O runner `src/pipeline.py` executa, em ordem:
+
+1. validação da entrada pré-score;
+2. resolução das referências explícitas de `scoring_context`;
+3. execução do Motor Determinístico v0.1;
+4. inclusão dos novos indicadores `CALC-*` em uma cópia da entrada;
+5. nova validação da entrada enriquecida;
+6. validação opcional da saída analítica final.
+
+Executar o pipeline e imprimir o envelope JSON no terminal:
+
+```powershell
+python -m src.pipeline caminho/entrada.json
+```
+
+Validar também um relatório final JSON ou Markdown:
+
+```powershell
+python -m src.pipeline caminho/entrada.json --final-output caminho/resultado.md
+```
+
+Salvar o envelope técnico do pipeline:
+
+```powershell
+python -m src.pipeline caminho/entrada.json --output caminho/pipeline-result.json
+```
+
+Cada oportunidade processada deve declarar `scoring_context` conforme `references/scoring-context-schema.json`. O contexto referencia registros `OBS-*` existentes para economia, custo mínimo, orçamento, fit operacional e logística. Cada item de `independent_source_ids` deve corresponder ao `source_url` de pelo menos uma evidência observada; identificadores sem respaldo não aumentam a contagem de fontes. As idades são calculadas a partir de `generated_at` e das datas das evidências; quando um `CALC-*` de dimensão usa mais de uma evidência, aplica-se conservadoramente a maior idade entre elas.
 
 ## Segurança e limitações
 

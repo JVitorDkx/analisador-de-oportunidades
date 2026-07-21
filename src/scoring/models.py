@@ -50,6 +50,7 @@ class DimensionScoreInput:
     indicator_id: str | None = None
     calculation_method: str | None = None
     calculation_version: str | None = None
+    calculated_at: str | None = None
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "value", decimal_value(self.value, "dimension score"))
@@ -68,6 +69,8 @@ class DimensionScoreInput:
                 raise ValueError("a provided dimension score requires calculation_method")
             if not isinstance(self.calculation_version, str) or not self.calculation_version:
                 raise ValueError("a provided dimension score requires calculation_version")
+            if not isinstance(self.calculated_at, str) or not self.calculated_at:
+                raise ValueError("a provided dimension score requires calculated_at")
 
 
 @dataclass(frozen=True)

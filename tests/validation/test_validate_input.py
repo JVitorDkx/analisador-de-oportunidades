@@ -56,6 +56,20 @@ class ValidateInputTests(unittest.TestCase):
         self.assertEqual(result["status"], "partial")
         self.assertIn("partial_data_quality", issue_codes(result))
 
+    def test_pre_score_input_can_omit_official_score(self) -> None:
+        payload = load_fixture()
+        for opportunity in payload["opportunities"]:
+            opportunity["calculated_indicators"] = [
+                indicator
+                for indicator in opportunity["calculated_indicators"]
+                if indicator["field"] != "official_score"
+            ]
+
+        result = validate_input(payload, require_official_score=False)
+
+        self.assertTrue(result["valid"])
+        self.assertNotIn("missing_official_score", issue_codes(result))
+
     def test_invalid_input(self) -> None:
         result = validate_json_file(FIXTURES_DIR / "invalid-input.json")
 

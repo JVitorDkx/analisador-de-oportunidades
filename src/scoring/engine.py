@@ -115,7 +115,7 @@ class ScoreEngine:
                         unit="0-100",
                         calculation_method=dimension.calculation_method,
                         calculation_version=dimension.calculation_version,
-                        calculated_at=payload.calculated_at,
+                        calculated_at=dimension.calculated_at,
                         source_evidence_ids=dimension.source_evidence_ids,
                         quality=dimension.quality,
                         warnings=(),

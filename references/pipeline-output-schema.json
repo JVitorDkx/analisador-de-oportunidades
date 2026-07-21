@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pipeline-output-schema.json",
+  "title": "Opportunity Analyst Pipeline Result",
+  "type": "object",
+  "required": [
+    "pipeline_version",
+    "analysis_id",
+    "score_version",
+    "status",
+    "input_validation",
+    "opportunity_results",
+    "enriched_input",
+    "enriched_input_validation",
+    "final_output_validation",
+    "pipeline_validation"
+  ],
+  "properties": {
+    "pipeline_version": {
+      "const": "0.1.0"
+    },
+    "analysis_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score_version": {
+      "const": "SCORE-0.1.0"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "partial",
+        "invalid"
+      ]
+    },
+    "input_validation": {
+      "type": "object"
+    },
+    "opportunity_results": {
+      "type": "array"
+    },
+    "enriched_input": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "enriched_input_validation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "final_output_validation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "pipeline_validation": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

@@ -34,6 +34,7 @@ def dimension_score(
         indicator_id=indicator_id,
         calculation_method="deterministic_upstream_fixture_v1",
         calculation_version="UPSTREAM-FIXTURE-0.1.0",
+        calculated_at="2026-07-20T11:55:00-03:00",
     )
 
 

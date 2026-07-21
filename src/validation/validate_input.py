@@ -71,8 +71,12 @@ def _require_fields(
     return True
 
 
-def validate_input(data: Any) -> dict[str, Any]:
-    """Validate an input payload without calculating or modifying indicators."""
+def validate_input(data: Any, *, require_official_score: bool = True) -> dict[str, Any]:
+    """Validate an input payload without calculating or modifying indicators.
+
+    ``require_official_score=False`` is reserved for the pre-score pipeline
+    stage, where the engine has not produced the official CALC-* yet.
+    """
 
     issues: list[dict[str, str]] = []
     if not _require_fields(
@@ -327,7 +331,7 @@ def validate_input(data: Any) -> dict[str, Any]:
                 elif calculation.get("unit") == "0-100" and not 0 <= calc_value <= 100:
                     issues.append(_issue("invalid_value", f"{calc_path}.value", "Score oficial deve respeitar a escala 0-100."))
 
-        if not official_score_found:
+        if require_official_score and not official_score_found:
             issues.append(_issue("missing_official_score", f"{path}.calculated_indicators", "Score oficial CALC-* ausente."))
 
     score_configuration = data.get("score_configuration")
@@ -361,7 +365,11 @@ def validate_input(data: Any) -> dict[str, Any]:
     }
 
 
-def validate_json_file(path: str | Path) -> dict[str, Any]:
+def validate_json_file(
+    path: str | Path,
+    *,
+    require_official_score: bool = True,
+) -> dict[str, Any]:
     """Parse and validate a JSON file, reporting syntax errors deterministically."""
 
     try:
@@ -375,7 +383,7 @@ def validate_json_file(path: str | Path) -> dict[str, Any]:
             "warning_count": 0,
             "issues": [_issue("invalid_json", "$", str(exc))],
         }
-    return validate_input(data)
+    return validate_input(data, require_official_score=require_official_score)
 
 
 def main(argv: list[str]) -> int:
