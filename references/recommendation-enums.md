@@ -1,6 +1,6 @@
 # Enumerações de Recomendação
 
-Lista canônica extraída da Skill `opportunity-analyst` 1.0.1:
+Lista canônica extraída da Skill `opportunity-analyst` 1.1.0:
 
 ```text
 prioritize_test

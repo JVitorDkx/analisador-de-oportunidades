@@ -1211,7 +1211,7 @@ Retorne primeiro um único objeto JSON.
 
 ```json
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "analysis_id": "ANL-000001",
   "analysis_mode": "pre_test",
   "processed_at": "ISO-8601",
@@ -1222,9 +1222,9 @@ Retorne primeiro um único objeto JSON.
     "sensitive_data_detected": false
   },
   "versions": {
-    "skill_version": "1.0.1",
+    "skill_version": "1.1.0",
     "input_schema_version": "1.0.0",
-    "output_schema_version": "1.0.0",
+    "output_schema_version": "1.1.0",
     "score_version": "SCORE-0.1.0"
   },
   "recommended_opportunity_id": "OPP-001",
@@ -1294,6 +1294,21 @@ Retorne primeiro um único objeto JSON.
       "statement": "string",
       "evidence_ids": [],
       "certainty": "strong|moderate|weak"
+    }
+  ],
+  "recommendations": [
+    {
+      "recommendation_id": "REC-001",
+      "opportunity_id": "OPP-001",
+      "action": "prioritize_test",
+      "statement": "string",
+      "rationale": "string",
+      "evidence_ids": ["OBS-001", "CALC-001"],
+      "risks": [],
+      "minimum_action": "string",
+      "success_metrics": [],
+      "stop_conditions": [],
+      "required_evidence": []
     }
   ],
   "source_conflicts": [

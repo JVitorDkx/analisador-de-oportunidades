@@ -25,6 +25,8 @@ A versão atual inclui:
 - filtros eliminatórios de margem e orçamento;
 - ranking com empates na mesma posição;
 - pipeline completo de validação, scoring e enriquecimento;
+- camada determinística de interpretação `INF-*` e recomendação `REC-*`;
+- interface de linha de comando para execução completa;
 - validação opcional do relatório analítico final;
 - contratos JSON versionados;
 - suíte automatizada de testes.
@@ -63,7 +65,9 @@ analisador-de-oportunidades/
 ├── data/results/            # exemplos de resultados analíticos
 ├── references/              # schemas e políticas do projeto
 ├── src/
+│   ├── cli.py               # interface executável da ferramenta completa
 │   ├── pipeline.py          # execução end-to-end
+│   ├── interpretation/      # geração rastreável de INF-* e REC-*
 │   ├── scoring/             # motor, indicadores e filtros
 │   └── validation/          # validadores de entrada e saída
 └── tests/                   # testes e fixtures sintéticos
@@ -169,6 +173,21 @@ from src.scoring.engine import ScoreEngine
 
 engine = ScoreEngine.from_file("config/score-v0.1.json")
 ```
+
+## Executar a ferramenta completa
+
+A CLI executa o pipeline determinístico, gera as interpretações `INF-*`, cria
+as recomendações rastreáveis `REC-*`, valida o relatório e salva o JSON final:
+
+```bash
+python -m src.cli --input caminho/entrada.json --output reports/analysis_result.json
+```
+
+Além do arquivo completo, o terminal exibe os scores oficiais, o status de cada
+oportunidade, filtros eliminatórios, avisos e recomendações principais. Um
+resultado `collect_more_data` ou `reject_for_now` é uma conclusão válida; o
+código de saída diferente de zero fica reservado para falhas de entrada,
+execução ou validação global.
 
 ## Requisitos do `scoring_context`
 

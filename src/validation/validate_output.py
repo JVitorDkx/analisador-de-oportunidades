@@ -40,6 +40,10 @@ CERTAINTIES = {"strong", "moderate", "weak"}
 CONFLICT_IMPACTS = {"low", "medium", "high"}
 CALCULATION_ACTIONS = {"calculation_review_required"}
 NON_RECOMMENDING_ACTIONS = {"collect_more_data", "insufficient_data"}
+OUTPUT_VERSION_CONTRACTS = {
+    "1.0.0": ("1.0.1", "1.0.0"),
+    "1.1.0": ("1.1.0", "1.1.0"),
+}
 
 REQUIRED_OUTPUT_FIELDS = (
     "schema_version",
@@ -81,6 +85,20 @@ REQUIRED_EXPERIMENT_FIELDS = (
     "success_conditions",
     "stop_conditions",
     "required_feedback_fields",
+)
+
+REQUIRED_RECOMMENDATION_FIELDS = (
+    "recommendation_id",
+    "opportunity_id",
+    "action",
+    "statement",
+    "rationale",
+    "evidence_ids",
+    "risks",
+    "minimum_action",
+    "success_metrics",
+    "stop_conditions",
+    "required_evidence",
 )
 
 
@@ -143,7 +161,12 @@ def _input_index(input_data: dict[str, Any]) -> tuple[set[str], set[str], dict[s
     return opportunity_ids, evidence_ids, official_scores
 
 
-def validate_output(data: Any, input_data: Any) -> dict[str, Any]:
+def validate_output(
+    data: Any,
+    input_data: Any,
+    *,
+    expected_input_status: str | None = None,
+) -> dict[str, Any]:
     """Validate an output against its source input without recalculating CALC-* values."""
 
     issues: list[dict[str, str]] = []
@@ -153,8 +176,23 @@ def validate_output(data: Any, input_data: Any) -> dict[str, Any]:
         issues.append(_issue("invalid_input_reference", "$input", "A entrada de referência deve ser um objeto JSON."))
         return _result(issues)
 
-    if data.get("schema_version") != "1.0.0":
-        issues.append(_issue("invalid_schema_version", "$.schema_version", "A versão de saída esperada é 1.0.0."))
+    schema_version = data.get("schema_version")
+    if schema_version not in OUTPUT_VERSION_CONTRACTS:
+        issues.append(
+            _issue(
+                "invalid_schema_version",
+                "$.schema_version",
+                "A versão de saída deve ser 1.0.0 ou 1.1.0.",
+            )
+        )
+    if schema_version == "1.1.0" and "recommendations" not in data:
+        issues.append(
+            _issue(
+                "missing_required_field",
+                "$.recommendations",
+                "Saídas 1.1.0 exigem recomendações REC-* rastreáveis.",
+            )
+        )
     if data.get("analysis_id") != input_data.get("analysis_id"):
         issues.append(_issue("analysis_id_mismatch", "$.analysis_id", "analysis_id difere da entrada validada."))
     if data.get("analysis_mode") != input_data.get("analysis_mode"):
@@ -174,7 +212,9 @@ def validate_output(data: Any, input_data: Any) -> dict[str, Any]:
     _validate_enum(confidence, CONFIDENCE_VALUES, "$.confidence", issues)
     _validate_enum(recommendation, RECOMMENDATIONS, "$.recommendation", issues)
 
-    deterministic_status = validate_input(input_data).get("status")
+    deterministic_status = expected_input_status or validate_input(input_data).get("status")
+    if expected_input_status is not None and expected_input_status not in INPUT_STATUSES:
+        issues.append(_issue("invalid_expected_status", "$input", "Status determinístico esperado inválido."))
     if input_status != deterministic_status:
         issues.append(_issue("input_status_mismatch", "$.input_status", "input_status difere da validação determinística da entrada."))
 
@@ -202,10 +242,14 @@ def validate_output(data: Any, input_data: Any) -> dict[str, Any]:
 
     versions = data.get("versions")
     if _require_fields(versions, ("skill_version", "input_schema_version", "output_schema_version", "score_version"), "$.versions", issues):
+        skill_version, output_schema_version = OUTPUT_VERSION_CONTRACTS.get(
+            schema_version,
+            (None, None),
+        )
         expected_versions = {
-            "skill_version": "1.0.1",
+            "skill_version": skill_version,
             "input_schema_version": "1.0.0",
-            "output_schema_version": "1.0.0",
+            "output_schema_version": output_schema_version,
             "score_version": input_data.get("score_configuration", {}).get("version"),
         }
         for field, expected in expected_versions.items():
@@ -263,6 +307,69 @@ def validate_output(data: Any, input_data: Any) -> dict[str, Any]:
     for index, inference in enumerate(data.get("inferences", []) if isinstance(data.get("inferences"), list) else []):
         if isinstance(inference, dict):
             _validate_enum(inference.get("certainty"), CERTAINTIES, f"$.inferences[{index}].certainty", issues)
+
+    recommendations = data.get("recommendations")
+    if recommendations is not None:
+        if not isinstance(recommendations, list):
+            issues.append(_issue("invalid_type", "$.recommendations", "recommendations deve ser um array."))
+        else:
+            recommendation_ids: set[str] = set()
+            represented_actions: set[str] = set()
+            for index, item in enumerate(recommendations):
+                path = f"$.recommendations[{index}]"
+                if not _require_fields(item, REQUIRED_RECOMMENDATION_FIELDS, path, issues):
+                    continue
+                recommendation_id = item.get("recommendation_id")
+                if not isinstance(recommendation_id, str) or not re.fullmatch(r"REC-[A-Z0-9-]+", recommendation_id):
+                    issues.append(_issue("invalid_recommendation_id", f"{path}.recommendation_id", "ID REC-* inválido."))
+                elif recommendation_id in recommendation_ids:
+                    issues.append(_issue("duplicate_recommendation_id", f"{path}.recommendation_id", "ID REC-* duplicado."))
+                else:
+                    recommendation_ids.add(recommendation_id)
+                _validate_enum(item.get("action"), RECOMMENDATIONS, f"{path}.action", issues)
+                if isinstance(item.get("action"), str):
+                    represented_actions.add(item["action"])
+                if item.get("opportunity_id") not in opportunity_ids:
+                    issues.append(_issue("unknown_recommendation_opportunity", f"{path}.opportunity_id", "A oportunidade da REC-* não existe."))
+                evidence_ids = item.get("evidence_ids")
+                if not isinstance(evidence_ids, list) or not evidence_ids:
+                    issues.append(_issue("missing_recommendation_evidence", f"{path}.evidence_ids", "Toda REC-* deve citar OBS-* ou CALC-*."))
+                for field in ("risks", "success_metrics", "stop_conditions", "required_evidence"):
+                    if not isinstance(item.get(field), list):
+                        issues.append(_issue("invalid_type", f"{path}.{field}", "O campo deve ser um array."))
+                required_evidence = item.get("required_evidence")
+                if isinstance(required_evidence, list):
+                    for evidence_index, requirement in enumerate(required_evidence):
+                        requirement_path = f"{path}.required_evidence[{evidence_index}]"
+                        if not _require_fields(
+                            requirement,
+                            ("opportunity_id", "field", "reason"),
+                            requirement_path,
+                            issues,
+                        ):
+                            continue
+                        if requirement.get("opportunity_id") != item.get("opportunity_id"):
+                            issues.append(
+                                _issue(
+                                    "recommendation_evidence_opportunity_mismatch",
+                                    f"{requirement_path}.opportunity_id",
+                                    "O requisito OBS-* deve pertencer à oportunidade da REC-*.",
+                                )
+                            )
+                        for field in ("field", "reason"):
+                            if not isinstance(requirement.get(field), str) or not requirement.get(field):
+                                issues.append(
+                                    _issue(
+                                        "invalid_value",
+                                        f"{requirement_path}.{field}",
+                                        "O campo deve ser uma string não vazia.",
+                                    )
+                                )
+                for field in ("statement", "rationale", "minimum_action"):
+                    if not isinstance(item.get(field), str) or not item.get(field):
+                        issues.append(_issue("invalid_value", f"{path}.{field}", "O campo deve ser uma string não vazia."))
+            if recommendation not in represented_actions:
+                issues.append(_issue("recommendation_not_traced", "$.recommendation", "A recomendação principal deve corresponder a uma REC-*."))
     for index, conflict in enumerate(data.get("source_conflicts", []) if isinstance(data.get("source_conflicts"), list) else []):
         if isinstance(conflict, dict):
             _validate_enum(conflict.get("impact"), CONFLICT_IMPACTS, f"$.source_conflicts[{index}].impact", issues)

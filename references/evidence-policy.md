@@ -1,6 +1,6 @@
 # Política de Evidências
 
-Esta política é extraída da Skill `opportunity-analyst` 1.0.1. Ela preserva a separação obrigatória entre fatos, cálculos, interpretações e recomendações.
+Esta política é extraída da Skill `opportunity-analyst` 1.1.0. Ela preserva a separação obrigatória entre fatos, cálculos, interpretações e recomendações.
 
 ## OBS — fatos observados
 

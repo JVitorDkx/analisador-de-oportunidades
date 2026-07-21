@@ -20,6 +20,7 @@
     "favorable_evidence",
     "contrary_evidence",
     "inferences",
+    "recommendations",
     "source_conflicts",
     "missing_data",
     "calculation_warnings",
@@ -30,7 +31,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "analysis_id": {
       "type": "string",
@@ -84,13 +85,13 @@
       ],
       "properties": {
         "skill_version": {
-          "const": "1.0.1"
+          "const": "1.1.0"
         },
         "input_schema_version": {
           "const": "1.0.0"
         },
         "output_schema_version": {
-          "const": "1.0.0"
+          "const": "1.1.0"
         },
         "score_version": {
           "type": "string",
@@ -183,6 +184,12 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/inference"
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recommendation_item"
       }
     },
     "source_conflicts": {
@@ -312,6 +319,82 @@
         "reject_for_now",
         "insufficient_data"
       ]
+    },
+    "recommendation_item": {
+      "type": "object",
+      "required": [
+        "recommendation_id",
+        "opportunity_id",
+        "action",
+        "statement",
+        "rationale",
+        "evidence_ids",
+        "risks",
+        "minimum_action",
+        "success_metrics",
+        "stop_conditions",
+        "required_evidence"
+      ],
+      "properties": {
+        "recommendation_id": {
+          "type": "string",
+          "pattern": "^REC-[A-Z0-9-]+$"
+        },
+        "opportunity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action": {
+          "$ref": "#/$defs/recommendation"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ids": {
+          "$ref": "#/$defs/evidence_ids",
+          "minItems": 1
+        },
+        "risks": {
+          "type": "array"
+        },
+        "minimum_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "success_metrics": {
+          "type": "array"
+        },
+        "stop_conditions": {
+          "type": "array"
+        },
+        "required_evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "opportunity_id",
+              "field",
+              "reason"
+            ],
+            "properties": {
+              "opportunity_id": {
+                "type": "string"
+              },
+              "field": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     },
     "evidence_ids": {
       "type": "array",
