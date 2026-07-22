@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "offer-intelligence-input-schema.json",
+  "title": "Offer Intelligence Input",
+  "description": "Entrada normalizada e rastreável para OFFER-INTELLIGENCE-0.1.0.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "intelligence_version",
+    "analysis_id",
+    "opportunity_id",
+    "generated_at",
+    "calculation_timestamp",
+    "window",
+    "target_offer",
+    "ad_snapshots",
+    "market_sample"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "intelligence_version": { "const": "OFFER-INTELLIGENCE-0.1.0" },
+    "analysis_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "opportunity_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9-]+$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "calculation_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "window": { "$ref": "#/$defs/window" },
+    "target_offer": { "$ref": "#/$defs/target_offer" },
+    "ad_snapshots": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ad_snapshot" }
+    },
+    "market_sample": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/market_offer" }
+    }
+  },
+  "$defs": {
+    "window": {
+      "type": "object",
+      "required": ["start_at", "end_at"],
+      "properties": {
+        "start_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "target_offer": {
+      "type": "object",
+      "required": [
+        "platform",
+        "subniche",
+        "ticket_amount",
+        "currency",
+        "source_evidence_ids",
+        "quality"
+      ],
+      "properties": {
+        "platform": { "$ref": "#/$defs/platform" },
+        "subniche": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ticket_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": { "$ref": "#/$defs/currency" },
+        "source_evidence_ids": { "$ref": "#/$defs/evidence_ids" },
+        "quality": { "$ref": "#/$defs/quality" }
+      },
+      "additionalProperties": false
+    },
+    "ad_snapshot": {
+      "type": "object",
+      "required": [
+        "snapshot_id",
+        "observed_at",
+        "platform",
+        "active_ads_count",
+        "creative_ids",
+        "source_evidence_ids",
+        "quality"
+      ],
+      "properties": {
+        "snapshot_id": {
+          "type": "string",
+          "pattern": "^SNAP-[A-Z0-9-]+$"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "platform": { "$ref": "#/$defs/platform" },
+        "active_ads_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "creative_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "source_evidence_ids": { "$ref": "#/$defs/evidence_ids" },
+        "quality": { "$ref": "#/$defs/quality" }
+      },
+      "additionalProperties": false
+    },
+    "market_offer": {
+      "type": "object",
+      "required": [
+        "sample_id",
+        "observed_at",
+        "platform",
+        "advertiser_id",
+        "offer_id",
+        "subniche",
+        "ticket_amount",
+        "currency",
+        "offer_format",
+        "is_active",
+        "source_evidence_ids",
+        "quality"
+      ],
+      "properties": {
+        "sample_id": {
+          "type": "string",
+          "pattern": "^SAMPLE-[A-Z0-9-]+$"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "platform": { "$ref": "#/$defs/platform" },
+        "advertiser_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "offer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subniche": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ticket_amount": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+        "currency": {
+          "oneOf": [
+            { "$ref": "#/$defs/currency" },
+            { "type": "null" }
+          ]
+        },
+        "offer_format": {
+          "enum": ["quiz", "vsl", "direct", "other", "unknown"]
+        },
+        "is_active": { "type": "boolean" },
+        "source_evidence_ids": { "$ref": "#/$defs/evidence_ids" },
+        "quality": { "$ref": "#/$defs/quality" }
+      },
+      "additionalProperties": false
+    },
+    "platform": {
+      "enum": ["meta", "tiktok", "google", "other"]
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "quality": {
+      "enum": ["high", "medium", "low", "unknown"]
+    },
+    "evidence_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^OBS-[A-Z0-9-]+$"
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}

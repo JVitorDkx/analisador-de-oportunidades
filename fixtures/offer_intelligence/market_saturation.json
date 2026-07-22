@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "intelligence_version": "OFFER-INTELLIGENCE-0.1.0",
+  "analysis_id": "OI-SATURATION-001",
+  "opportunity_id": "OPP-OI-SATURATION-001",
+  "generated_at": "2026-07-20T12:00:00Z",
+  "calculation_timestamp": "2026-07-20T12:00:00Z",
+  "window": {
+    "start_at": "2026-07-01T00:00:00Z",
+    "end_at": "2026-07-20T00:00:00Z"
+  },
+  "target_offer": {
+    "platform": "meta",
+    "subniche": "educacao-financeira",
+    "ticket_amount": 79,
+    "currency": "BRL",
+    "source_evidence_ids": ["OBS-OI-SATURATION-TARGET"],
+    "quality": "medium"
+  },
+  "ad_snapshots": [
+    {
+      "snapshot_id": "SNAP-OI-SATURATION-BASELINE",
+      "observed_at": "2026-07-01T08:00:00Z",
+      "platform": "meta",
+      "active_ads_count": 40,
+      "creative_ids": ["CREATIVE-SAT-A", "CREATIVE-SAT-B", "CREATIVE-SAT-C", "CREATIVE-SAT-D"],
+      "source_evidence_ids": ["OBS-OI-SATURATION-ADS-BASELINE"],
+      "quality": "medium"
+    },
+    {
+      "snapshot_id": "SNAP-OI-SATURATION-CURRENT",
+      "observed_at": "2026-07-20T00:00:00Z",
+      "platform": "meta",
+      "active_ads_count": 44,
+      "creative_ids": ["CREATIVE-SAT-A", "CREATIVE-SAT-B", "CREATIVE-SAT-C", "CREATIVE-SAT-E"],
+      "source_evidence_ids": ["OBS-OI-SATURATION-ADS-CURRENT"],
+      "quality": "medium"
+    }
+  ],
+  "market_sample": [
+    {
+      "sample_id": "SAMPLE-OI-SATURATION-001",
+      "observed_at": "2026-07-19T10:00:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-SAT-A",
+      "offer_id": "OFFER-SAT-001",
+      "subniche": "educacao-financeira",
+      "ticket_amount": 29,
+      "currency": "BRL",
+      "offer_format": "quiz",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-SATURATION-MARKET-001"],
+      "quality": "medium"
+    },
+    {
+      "sample_id": "SAMPLE-OI-SATURATION-002",
+      "observed_at": "2026-07-19T10:05:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-SAT-B",
+      "offer_id": "OFFER-SAT-002",
+      "subniche": "educacao-financeira",
+      "ticket_amount": 49,
+      "currency": "BRL",
+      "offer_format": "quiz",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-SATURATION-MARKET-002"],
+      "quality": "medium"
+    },
+    {
+      "sample_id": "SAMPLE-OI-SATURATION-003",
+      "observed_at": "2026-07-19T10:10:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-SAT-C",
+      "offer_id": "OFFER-SAT-003",
+      "subniche": "educacao-financeira",
+      "ticket_amount": 59,
+      "currency": "BRL",
+      "offer_format": "quiz",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-SATURATION-MARKET-003"],
+      "quality": "medium"
+    },
+    {
+      "sample_id": "SAMPLE-OI-SATURATION-004",
+      "observed_at": "2026-07-19T10:15:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-SAT-D",
+      "offer_id": "OFFER-SAT-004",
+      "subniche": "educacao-financeira",
+      "ticket_amount": 69,
+      "currency": "BRL",
+      "offer_format": "vsl",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-SATURATION-MARKET-004"],
+      "quality": "medium"
+    },
+    {
+      "sample_id": "SAMPLE-OI-SATURATION-005",
+      "observed_at": "2026-07-19T10:20:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-SAT-E",
+      "offer_id": "OFFER-SAT-005",
+      "subniche": "educacao-financeira",
+      "ticket_amount": 79,
+      "currency": "BRL",
+      "offer_format": "direct",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-SATURATION-MARKET-005"],
+      "quality": "medium"
+    },
+    {
+      "sample_id": "SAMPLE-OI-SATURATION-006",
+      "observed_at": "2026-07-19T10:25:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-SAT-F",
+      "offer_id": "OFFER-SAT-006",
+      "subniche": "educacao-financeira",
+      "ticket_amount": 99,
+      "currency": "BRL",
+      "offer_format": "other",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-SATURATION-MARKET-006"],
+      "quality": "medium"
+    }
+  ]
+}

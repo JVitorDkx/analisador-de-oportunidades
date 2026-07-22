@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "offer-intelligence-config-schema.json",
+  "title": "Offer Intelligence Configuration",
+  "type": "object",
+  "required": [
+    "$schema",
+    "config_schema_version",
+    "intelligence_version",
+    "status",
+    "scale",
+    "snapshot_policy",
+    "market_sample_policy",
+    "quality_policy",
+    "indicator_definitions"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "schemas/offer-intelligence-config-schema.json"
+    },
+    "config_schema_version": {
+      "const": "1.0.0"
+    },
+    "intelligence_version": {
+      "const": "OFFER-INTELLIGENCE-0.1.0"
+    },
+    "status": {
+      "const": "authorized"
+    },
+    "scale": {
+      "type": "object",
+      "required": [
+        "display_precision",
+        "internal_numeric_type",
+        "rounding_policy",
+        "missing_value_policy",
+        "division_by_zero_policy"
+      ],
+      "properties": {
+        "display_precision": { "const": 2 },
+        "internal_numeric_type": { "const": "decimal" },
+        "rounding_policy": { "const": "display_only" },
+        "missing_value_policy": { "const": "omit_indicator_and_report_missing_input" },
+        "division_by_zero_policy": { "const": "omit_indicator_and_warn" }
+      },
+      "additionalProperties": false
+    },
+    "snapshot_policy": {
+      "type": "object",
+      "required": [
+        "window_boundaries",
+        "baseline_selection",
+        "current_selection",
+        "timestamp_tie_breaker",
+        "same_platform_required",
+        "minimum_snapshots_for_growth",
+        "minimum_snapshots_for_churn"
+      ],
+      "properties": {
+        "window_boundaries": { "const": "inclusive" },
+        "baseline_selection": { "const": "first_by_observed_at_then_snapshot_id" },
+        "current_selection": { "const": "last_by_observed_at_then_snapshot_id" },
+        "timestamp_tie_breaker": { "const": "snapshot_id_ascending" },
+        "same_platform_required": { "const": true },
+        "minimum_snapshots_for_growth": { "const": 2 },
+        "minimum_snapshots_for_churn": { "const": 2 }
+      },
+      "additionalProperties": false
+    },
+    "market_sample_policy": {
+      "type": "object",
+      "required": [
+        "same_platform_required",
+        "target_subniche_only",
+        "active_offers_only",
+        "minimum_offers_for_density",
+        "minimum_offers_for_price_position",
+        "minimum_recognized_offers_for_format_share",
+        "price_currency_policy",
+        "currency_conversion_policy",
+        "recognized_offer_formats",
+        "unrecognized_format_policy"
+      ],
+      "properties": {
+        "same_platform_required": { "const": true },
+        "target_subniche_only": { "const": true },
+        "active_offers_only": { "const": true },
+        "minimum_offers_for_density": { "const": 5 },
+        "minimum_offers_for_price_position": { "const": 5 },
+        "minimum_recognized_offers_for_format_share": { "const": 5 },
+        "price_currency_policy": { "const": "same_currency_only" },
+        "currency_conversion_policy": { "const": "forbidden" },
+        "recognized_offer_formats": {
+          "const": ["quiz", "vsl", "direct"]
+        },
+        "unrecognized_format_policy": {
+          "const": "exclude_from_format_share_denominator"
+        }
+      },
+      "additionalProperties": false
+    },
+    "quality_policy": {
+      "type": "object",
+      "required": ["allowed_values", "aggregation", "missing_source_quality"],
+      "properties": {
+        "allowed_values": {
+          "const": ["high", "medium", "low", "unknown"]
+        },
+        "aggregation": { "const": "lowest_source_quality" },
+        "missing_source_quality": { "const": "unknown" }
+      },
+      "additionalProperties": false
+    },
+    "indicator_definitions": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/indicator_definition" }
+    }
+  },
+  "$defs": {
+    "indicator_definition": {
+      "type": "object",
+      "required": ["field", "indicator_id_template", "calculation_method", "unit"],
+      "properties": {
+        "field": {
+          "enum": [
+            "active_ads_current",
+            "active_ads_growth_percent",
+            "creative_churn_percent",
+            "advertiser_density_per_100_offers",
+            "price_position_percentile",
+            "offer_format_share_quiz_percent",
+            "offer_format_share_vsl_percent",
+            "offer_format_share_direct_percent"
+          ]
+        },
+        "indicator_id_template": {
+          "type": "string",
+          "pattern": "^CALC-[A-Z0-9-]+-\\{opportunity_id\\}$"
+        },
+        "calculation_method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "enum": ["ads", "percent", "advertisers_per_100_offers", "percentile_0_100"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

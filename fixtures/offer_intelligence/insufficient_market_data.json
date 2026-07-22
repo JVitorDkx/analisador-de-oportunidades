@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "intelligence_version": "OFFER-INTELLIGENCE-0.1.0",
+  "analysis_id": "OI-INSUFFICIENT-001",
+  "opportunity_id": "OPP-OI-INSUFFICIENT-001",
+  "generated_at": "2026-07-20T12:00:00Z",
+  "calculation_timestamp": "2026-07-20T12:00:00Z",
+  "window": {
+    "start_at": "2026-07-01T00:00:00Z",
+    "end_at": "2026-07-20T00:00:00Z"
+  },
+  "target_offer": {
+    "platform": "tiktok",
+    "subniche": "rotina-de-estudos",
+    "ticket_amount": 37,
+    "currency": "BRL",
+    "source_evidence_ids": ["OBS-OI-INSUFFICIENT-TARGET"],
+    "quality": "low"
+  },
+  "ad_snapshots": [
+    {
+      "snapshot_id": "SNAP-OI-INSUFFICIENT-CURRENT",
+      "observed_at": "2026-07-20T00:00:00Z",
+      "platform": "tiktok",
+      "active_ads_count": 3,
+      "creative_ids": ["CREATIVE-INS-A"],
+      "source_evidence_ids": ["OBS-OI-INSUFFICIENT-ADS-CURRENT"],
+      "quality": "low"
+    }
+  ],
+  "market_sample": [
+    {
+      "sample_id": "SAMPLE-OI-INSUFFICIENT-001",
+      "observed_at": "2026-07-19T11:00:00Z",
+      "platform": "tiktok",
+      "advertiser_id": "ADV-INS-A",
+      "offer_id": "OFFER-INS-001",
+      "subniche": "rotina-de-estudos",
+      "ticket_amount": 27,
+      "currency": "BRL",
+      "offer_format": "unknown",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-INSUFFICIENT-MARKET-001"],
+      "quality": "low"
+    },
+    {
+      "sample_id": "SAMPLE-OI-INSUFFICIENT-002",
+      "observed_at": "2026-07-19T11:05:00Z",
+      "platform": "tiktok",
+      "advertiser_id": "ADV-INS-B",
+      "offer_id": "OFFER-INS-002",
+      "subniche": "rotina-de-estudos",
+      "ticket_amount": null,
+      "currency": null,
+      "offer_format": "other",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-INSUFFICIENT-MARKET-002"],
+      "quality": "unknown"
+    }
+  ]
+}

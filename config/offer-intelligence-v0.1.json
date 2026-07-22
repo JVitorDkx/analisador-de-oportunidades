@@ -1,0 +1,98 @@
+{
+  "$schema": "schemas/offer-intelligence-config-schema.json",
+  "config_schema_version": "1.0.0",
+  "intelligence_version": "OFFER-INTELLIGENCE-0.1.0",
+  "status": "authorized",
+  "scale": {
+    "display_precision": 2,
+    "internal_numeric_type": "decimal",
+    "rounding_policy": "display_only",
+    "missing_value_policy": "omit_indicator_and_report_missing_input",
+    "division_by_zero_policy": "omit_indicator_and_warn"
+  },
+  "snapshot_policy": {
+    "window_boundaries": "inclusive",
+    "baseline_selection": "first_by_observed_at_then_snapshot_id",
+    "current_selection": "last_by_observed_at_then_snapshot_id",
+    "timestamp_tie_breaker": "snapshot_id_ascending",
+    "same_platform_required": true,
+    "minimum_snapshots_for_growth": 2,
+    "minimum_snapshots_for_churn": 2
+  },
+  "market_sample_policy": {
+    "same_platform_required": true,
+    "target_subniche_only": true,
+    "active_offers_only": true,
+    "minimum_offers_for_density": 5,
+    "minimum_offers_for_price_position": 5,
+    "minimum_recognized_offers_for_format_share": 5,
+    "price_currency_policy": "same_currency_only",
+    "currency_conversion_policy": "forbidden",
+    "recognized_offer_formats": [
+      "quiz",
+      "vsl",
+      "direct"
+    ],
+    "unrecognized_format_policy": "exclude_from_format_share_denominator"
+  },
+  "quality_policy": {
+    "allowed_values": [
+      "high",
+      "medium",
+      "low",
+      "unknown"
+    ],
+    "aggregation": "lowest_source_quality",
+    "missing_source_quality": "unknown"
+  },
+  "indicator_definitions": [
+    {
+      "field": "active_ads_current",
+      "indicator_id_template": "CALC-ACTIVE-ADS-CURRENT-{opportunity_id}",
+      "calculation_method": "latest_active_ads_count_in_inclusive_window_v1",
+      "unit": "ads"
+    },
+    {
+      "field": "active_ads_growth_percent",
+      "indicator_id_template": "CALC-ACTIVE-ADS-GROWTH-{opportunity_id}",
+      "calculation_method": "latest_minus_baseline_divided_by_baseline_times_100_v1",
+      "unit": "percent"
+    },
+    {
+      "field": "creative_churn_percent",
+      "indicator_id_template": "CALC-CREATIVE-CHURN-{opportunity_id}",
+      "calculation_method": "baseline_creatives_not_retained_divided_by_baseline_creatives_times_100_v1",
+      "unit": "percent"
+    },
+    {
+      "field": "advertiser_density_per_100_offers",
+      "indicator_id_template": "CALC-ADVERTISER-DENSITY-{opportunity_id}",
+      "calculation_method": "distinct_advertisers_divided_by_valid_active_offers_times_100_v1",
+      "unit": "advertisers_per_100_offers"
+    },
+    {
+      "field": "price_position_percentile",
+      "indicator_id_template": "CALC-PRICE-POSITION-{opportunity_id}",
+      "calculation_method": "midrank_percentile_within_same_currency_market_sample_v1",
+      "unit": "percentile_0_100"
+    },
+    {
+      "field": "offer_format_share_quiz_percent",
+      "indicator_id_template": "CALC-OFFER-FORMAT-SHARE-QUIZ-{opportunity_id}",
+      "calculation_method": "quiz_offers_divided_by_recognized_format_offers_times_100_v1",
+      "unit": "percent"
+    },
+    {
+      "field": "offer_format_share_vsl_percent",
+      "indicator_id_template": "CALC-OFFER-FORMAT-SHARE-VSL-{opportunity_id}",
+      "calculation_method": "vsl_offers_divided_by_recognized_format_offers_times_100_v1",
+      "unit": "percent"
+    },
+    {
+      "field": "offer_format_share_direct_percent",
+      "indicator_id_template": "CALC-OFFER-FORMAT-SHARE-DIRECT-{opportunity_id}",
+      "calculation_method": "direct_offers_divided_by_recognized_format_offers_times_100_v1",
+      "unit": "percent"
+    }
+  ]
+}

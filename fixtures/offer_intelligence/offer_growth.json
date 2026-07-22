@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "intelligence_version": "OFFER-INTELLIGENCE-0.1.0",
+  "analysis_id": "OI-GROWTH-001",
+  "opportunity_id": "OPP-OI-GROWTH-001",
+  "generated_at": "2026-07-20T12:00:00Z",
+  "calculation_timestamp": "2026-07-20T12:00:00Z",
+  "window": {
+    "start_at": "2026-07-01T00:00:00Z",
+    "end_at": "2026-07-20T00:00:00Z"
+  },
+  "target_offer": {
+    "platform": "meta",
+    "subniche": "organizacao-pessoal",
+    "ticket_amount": 49.9,
+    "currency": "BRL",
+    "source_evidence_ids": ["OBS-OI-GROWTH-TARGET"],
+    "quality": "high"
+  },
+  "ad_snapshots": [
+    {
+      "snapshot_id": "SNAP-OI-GROWTH-BASELINE",
+      "observed_at": "2026-07-01T10:00:00Z",
+      "platform": "meta",
+      "active_ads_count": 10,
+      "creative_ids": ["CREATIVE-A", "CREATIVE-B", "CREATIVE-C", "CREATIVE-D"],
+      "source_evidence_ids": ["OBS-OI-GROWTH-ADS-BASELINE"],
+      "quality": "high"
+    },
+    {
+      "snapshot_id": "SNAP-OI-GROWTH-CURRENT",
+      "observed_at": "2026-07-20T00:00:00Z",
+      "platform": "meta",
+      "active_ads_count": 15,
+      "creative_ids": ["CREATIVE-C", "CREATIVE-D", "CREATIVE-E", "CREATIVE-F", "CREATIVE-G"],
+      "source_evidence_ids": ["OBS-OI-GROWTH-ADS-CURRENT"],
+      "quality": "high"
+    }
+  ],
+  "market_sample": [
+    {
+      "sample_id": "SAMPLE-OI-GROWTH-001",
+      "observed_at": "2026-07-19T09:00:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-GROWTH-A",
+      "offer_id": "OFFER-GROWTH-001",
+      "subniche": "organizacao-pessoal",
+      "ticket_amount": 29.9,
+      "currency": "BRL",
+      "offer_format": "quiz",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-GROWTH-MARKET-001"],
+      "quality": "high"
+    },
+    {
+      "sample_id": "SAMPLE-OI-GROWTH-002",
+      "observed_at": "2026-07-19T09:05:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-GROWTH-A",
+      "offer_id": "OFFER-GROWTH-002",
+      "subniche": "organizacao-pessoal",
+      "ticket_amount": 39.9,
+      "currency": "BRL",
+      "offer_format": "quiz",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-GROWTH-MARKET-002"],
+      "quality": "high"
+    },
+    {
+      "sample_id": "SAMPLE-OI-GROWTH-003",
+      "observed_at": "2026-07-19T09:10:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-GROWTH-B",
+      "offer_id": "OFFER-GROWTH-003",
+      "subniche": "organizacao-pessoal",
+      "ticket_amount": 49.9,
+      "currency": "BRL",
+      "offer_format": "vsl",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-GROWTH-MARKET-003"],
+      "quality": "medium"
+    },
+    {
+      "sample_id": "SAMPLE-OI-GROWTH-004",
+      "observed_at": "2026-07-19T09:15:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-GROWTH-C",
+      "offer_id": "OFFER-GROWTH-004",
+      "subniche": "organizacao-pessoal",
+      "ticket_amount": 59.9,
+      "currency": "BRL",
+      "offer_format": "vsl",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-GROWTH-MARKET-004"],
+      "quality": "high"
+    },
+    {
+      "sample_id": "SAMPLE-OI-GROWTH-005",
+      "observed_at": "2026-07-19T09:20:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-GROWTH-C",
+      "offer_id": "OFFER-GROWTH-005",
+      "subniche": "organizacao-pessoal",
+      "ticket_amount": 79.9,
+      "currency": "BRL",
+      "offer_format": "direct",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-GROWTH-MARKET-005"],
+      "quality": "high"
+    },
+    {
+      "sample_id": "SAMPLE-OI-GROWTH-006",
+      "observed_at": "2026-07-19T09:25:00Z",
+      "platform": "meta",
+      "advertiser_id": "ADV-GROWTH-D",
+      "offer_id": "OFFER-GROWTH-006",
+      "subniche": "organizacao-pessoal",
+      "ticket_amount": 97,
+      "currency": "BRL",
+      "offer_format": "direct",
+      "is_active": true,
+      "source_evidence_ids": ["OBS-OI-GROWTH-MARKET-006"],
+      "quality": "high"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "offer-intelligence-output-schema.json",
+  "title": "Offer Intelligence Result",
+  "description": "Envelope independente de indicadores de mercado que não altera SCORE-0.1.0.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "intelligence_version",
+    "analysis_id",
+    "opportunity_id",
+    "calculated_at",
+    "status",
+    "indicators",
+    "missing_inputs",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "intelligence_version": { "const": "OFFER-INTELLIGENCE-0.1.0" },
+    "analysis_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "opportunity_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9-]+$"
+    },
+    "calculated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "enum": ["complete", "partial", "invalid"]
+    },
+    "indicators": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "allOf": [
+          { "$ref": "calculated-indicator-schema.json" },
+          {
+            "type": "object",
+            "properties": {
+              "indicator_id": {
+                "pattern": "^CALC-(ACTIVE-ADS-(CURRENT|GROWTH)|CREATIVE-CHURN|ADVERTISER-DENSITY|PRICE-POSITION|OFFER-FORMAT-SHARE-(QUIZ|VSL|DIRECT))-[A-Z0-9-]+$"
+              },
+              "field": {
+                "enum": [
+                  "active_ads_current",
+                  "active_ads_growth_percent",
+                  "creative_churn_percent",
+                  "advertiser_density_per_100_offers",
+                  "price_position_percentile",
+                  "offer_format_share_quiz_percent",
+                  "offer_format_share_vsl_percent",
+                  "offer_format_share_direct_percent"
+                ]
+              },
+              "value": { "type": "number" },
+              "value_type": { "enum": ["integer", "number"] },
+              "calculation_version": { "const": "OFFER-INTELLIGENCE-0.1.0" },
+              "source_evidence_ids": { "minItems": 1 }
+            }
+          }
+        ]
+      }
+    },
+    "missing_inputs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/missing_input" }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/warning" }
+    }
+  },
+  "$defs": {
+    "missing_input": {
+      "type": "object",
+      "required": ["indicator_field", "required_inputs", "reason"],
+      "properties": {
+        "indicator_field": {
+          "enum": [
+            "active_ads_current",
+            "active_ads_growth_percent",
+            "creative_churn_percent",
+            "advertiser_density_per_100_offers",
+            "price_position_percentile",
+            "offer_format_share_quiz_percent",
+            "offer_format_share_vsl_percent",
+            "offer_format_share_direct_percent"
+          ]
+        },
+        "required_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "warning": {
+      "type": "object",
+      "required": ["code", "message", "evidence_ids"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^OBS-[A-Z0-9-]+$"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
