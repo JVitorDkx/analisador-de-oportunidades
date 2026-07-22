@@ -2,14 +2,119 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Any
+import json
+import logging
+import re
+from collections.abc import Awaitable, Callable
+from pathlib import Path
+from typing import Annotated
+from uuid import uuid4
 
-from fastapi import Body, FastAPI, HTTPException, status
+from fastapi import Body, FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from starlette.responses import Response
 
-from src.api.service import AnalysisContractError, InvalidAnalysisInput, analyze_payload
+from src.api.models import (
+    AnalysisResponse,
+    AnalyzeRequest,
+    HealthResponse,
+    InputValidationResponse,
+    ProblemDetail,
+    ProblemError,
+)
+from src.api.service import (
+    AnalysisContractError,
+    InvalidAnalysisInput,
+    ServiceUnavailableError,
+    analyze_payload,
+    health_status,
+    validate_payload,
+)
 
 
 API_VERSION = "1.0.0"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+REQUEST_ID_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
+PROBLEM_TYPE_PREFIX = "urn:problem:opportunity-analyzer"
+logger = logging.getLogger(__name__)
+
+
+def _fixture_examples() -> dict[str, dict[str, object]]:
+    cases = (
+        ("viable", "Oportunidade viável", "opportunity_viable.json"),
+        ("kill_switch", "Oportunidade reprovada por kill switch", "opportunity_kill_switch.json"),
+        ("insufficient_data", "Oportunidade com dados insuficientes", "opportunity_insufficient_data.json"),
+    )
+    return {
+        key: {
+            "summary": summary,
+            "value": json.loads((PROJECT_ROOT / "fixtures" / "cases" / filename).read_text(encoding="utf-8")),
+        }
+        for key, summary, filename in cases
+    }
+
+
+FIXTURE_EXAMPLES = _fixture_examples()
+
+
+def _request_id_header_spec() -> dict[str, object]:
+    return {
+        "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+        "schema": {"type": "string", "minLength": 1, "maxLength": 128},
+    }
+
+
+def _problem_response_spec(description: str) -> dict[str, object]:
+    return {
+        "description": description,
+        "headers": {"X-Request-ID": _request_id_header_spec()},
+        "content": {
+            "application/problem+json": {
+                "schema": ProblemDetail.model_json_schema(),
+            }
+        },
+    }
+
+
+def _request_id(request: Request) -> str:
+    value = getattr(request.state, "request_id", None)
+    return value if isinstance(value, str) else str(uuid4())
+
+
+def _problem_response(
+    request: Request,
+    *,
+    status_code: int,
+    code: str,
+    title: str,
+    detail: str,
+    errors: list[ProblemError] | None = None,
+) -> JSONResponse:
+    request_id = _request_id(request)
+    problem = ProblemDetail(
+        type=f"{PROBLEM_TYPE_PREFIX}:{code}",
+        title=title,
+        status=status_code,
+        detail=detail,
+        instance=f"urn:request:{request_id}",
+        code=code,
+        request_id=request_id,
+        errors=errors or [],
+    )
+    return JSONResponse(
+        status_code=status_code,
+        content=problem.model_dump(mode="json"),
+        media_type="application/problem+json",
+    )
+
+
+def _validation_pointer(location: tuple[str | int, ...]) -> str:
+    parts = location[1:] if location and location[0] == "body" else location
+    pointer = "$"
+    for part in parts:
+        pointer += f"[{part}]" if isinstance(part, int) else f".{part}"
+    return pointer
 
 
 def create_app() -> FastAPI:
@@ -19,41 +124,167 @@ def create_app() -> FastAPI:
         title="Analisador de Oportunidades API",
         version=API_VERSION,
         description="API REST para o pipeline determinístico e o relatório analítico v1.1.0.",
+        openapi_version="3.1.0",
     )
+
+    @application.middleware("http")
+    async def add_request_id(
+        request: Request,
+        call_next: Callable[[Request], Awaitable[Response]],
+    ) -> Response:
+        incoming = request.headers.get("X-Request-ID", "")
+        request.state.request_id = incoming if REQUEST_ID_PATTERN.fullmatch(incoming) else str(uuid4())
+        response = await call_next(request)
+        response.headers["X-Request-ID"] = request.state.request_id
+        return response
+
+    @application.exception_handler(RequestValidationError)
+    async def request_validation_error(
+        request: Request,
+        exc: RequestValidationError,
+    ) -> JSONResponse:
+        errors = [
+            ProblemError(
+                pointer=_validation_pointer(tuple(error.get("loc", ()))),
+                code=str(error.get("type", "validation_error")),
+                detail=str(error.get("msg", "Invalid request value.")),
+            )
+            for error in exc.errors()
+        ]
+        return _problem_response(
+            request,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            code="request_validation_error",
+            title="Request validation failed",
+            detail="The request body does not satisfy the typed API contract.",
+            errors=errors,
+        )
+
+    @application.exception_handler(InvalidAnalysisInput)
+    async def invalid_analysis_input(
+        request: Request,
+        exc: InvalidAnalysisInput,
+    ) -> JSONResponse:
+        errors = [
+            ProblemError(pointer=issue.path, code=issue.code, detail=issue.message)
+            for issue in exc.validation.issues
+        ]
+        return _problem_response(
+            request,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            code="invalid_analysis_input",
+            title="Analysis input is invalid",
+            detail=str(exc),
+            errors=errors,
+        )
+
+    @application.exception_handler(AnalysisContractError)
+    async def analysis_contract_error(
+        request: Request,
+        exc: AnalysisContractError,
+    ) -> JSONResponse:
+        logger.error("Analysis contract error [%s]: %s", _request_id(request), exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            code="analysis_contract_error",
+            title="Analysis contract failure",
+            detail="The service could not produce a response that satisfies its authoritative contract.",
+        )
+
+    @application.exception_handler(ServiceUnavailableError)
+    async def service_unavailable(
+        request: Request,
+        exc: ServiceUnavailableError,
+    ) -> JSONResponse:
+        logger.error("Service unavailable [%s]: %s", _request_id(request), exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            code="service_unavailable",
+            title="Service unavailable",
+            detail="A required local service dependency is unavailable.",
+        )
+
+    @application.exception_handler(Exception)
+    async def unexpected_error(
+        request: Request,
+        exc: Exception,
+    ) -> JSONResponse:
+        logger.exception("Unexpected API error [%s]", _request_id(request), exc_info=exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            code="internal_server_error",
+            title="Internal server error",
+            detail="The service encountered an unexpected error while processing the request.",
+        )
+
+    @application.get(
+        "/api/v1/health",
+        response_model=HealthResponse,
+        operation_id="getHealth",
+        summary="Verificar saúde da API",
+        responses={
+            200: {
+                "description": "API e configuração determinística disponíveis.",
+                "headers": {"X-Request-ID": _request_id_header_spec()},
+            },
+            503: _problem_response_spec("A configuração autorizada do core está indisponível."),
+        },
+    )
+    def health() -> HealthResponse:
+        return health_status()
+
+    @application.post(
+        "/api/v1/validate-input",
+        response_model=InputValidationResponse,
+        operation_id="validateOpportunityInput",
+        summary="Validar entrada sem executar o score",
+        responses={
+            200: {
+                "description": "Resultado tipado da validação de entrada.",
+                "headers": {"X-Request-ID": _request_id_header_spec()},
+            },
+            422: _problem_response_spec("O corpo não satisfaz o contrato HTTP tipado."),
+            500: _problem_response_spec("O validador interno violou seu contrato de resposta."),
+        },
+    )
+    def validate_input_endpoint(
+        payload: AnnotatedAnalyzeRequest,
+    ) -> InputValidationResponse:
+        return validate_payload(payload)
 
     @application.post(
         "/api/v1/analyze",
-        response_model=dict[str, Any],
+        response_model=AnalysisResponse,
+        operation_id="analyzeOpportunity",
         status_code=status.HTTP_200_OK,
         summary="Executar análise completa",
+        responses={
+            200: {
+                "description": "Relatório analítico v1.1.0 validado.",
+                "headers": {"X-Request-ID": _request_id_header_spec()},
+            },
+            422: _problem_response_spec("A entrada é estrutural ou semanticamente inválida."),
+            500: _problem_response_spec("A análise gerada violou um contrato autoritativo."),
+        },
     )
     def analyze(
-        payload: Annotated[
-            dict[str, Any],
-            Body(description="Entrada compatível com references/input-schema.json."),
-        ],
-    ) -> dict[str, Any]:
-        try:
-            return analyze_payload(payload)
-        except InvalidAnalysisInput as exc:
-            raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                detail={
-                    "code": "invalid_analysis_input",
-                    "message": str(exc),
-                    "validation": exc.validation,
-                },
-            ) from exc
-        except AnalysisContractError as exc:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail={
-                    "code": "analysis_contract_error",
-                    "message": str(exc),
-                },
-            ) from exc
+        payload: AnnotatedAnalyzeRequest,
+    ) -> AnalysisResponse:
+        return analyze_payload(payload)
 
     return application
+
+
+AnnotatedAnalyzeRequest = Annotated[
+    AnalyzeRequest,
+    Body(
+        description="Entrada compatível com references/input-schema.json.",
+        openapi_examples=FIXTURE_EXAMPLES,
+    ),
+]
 
 
 app = create_app()

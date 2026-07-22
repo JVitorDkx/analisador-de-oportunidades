@@ -88,10 +88,15 @@ class AnalyzeEndpointTests(unittest.TestCase):
         response = self.client.post("/api/v1/analyze", json=invalid_payload)
 
         self.assertEqual(response.status_code, 422)
-        detail = response.json()["detail"]
-        self.assertEqual(detail["code"], "invalid_analysis_input")
-        self.assertFalse(detail["validation"]["valid"])
-        self.assertTrue(detail["validation"]["issues"])
+        self.assertEqual(response.headers["content-type"], "application/problem+json")
+        problem = response.json()
+        self.assertEqual(problem["code"], "request_validation_error")
+        self.assertEqual(problem["status"], 422)
+        self.assertIsInstance(problem["detail"], str)
+        self.assertTrue(problem["detail"])
+        self.assertEqual(problem["request_id"], response.headers["X-Request-ID"])
+        self.assertEqual(problem["instance"], f"urn:request:{problem['request_id']}")
+        self.assertEqual(problem["errors"][0]["pointer"], "$.analysis_id")
 
     def test_analyze_rejects_non_object_json_body(self) -> None:
         response = self.client.post("/api/v1/analyze", json=[])

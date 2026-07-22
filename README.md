@@ -249,8 +249,20 @@ regras do núcleo determinístico. Inicie o servidor de desenvolvimento:
 python -m uvicorn src.api.app:app --reload
 ```
 
-A documentação interativa ficará disponível em `http://127.0.0.1:8000/docs`.
-O endpoint inicial recebe diretamente o payload JSON de entrada:
+A documentação interativa ficará disponível em `http://127.0.0.1:8000/docs` e
+o contrato OpenAPI 3.1 em `http://127.0.0.1:8000/openapi.json`. O contrato usa
+modelos estritos, identificadores de operação estáveis e inclui os três
+fixtures oficiais como exemplos de requisição.
+
+Endpoints disponíveis:
+
+| Método | Caminho | Finalidade |
+| --- | --- | --- |
+| `GET` | `/api/v1/health` | Verifica a API e a configuração autorizada do score. |
+| `POST` | `/api/v1/validate-input` | Valida a entrada sem executar o score ou gerar relatório. |
+| `POST` | `/api/v1/analyze` | Executa o pipeline completo e retorna o relatório v1.1.0. |
+
+O endpoint de análise recebe diretamente o payload JSON de entrada:
 
 ```text
 POST /api/v1/analyze
@@ -258,9 +270,18 @@ Content-Type: application/json
 ```
 
 Uma entrada válida retorna HTTP `200` com o relatório completo no schema
-`1.1.0`. Uma entrada que viola o contrato estrutural retorna HTTP `422` com os
-problemas de validação. O endpoint preserva `official_score`, indicadores
-`CALC-*`, kill switches e a rastreabilidade `OBS-*` → `CALC-*` → `REC-*`.
+`1.1.0`. Uma entrada que viola o contrato estrutural ou semântico retorna HTTP
+`422`. Falhas contratuais internas retornam HTTP `500`, e indisponibilidade de
+uma dependência verificada pelo endpoint de saúde retorna HTTP `503`.
+
+Os erros seguem o formato RFC 9457 e usam o media type
+`application/problem+json`, com `type`, `title`, `status`, `detail` textual,
+`instance`, código estável e uma lista estruturada de campos inválidos quando
+aplicável. Toda resposta devolve o header `X-Request-ID`: a API preserva um
+identificador válido enviado pelo cliente ou gera um novo identificador.
+
+O endpoint preserva `official_score`, indicadores `CALC-*`, kill switches e a
+rastreabilidade `OBS-*` → `CALC-*` → `REC-*`.
 
 ## Requisitos do `scoring_context`
 

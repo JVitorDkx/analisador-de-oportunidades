@@ -1,0 +1,3635 @@
+{
+  "components": {
+    "schemas": {
+      "AnalysisResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "analysis_id": {
+            "minLength": 1,
+            "title": "Analysis Id",
+            "type": "string"
+          },
+          "analysis_mode": {
+            "enum": [
+              "pre_test",
+              "campaign_diagnosis",
+              "reassessment"
+            ],
+            "title": "Analysis Mode",
+            "type": "string"
+          },
+          "calculation_warnings": {
+            "items": {
+              "$ref": "#/components/schemas/CalculationWarningResponse"
+            },
+            "title": "Calculation Warnings",
+            "type": "array"
+          },
+          "conditions_that_would_change_recommendation": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Conditions That Would Change Recommendation",
+            "type": "array"
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "moderate",
+              "low",
+              "inconclusive"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "context_assessment": {
+            "$ref": "#/components/schemas/ContextAssessmentResponse"
+          },
+          "contrary_evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceStatementResponse"
+            },
+            "title": "Contrary Evidence",
+            "type": "array"
+          },
+          "disclaimer": {
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "executive_summary": {
+            "title": "Executive Summary",
+            "type": "string"
+          },
+          "favorable_evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceStatementResponse"
+            },
+            "title": "Favorable Evidence",
+            "type": "array"
+          },
+          "human_review": {
+            "$ref": "#/components/schemas/HumanReviewResponse"
+          },
+          "inferences": {
+            "items": {
+              "$ref": "#/components/schemas/InferenceResponse"
+            },
+            "title": "Inferences",
+            "type": "array"
+          },
+          "input_status": {
+            "enum": [
+              "sufficient",
+              "partial",
+              "insufficient",
+              "invalid"
+            ],
+            "title": "Input Status",
+            "type": "string"
+          },
+          "missing_data": {
+            "items": {
+              "$ref": "#/components/schemas/MissingDataResponse"
+            },
+            "title": "Missing Data",
+            "type": "array"
+          },
+          "next_experiment": {
+            "$ref": "#/components/schemas/NextExperimentResponse"
+          },
+          "processed_at": {
+            "format": "date-time",
+            "title": "Processed At",
+            "type": "string"
+          },
+          "ranking": {
+            "items": {
+              "$ref": "#/components/schemas/RankingItemResponse"
+            },
+            "title": "Ranking",
+            "type": "array"
+          },
+          "recommendation": {
+            "enum": [
+              "prioritize_test",
+              "test_with_conditions",
+              "collect_more_data",
+              "continue_collecting",
+              "consider_limited_scale",
+              "iterate_creative",
+              "iterate_offer",
+              "inspect_landing_page",
+              "inspect_checkout",
+              "pause_for_review",
+              "run_controlled_test",
+              "deprioritize",
+              "reject_for_now",
+              "insufficient_data"
+            ],
+            "title": "Recommendation",
+            "type": "string"
+          },
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendationResponse"
+            },
+            "title": "Recommendations",
+            "type": "array"
+          },
+          "recommended_opportunity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommended Opportunity Id"
+          },
+          "schema_version": {
+            "const": "1.1.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "security_status": {
+            "$ref": "#/components/schemas/SecurityStatusResponse"
+          },
+          "source_conflicts": {
+            "items": {
+              "$ref": "#/components/schemas/SourceConflictResponse"
+            },
+            "title": "Source Conflicts",
+            "type": "array"
+          },
+          "versions": {
+            "$ref": "#/components/schemas/VersionsResponse"
+          }
+        },
+        "required": [
+          "schema_version",
+          "analysis_id",
+          "analysis_mode",
+          "processed_at",
+          "input_status",
+          "security_status",
+          "versions",
+          "recommended_opportunity_id",
+          "recommendation",
+          "confidence",
+          "executive_summary",
+          "context_assessment",
+          "ranking",
+          "favorable_evidence",
+          "contrary_evidence",
+          "inferences",
+          "recommendations",
+          "source_conflicts",
+          "missing_data",
+          "calculation_warnings",
+          "next_experiment",
+          "conditions_that_would_change_recommendation",
+          "human_review",
+          "disclaimer"
+        ],
+        "title": "AnalysisResponse",
+        "type": "object"
+      },
+      "AnalyzeRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "analysis_id": {
+            "minLength": 1,
+            "title": "Analysis Id",
+            "type": "string"
+          },
+          "analysis_mode": {
+            "enum": [
+              "pre_test",
+              "campaign_diagnosis",
+              "reassessment"
+            ],
+            "title": "Analysis Mode",
+            "type": "string"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "opportunities": {
+            "items": {
+              "$ref": "#/components/schemas/OpportunityRequest"
+            },
+            "minItems": 1,
+            "title": "Opportunities",
+            "type": "array"
+          },
+          "requested_output_language": {
+            "minLength": 1,
+            "title": "Requested Output Language",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "score_configuration": {
+            "$ref": "#/components/schemas/ScoreConfigurationRequest"
+          },
+          "user_context": {
+            "$ref": "#/components/schemas/UserContextRequest"
+          }
+        },
+        "required": [
+          "schema_version",
+          "analysis_id",
+          "generated_at",
+          "analysis_mode",
+          "user_context",
+          "opportunities",
+          "score_configuration",
+          "requested_output_language"
+        ],
+        "title": "AnalyzeRequest",
+        "type": "object"
+      },
+      "CalculatedIndicatorRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "calculated_at": {
+            "format": "date-time",
+            "title": "Calculated At",
+            "type": "string"
+          },
+          "calculation_method": {
+            "minLength": 1,
+            "title": "Calculation Method",
+            "type": "string"
+          },
+          "calculation_version": {
+            "minLength": 1,
+            "title": "Calculation Version",
+            "type": "string"
+          },
+          "field": {
+            "minLength": 1,
+            "title": "Field",
+            "type": "string"
+          },
+          "indicator_id": {
+            "pattern": "^CALC-[A-Z0-9-]+$",
+            "title": "Indicator Id",
+            "type": "string"
+          },
+          "opportunity_id": {
+            "minLength": 1,
+            "title": "Opportunity Id",
+            "type": "string"
+          },
+          "quality": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "unknown"
+            ],
+            "title": "Quality",
+            "type": "string"
+          },
+          "source_evidence_ids": {
+            "items": {
+              "pattern": "^OBS-[A-Z0-9-]+$",
+              "type": "string"
+            },
+            "title": "Source Evidence Ids",
+            "type": "array"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "value_type": {
+            "enum": [
+              "integer",
+              "number",
+              "string",
+              "boolean",
+              "null"
+            ],
+            "title": "Value Type",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "indicator_id",
+          "opportunity_id",
+          "field",
+          "value",
+          "value_type",
+          "unit",
+          "calculation_method",
+          "calculation_version",
+          "calculated_at",
+          "source_evidence_ids",
+          "quality",
+          "warnings"
+        ],
+        "title": "CalculatedIndicatorRequest",
+        "type": "object"
+      },
+      "CalculationWarningResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "const": "calculation_review_required",
+            "title": "Action",
+            "type": "string"
+          },
+          "calculation_id": {
+            "pattern": "^CALC-[A-Z0-9-]+$",
+            "title": "Calculation Id",
+            "type": "string"
+          },
+          "warning": {
+            "title": "Warning",
+            "type": "string"
+          }
+        },
+        "required": [
+          "calculation_id",
+          "warning",
+          "action"
+        ],
+        "title": "CalculationWarningResponse",
+        "type": "object"
+      },
+      "ContextAssessmentResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "budget_compatibility": {
+            "enum": [
+              "compatible",
+              "conditional",
+              "incompatible",
+              "unknown"
+            ],
+            "title": "Budget Compatibility",
+            "type": "string"
+          },
+          "channel_compatibility": {
+            "enum": [
+              "strong",
+              "moderate",
+              "weak",
+              "unknown"
+            ],
+            "title": "Channel Compatibility",
+            "type": "string"
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "fit": {
+            "enum": [
+              "strong_fit",
+              "acceptable_fit",
+              "conditional_fit",
+              "poor_fit",
+              "unknown"
+            ],
+            "title": "Fit",
+            "type": "string"
+          },
+          "operational_constraints": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Operational Constraints",
+            "type": "array"
+          }
+        },
+        "required": [
+          "fit",
+          "budget_compatibility",
+          "channel_compatibility",
+          "operational_constraints",
+          "explanation"
+        ],
+        "title": "ContextAssessmentResponse",
+        "type": "object"
+      },
+      "DataQualityRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "coverage_percent": {
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Coverage Percent",
+            "type": "number"
+          },
+          "freshness": {
+            "enum": [
+              "current",
+              "aging",
+              "stale",
+              "unknown"
+            ],
+            "title": "Freshness",
+            "type": "string"
+          },
+          "source_agreement": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "unknown"
+            ],
+            "title": "Source Agreement",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "complete",
+              "partial",
+              "weak",
+              "invalid"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "coverage_percent",
+          "freshness",
+          "source_agreement"
+        ],
+        "title": "DataQualityRequest",
+        "type": "object"
+      },
+      "EvidenceStatementResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_ids": {
+            "items": {
+              "pattern": "^(OBS|CALC)-[A-Z0-9-]+$",
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "statement": {
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "statement",
+          "evidence_ids"
+        ],
+        "title": "EvidenceStatementResponse",
+        "type": "object"
+      },
+      "HealthChecksResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "core": {
+            "const": "ok",
+            "title": "Core",
+            "type": "string"
+          },
+          "score_configuration": {
+            "const": "ok",
+            "title": "Score Configuration",
+            "type": "string"
+          }
+        },
+        "required": [
+          "core",
+          "score_configuration"
+        ],
+        "title": "HealthChecksResponse",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "api_version": {
+            "const": "1.0.0",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "checks": {
+            "$ref": "#/components/schemas/HealthChecksResponse"
+          },
+          "score_version": {
+            "const": "SCORE-0.1.0",
+            "title": "Score Version",
+            "type": "string"
+          },
+          "service": {
+            "const": "opportunity-analyzer-api",
+            "title": "Service",
+            "type": "string"
+          },
+          "status": {
+            "const": "ok",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "service",
+          "api_version",
+          "score_version",
+          "checks"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "HumanReviewResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "required": {
+            "title": "Required",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "required",
+          "reasons"
+        ],
+        "title": "HumanReviewResponse",
+        "type": "object"
+      },
+      "InferenceResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "certainty": {
+            "enum": [
+              "strong",
+              "moderate",
+              "weak"
+            ],
+            "title": "Certainty",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "pattern": "^(OBS|CALC)-[A-Z0-9-]+$",
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "inference_id": {
+            "pattern": "^INF-[A-Z0-9-]+$",
+            "title": "Inference Id",
+            "type": "string"
+          },
+          "statement": {
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "inference_id",
+          "statement",
+          "evidence_ids",
+          "certainty"
+        ],
+        "title": "InferenceResponse",
+        "type": "object"
+      },
+      "InputValidationResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "error_count": {
+            "minimum": 0.0,
+            "title": "Error Count",
+            "type": "integer"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssueResponse"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "valid",
+              "invalid",
+              "partial",
+              "sufficient"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          },
+          "warning_count": {
+            "minimum": 0.0,
+            "title": "Warning Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "status",
+          "valid",
+          "error_count",
+          "warning_count",
+          "issues"
+        ],
+        "title": "InputValidationResponse",
+        "type": "object"
+      },
+      "JsonValue": {},
+      "MissingDataResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "collection_suggestion": {
+            "title": "Collection Suggestion",
+            "type": "string"
+          },
+          "field": {
+            "title": "Field",
+            "type": "string"
+          },
+          "importance": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Importance",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "importance",
+          "reason",
+          "collection_suggestion"
+        ],
+        "title": "MissingDataResponse",
+        "type": "object"
+      },
+      "ModuleAssessmentsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "offer_economics": {
+            "title": "Offer Economics",
+            "type": "string"
+          },
+          "operator_context": {
+            "title": "Operator Context",
+            "type": "string"
+          },
+          "traffic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Traffic"
+          },
+          "trends": {
+            "title": "Trends",
+            "type": "string"
+          },
+          "validation": {
+            "title": "Validation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "operator_context",
+          "validation",
+          "offer_economics",
+          "traffic",
+          "trends"
+        ],
+        "title": "ModuleAssessmentsResponse",
+        "type": "object"
+      },
+      "NextExperimentResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "control_variable": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Control Variable"
+          },
+          "currency": {
+            "minLength": 1,
+            "title": "Currency",
+            "type": "string"
+          },
+          "duration_days": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Days"
+          },
+          "experiment_id": {
+            "minLength": 1,
+            "title": "Experiment Id",
+            "type": "string"
+          },
+          "hypothesis": {
+            "minLength": 1,
+            "title": "Hypothesis",
+            "type": "string"
+          },
+          "maximum_budget": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximum Budget"
+          },
+          "minimum_action": {
+            "minLength": 1,
+            "title": "Minimum Action",
+            "type": "string"
+          },
+          "objective": {
+            "minLength": 1,
+            "title": "Objective",
+            "type": "string"
+          },
+          "primary_variable": {
+            "minLength": 1,
+            "title": "Primary Variable",
+            "type": "string"
+          },
+          "required_feedback_fields": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Required Feedback Fields",
+            "type": "array"
+          },
+          "stop_conditions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Stop Conditions",
+            "type": "array"
+          },
+          "success_conditions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Success Conditions",
+            "type": "array"
+          },
+          "success_metrics": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Success Metrics",
+            "type": "array"
+          }
+        },
+        "required": [
+          "experiment_id",
+          "objective",
+          "hypothesis",
+          "primary_variable",
+          "control_variable",
+          "minimum_action",
+          "maximum_budget",
+          "currency",
+          "duration_days",
+          "success_metrics",
+          "success_conditions",
+          "stop_conditions",
+          "required_feedback_fields"
+        ],
+        "title": "NextExperimentResponse",
+        "type": "object"
+      },
+      "ObservedEvidenceRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "collected_at": {
+            "format": "date-time",
+            "title": "Collected At",
+            "type": "string"
+          },
+          "collection_method": {
+            "minLength": 1,
+            "title": "Collection Method",
+            "type": "string"
+          },
+          "evidence_id": {
+            "pattern": "^OBS-[A-Z0-9-]+$",
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "field": {
+            "minLength": 1,
+            "title": "Field",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "opportunity_id": {
+            "minLength": 1,
+            "title": "Opportunity Id",
+            "type": "string"
+          },
+          "quality": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "unknown"
+            ],
+            "title": "Quality",
+            "type": "string"
+          },
+          "source_type": {
+            "minLength": 1,
+            "title": "Source Type",
+            "type": "string"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "value": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "value_type": {
+            "minLength": 1,
+            "title": "Value Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "opportunity_id",
+          "source_type",
+          "collected_at",
+          "field",
+          "value",
+          "value_type",
+          "collection_method",
+          "quality"
+        ],
+        "title": "ObservedEvidenceRequest",
+        "type": "object"
+      },
+      "OpportunityRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "calculated_indicators": {
+            "items": {
+              "$ref": "#/components/schemas/CalculatedIndicatorRequest"
+            },
+            "title": "Calculated Indicators",
+            "type": "array"
+          },
+          "campaign_metrics": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/JsonValue"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Campaign Metrics"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "collection_errors": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Collection Errors",
+            "type": "array"
+          },
+          "data_quality": {
+            "$ref": "#/components/schemas/DataQualityRequest"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "observed_evidence": {
+            "items": {
+              "$ref": "#/components/schemas/ObservedEvidenceRequest"
+            },
+            "minItems": 1,
+            "title": "Observed Evidence",
+            "type": "array"
+          },
+          "opportunity_id": {
+            "minLength": 1,
+            "title": "Opportunity Id",
+            "type": "string"
+          },
+          "risk_flags": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/components/schemas/StructuredRiskFlag"
+                }
+              ]
+            },
+            "title": "Risk Flags",
+            "type": "array"
+          },
+          "scoring_context": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScoringContextRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_urls": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Urls",
+            "type": "array"
+          }
+        },
+        "required": [
+          "opportunity_id",
+          "name",
+          "observed_evidence",
+          "calculated_indicators",
+          "data_quality"
+        ],
+        "title": "OpportunityRequest",
+        "type": "object"
+      },
+      "RankingItemResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "context_fit": {
+            "enum": [
+              "strong_fit",
+              "acceptable_fit",
+              "conditional_fit",
+              "poor_fit",
+              "unknown"
+            ],
+            "title": "Context Fit",
+            "type": "string"
+          },
+          "contextual_recommendation_rank": {
+            "minimum": 1.0,
+            "title": "Contextual Recommendation Rank",
+            "type": "integer"
+          },
+          "evidence_ids": {
+            "items": {
+              "pattern": "^(OBS|CALC)-[A-Z0-9-]+$",
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "module_assessments": {
+            "$ref": "#/components/schemas/ModuleAssessmentsResponse"
+          },
+          "official_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Score"
+          },
+          "official_score_rank": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Score Rank"
+          },
+          "official_score_scale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Score Scale"
+          },
+          "opportunity_id": {
+            "minLength": 1,
+            "title": "Opportunity Id",
+            "type": "string"
+          },
+          "position": {
+            "minimum": 1.0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "risks": {
+            "items": {
+              "$ref": "#/components/schemas/RiskResponse"
+            },
+            "title": "Risks",
+            "type": "array"
+          },
+          "strengths": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceStatementResponse"
+            },
+            "title": "Strengths",
+            "type": "array"
+          },
+          "weaknesses": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceStatementResponse"
+            },
+            "title": "Weaknesses",
+            "type": "array"
+          }
+        },
+        "required": [
+          "position",
+          "opportunity_id",
+          "official_score",
+          "official_score_scale",
+          "official_score_rank",
+          "contextual_recommendation_rank",
+          "context_fit",
+          "strengths",
+          "weaknesses",
+          "risks",
+          "module_assessments",
+          "evidence_ids"
+        ],
+        "title": "RankingItemResponse",
+        "type": "object"
+      },
+      "RecommendationResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "prioritize_test",
+              "test_with_conditions",
+              "collect_more_data",
+              "continue_collecting",
+              "consider_limited_scale",
+              "iterate_creative",
+              "iterate_offer",
+              "inspect_landing_page",
+              "inspect_checkout",
+              "pause_for_review",
+              "run_controlled_test",
+              "deprioritize",
+              "reject_for_now",
+              "insufficient_data"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "pattern": "^(OBS|CALC)-[A-Z0-9-]+$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "minimum_action": {
+            "minLength": 1,
+            "title": "Minimum Action",
+            "type": "string"
+          },
+          "opportunity_id": {
+            "minLength": 1,
+            "title": "Opportunity Id",
+            "type": "string"
+          },
+          "rationale": {
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "recommendation_id": {
+            "pattern": "^REC-[A-Z0-9-]+$",
+            "title": "Recommendation Id",
+            "type": "string"
+          },
+          "required_evidence": {
+            "items": {
+              "$ref": "#/components/schemas/RequiredEvidenceResponse"
+            },
+            "title": "Required Evidence",
+            "type": "array"
+          },
+          "risks": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Risks",
+            "type": "array"
+          },
+          "statement": {
+            "minLength": 1,
+            "title": "Statement",
+            "type": "string"
+          },
+          "stop_conditions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Stop Conditions",
+            "type": "array"
+          },
+          "success_metrics": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Success Metrics",
+            "type": "array"
+          }
+        },
+        "required": [
+          "recommendation_id",
+          "opportunity_id",
+          "action",
+          "statement",
+          "rationale",
+          "evidence_ids",
+          "risks",
+          "minimum_action",
+          "success_metrics",
+          "stop_conditions",
+          "required_evidence"
+        ],
+        "title": "RecommendationResponse",
+        "type": "object"
+      },
+      "RequiredEvidenceResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "minLength": 1,
+            "title": "Field",
+            "type": "string"
+          },
+          "opportunity_id": {
+            "minLength": 1,
+            "title": "Opportunity Id",
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "opportunity_id",
+          "field",
+          "reason"
+        ],
+        "title": "RequiredEvidenceResponse",
+        "type": "object"
+      },
+      "RiskResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_ids": {
+            "items": {
+              "pattern": "^(OBS|CALC)-[A-Z0-9-]+$",
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "risk": {
+            "title": "Risk",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "risk",
+          "severity",
+          "evidence_ids"
+        ],
+        "title": "RiskResponse",
+        "type": "object"
+      },
+      "ScoreConfigurationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "calculation_timestamp": {
+            "format": "date-time",
+            "title": "Calculation Timestamp",
+            "type": "string"
+          },
+          "engine": {
+            "minLength": 1,
+            "title": "Engine",
+            "type": "string"
+          },
+          "version": {
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          },
+          "weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Weights",
+            "type": "object"
+          }
+        },
+        "required": [
+          "version",
+          "weights",
+          "calculation_timestamp",
+          "engine"
+        ],
+        "title": "ScoreConfigurationRequest",
+        "type": "object"
+      },
+      "ScoringContextRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "calculation_quality": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "unknown"
+            ],
+            "title": "Calculation Quality",
+            "type": "string"
+          },
+          "economic_inputs_evidence_id": {
+            "pattern": "^OBS-[A-Z0-9-]+$",
+            "title": "Economic Inputs Evidence Id",
+            "type": "string"
+          },
+          "independent_source_ids": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Independent Source Ids",
+            "type": "array"
+          },
+          "logistics_evidence_id": {
+            "anyOf": [
+              {
+                "pattern": "^OBS-[A-Z0-9-]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logistics Evidence Id"
+          },
+          "minimum_test_cost_evidence_id": {
+            "pattern": "^OBS-[A-Z0-9-]+$",
+            "title": "Minimum Test Cost Evidence Id",
+            "type": "string"
+          },
+          "operational_fit_evidence_id": {
+            "pattern": "^OBS-[A-Z0-9-]+$",
+            "title": "Operational Fit Evidence Id",
+            "type": "string"
+          },
+          "operator_budget_evidence_id": {
+            "pattern": "^OBS-[A-Z0-9-]+$",
+            "title": "Operator Budget Evidence Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "economic_inputs_evidence_id",
+          "minimum_test_cost_evidence_id",
+          "operator_budget_evidence_id",
+          "operational_fit_evidence_id",
+          "independent_source_ids",
+          "calculation_quality"
+        ],
+        "title": "ScoringContextRequest",
+        "type": "object"
+      },
+      "SecurityStatusResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "prompt_injection_detected": {
+            "title": "Prompt Injection Detected",
+            "type": "boolean"
+          },
+          "sensitive_data_detected": {
+            "title": "Sensitive Data Detected",
+            "type": "boolean"
+          },
+          "suspicious_fields": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Suspicious Fields",
+            "type": "array"
+          }
+        },
+        "required": [
+          "prompt_injection_detected",
+          "suspicious_fields",
+          "sensitive_data_detected"
+        ],
+        "title": "SecurityStatusResponse",
+        "type": "object"
+      },
+      "SourceConflictResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "pattern": "^(OBS|CALC)-[A-Z0-9-]+$",
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "impact": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Impact",
+            "type": "string"
+          },
+          "resolution_data_needed": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Resolution Data Needed",
+            "type": "array"
+          }
+        },
+        "required": [
+          "description",
+          "evidence_ids",
+          "impact",
+          "resolution_data_needed"
+        ],
+        "title": "SourceConflictResponse",
+        "type": "object"
+      },
+      "StructuredRiskFlag": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "severity"
+        ],
+        "title": "StructuredRiskFlag",
+        "type": "object"
+      },
+      "UserContextRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "available_team": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Available Team",
+            "type": "array"
+          },
+          "business_model": {
+            "enum": [
+              "ecommerce",
+              "dropshipping",
+              "marketplace",
+              "infoproduct",
+              "affiliate"
+            ],
+            "title": "Business Model",
+            "type": "string"
+          },
+          "country": {
+            "minLength": 2,
+            "title": "Country",
+            "type": "string"
+          },
+          "excluded_categories": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Categories",
+            "type": "array"
+          },
+          "experience_level": {
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced"
+            ],
+            "title": "Experience Level",
+            "type": "string"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "maximum_acceptable_cpa": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximum Acceptable Cpa"
+          },
+          "maximum_test_days": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximum Test Days"
+          },
+          "objectives": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Objectives",
+            "type": "array"
+          },
+          "operational_constraints": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Operational Constraints",
+            "type": "array"
+          },
+          "primary_channel": {
+            "enum": [
+              "meta",
+              "tiktok",
+              "google",
+              "organic",
+              "marketplace",
+              "mixed"
+            ],
+            "title": "Primary Channel",
+            "type": "string"
+          },
+          "target_margin_percent": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Margin Percent"
+          },
+          "test_budget_brl": {
+            "minimum": 0.0,
+            "title": "Test Budget Brl",
+            "type": "number"
+          }
+        },
+        "required": [
+          "country",
+          "experience_level",
+          "business_model",
+          "primary_channel",
+          "test_budget_brl"
+        ],
+        "title": "UserContextRequest",
+        "type": "object"
+      },
+      "ValidationIssueResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "error",
+              "warning"
+            ],
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "path",
+          "message",
+          "severity"
+        ],
+        "title": "ValidationIssueResponse",
+        "type": "object"
+      },
+      "VersionsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "input_schema_version": {
+            "const": "1.0.0",
+            "title": "Input Schema Version",
+            "type": "string"
+          },
+          "output_schema_version": {
+            "const": "1.1.0",
+            "title": "Output Schema Version",
+            "type": "string"
+          },
+          "score_version": {
+            "minLength": 1,
+            "title": "Score Version",
+            "type": "string"
+          },
+          "skill_version": {
+            "const": "1.1.0",
+            "title": "Skill Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "skill_version",
+          "input_schema_version",
+          "output_schema_version",
+          "score_version"
+        ],
+        "title": "VersionsResponse",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "API REST para o pipeline determinístico e o relatório analítico v1.1.0.",
+    "title": "Analisador de Oportunidades API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/analyze": {
+      "post": {
+        "operationId": "analyzeOpportunity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "insufficient_data": {
+                  "summary": "Oportunidade com dados insuficientes",
+                  "value": {
+                    "analysis_id": "ANL-CASE-INSUFFICIENT-001",
+                    "analysis_mode": "campaign_diagnosis",
+                    "generated_at": "2026-07-20T12:00:00-03:00",
+                    "opportunities": [
+                      {
+                        "calculated_indicators": [
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_economics_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "economics_score",
+                            "indicator_id": "CALC-INSUFFICIENT-ECONOMICS-SCORE",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_evidence_ids": [
+                              "OBS-INSUFFICIENT-ECONOMICS"
+                            ],
+                            "unit": "0-100",
+                            "value": 60,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_competition_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "competitive_attractiveness_score",
+                            "indicator_id": "CALC-INSUFFICIENT-COMPETITIVE-SCORE",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "low",
+                            "source_evidence_ids": [
+                              "OBS-INSUFFICIENT-COMPETITIVE-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 45,
+                            "value_type": "integer",
+                            "warnings": []
+                          }
+                        ],
+                        "category": "general_accessories",
+                        "collection_errors": [
+                          "demand_signals_not_collected"
+                        ],
+                        "data_quality": {
+                          "coverage_percent": 45,
+                          "freshness": "current",
+                          "source_agreement": "unknown",
+                          "status": "partial"
+                        },
+                        "description": "Fixture sintético sem sinais ou indicador de demanda.",
+                        "name": "Oportunidade preliminar demonstrativa",
+                        "observed_evidence": [
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-ECONOMICS",
+                            "field": "economic_inputs",
+                            "notes": "Economia demonstrativa disponível; demanda permanece ausente.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_supplier_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": {
+                              "currency": "BRL",
+                              "other_variable_costs": 0,
+                              "product_cost": 40,
+                              "selling_price": 100,
+                              "shipping_subsidy": 5,
+                              "taxes": 5,
+                              "variable_fees": 10
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-MINIMUM-TEST-COST",
+                            "field": "minimum_test_cost",
+                            "notes": "Custo mínimo demonstrativo.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": 250,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-OPERATOR-BUDGET",
+                            "field": "operator_test_budget",
+                            "notes": "Orçamento demonstrativo.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": 500,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-OPERATIONAL-FIT",
+                            "field": "operational_fit",
+                            "notes": "Fit condicional até que a demanda seja investigada.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": "conditional_fit",
+                            "value_type": "string"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-COMPETITIVE-SIGNALS",
+                            "field": "competitive_signal_bundle",
+                            "notes": "Não existe OBS-* de demanda neste fixture.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "low",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": {
+                              "advertiser_diversity": "unknown",
+                              "description": "Sinal competitivo sintético de baixa cobertura."
+                            },
+                            "value_type": "object"
+                          }
+                        ],
+                        "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                        "risk_flags": [],
+                        "scoring_context": {
+                          "calculation_quality": "low",
+                          "economic_inputs_evidence_id": "OBS-INSUFFICIENT-ECONOMICS",
+                          "independent_source_ids": [
+                            "fixture://insufficient-known-data"
+                          ],
+                          "minimum_test_cost_evidence_id": "OBS-INSUFFICIENT-MINIMUM-TEST-COST",
+                          "operational_fit_evidence_id": "OBS-INSUFFICIENT-OPERATIONAL-FIT",
+                          "operator_budget_evidence_id": "OBS-INSUFFICIENT-OPERATOR-BUDGET"
+                        },
+                        "source_urls": [
+                          "fixture://insufficient-known-data"
+                        ]
+                      }
+                    ],
+                    "requested_output_language": "pt-BR",
+                    "schema_version": "1.0.0",
+                    "score_configuration": {
+                      "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+                      "engine": "deterministic-score-engine",
+                      "version": "SCORE-0.1.0",
+                      "weights": {}
+                    },
+                    "user_context": {
+                      "available_team": [],
+                      "business_model": "ecommerce",
+                      "country": "BR",
+                      "excluded_categories": [],
+                      "experience_level": "beginner",
+                      "language": "pt-BR",
+                      "maximum_test_days": 7,
+                      "objectives": [
+                        "collect_demand_evidence"
+                      ],
+                      "operational_constraints": [
+                        "demand_not_validated"
+                      ],
+                      "primary_channel": "meta",
+                      "test_budget_brl": 500
+                    }
+                  }
+                },
+                "kill_switch": {
+                  "summary": "Oportunidade reprovada por kill switch",
+                  "value": {
+                    "analysis_id": "ANL-CASE-KILL-SWITCH-001",
+                    "analysis_mode": "campaign_diagnosis",
+                    "generated_at": "2026-07-20T12:00:00-03:00",
+                    "opportunities": [
+                      {
+                        "calculated_indicators": [
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_demand_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "demand_score",
+                            "indicator_id": "CALC-KILL-DEMAND-SCORE",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_evidence_ids": [
+                              "OBS-KILL-DEMAND-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 75,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_economics_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "economics_score",
+                            "indicator_id": "CALC-KILL-ECONOMICS-SCORE",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "high",
+                            "source_evidence_ids": [
+                              "OBS-KILL-ECONOMICS"
+                            ],
+                            "unit": "0-100",
+                            "value": 40,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_competition_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "competitive_attractiveness_score",
+                            "indicator_id": "CALC-KILL-COMPETITIVE-SCORE",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_evidence_ids": [
+                              "OBS-KILL-COMPETITIVE-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 65,
+                            "value_type": "integer",
+                            "warnings": []
+                          }
+                        ],
+                        "category": "general_accessories",
+                        "collection_errors": [],
+                        "data_quality": {
+                          "coverage_percent": 90,
+                          "freshness": "current",
+                          "source_agreement": "medium",
+                          "status": "complete"
+                        },
+                        "description": "Fixture sintético que ativa o filtro de margem de contribuição não positiva.",
+                        "name": "Kit utilitário demonstrativo",
+                        "observed_evidence": [
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-ECONOMICS",
+                            "field": "economic_inputs",
+                            "notes": "Os custos sintéticos totalizam mais que o preço de venda.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "high",
+                            "source_type": "synthetic_supplier_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": {
+                              "currency": "BRL",
+                              "other_variable_costs": 2,
+                              "product_cost": 60,
+                              "selling_price": 80,
+                              "shipping_subsidy": 8,
+                              "taxes": 5,
+                              "variable_fees": 10
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-MINIMUM-TEST-COST",
+                            "field": "minimum_test_cost",
+                            "notes": "Custo demonstrativo dentro do orçamento; a reprovação deve ocorrer pela margem.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": 300,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-OPERATOR-BUDGET",
+                            "field": "operator_test_budget",
+                            "notes": "Orçamento demonstrativo.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": 600,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-OPERATIONAL-FIT",
+                            "field": "operational_fit",
+                            "notes": "O fit não deve sobrepor o filtro econômico.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": "acceptable_fit",
+                            "value_type": "string"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-DEMAND-SIGNALS",
+                            "field": "demand_signal_bundle",
+                            "notes": "Sinais não comprovam vendas.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": {
+                              "description": "Sinais sintéticos que não compensam economia negativa.",
+                              "signal_count": 2
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-COMPETITIVE-SIGNALS",
+                            "field": "competitive_signal_bundle",
+                            "notes": "Dado exclusivamente demonstrativo.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": {
+                              "advertiser_diversity": "medium",
+                              "description": "Concorrência sintética moderada."
+                            },
+                            "value_type": "object"
+                          }
+                        ],
+                        "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                        "risk_flags": [
+                          {
+                            "code": "negative_unit_economics",
+                            "severity": "high"
+                          }
+                        ],
+                        "scoring_context": {
+                          "calculation_quality": "high",
+                          "economic_inputs_evidence_id": "OBS-KILL-ECONOMICS",
+                          "independent_source_ids": [
+                            "fixture://kill-switch-source"
+                          ],
+                          "minimum_test_cost_evidence_id": "OBS-KILL-MINIMUM-TEST-COST",
+                          "operational_fit_evidence_id": "OBS-KILL-OPERATIONAL-FIT",
+                          "operator_budget_evidence_id": "OBS-KILL-OPERATOR-BUDGET"
+                        },
+                        "source_urls": [
+                          "fixture://kill-switch-source"
+                        ]
+                      }
+                    ],
+                    "requested_output_language": "pt-BR",
+                    "schema_version": "1.0.0",
+                    "score_configuration": {
+                      "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+                      "engine": "deterministic-score-engine",
+                      "version": "SCORE-0.1.0",
+                      "weights": {}
+                    },
+                    "user_context": {
+                      "available_team": [],
+                      "business_model": "ecommerce",
+                      "country": "BR",
+                      "excluded_categories": [],
+                      "experience_level": "beginner",
+                      "language": "pt-BR",
+                      "maximum_test_days": 7,
+                      "objectives": [
+                        "reject_economically_inviable_offer"
+                      ],
+                      "operational_constraints": [
+                        "limited_working_capital"
+                      ],
+                      "primary_channel": "meta",
+                      "target_margin_percent": 30,
+                      "test_budget_brl": 600
+                    }
+                  }
+                },
+                "viable": {
+                  "summary": "Oportunidade viável",
+                  "value": {
+                    "analysis_id": "ANL-CASE-VIABLE-001",
+                    "analysis_mode": "campaign_diagnosis",
+                    "generated_at": "2026-07-20T12:00:00-03:00",
+                    "opportunities": [
+                      {
+                        "calculated_indicators": [
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_demand_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "demand_score",
+                            "indicator_id": "CALC-VIABLE-DEMAND-SCORE",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_evidence_ids": [
+                              "OBS-VIABLE-DEMAND-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 92,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_economics_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "economics_score",
+                            "indicator_id": "CALC-VIABLE-ECONOMICS-SCORE",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_evidence_ids": [
+                              "OBS-VIABLE-ECONOMICS"
+                            ],
+                            "unit": "0-100",
+                            "value": 88,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_competition_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "competitive_attractiveness_score",
+                            "indicator_id": "CALC-VIABLE-COMPETITIVE-SCORE",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_evidence_ids": [
+                              "OBS-VIABLE-COMPETITIVE-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 82,
+                            "value_type": "integer",
+                            "warnings": []
+                          }
+                        ],
+                        "category": "home_organization",
+                        "collection_errors": [],
+                        "data_quality": {
+                          "coverage_percent": 95,
+                          "freshness": "current",
+                          "source_agreement": "high",
+                          "status": "complete"
+                        },
+                        "description": "Fixture sintético completo para demonstrar uma oportunidade economicamente viável.",
+                        "name": "Organizador modular demonstrativo",
+                        "observed_evidence": [
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-ECONOMICS",
+                            "field": "economic_inputs",
+                            "notes": "Valores exclusivamente demonstrativos; não representam oferta comercial real.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_supplier_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": {
+                              "currency": "BRL",
+                              "other_variable_costs": 5,
+                              "product_cost": 35,
+                              "selling_price": 149.9,
+                              "shipping_subsidy": 10,
+                              "taxes": 12,
+                              "variable_fees": 15
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-MINIMUM-TEST-COST",
+                            "field": "minimum_test_cost",
+                            "notes": "Custo mínimo demonstrativo calculado fora do motor de score.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": 400,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-OPERATOR-BUDGET",
+                            "field": "operator_test_budget",
+                            "notes": "Orçamento demonstrativo informado no fixture.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": 1000,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-OPERATIONAL-FIT",
+                            "field": "operational_fit",
+                            "notes": "Fit demonstrativo baseado no contexto sintético do operador.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": "strong_fit",
+                            "value_type": "string"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-DEMAND-SIGNALS",
+                            "field": "demand_signal_bundle",
+                            "notes": "Sinais sintéticos não comprovam vendas, faturamento ou lucro.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://viable-market-signals",
+                            "value": {
+                              "description": "Conjunto sintético de sinais relativos e concordantes.",
+                              "signal_count": 3,
+                              "window_days": 30
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-COMPETITIVE-SIGNALS",
+                            "field": "competitive_signal_bundle",
+                            "notes": "Concorrência sintética não demonstra rentabilidade.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://viable-market-signals",
+                            "value": {
+                              "advertiser_diversity": "medium",
+                              "description": "Sinais sintéticos de espaço para diferenciação.",
+                              "differentiation_angles": 4
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-LOGISTICS",
+                            "field": "logistics_lead_time_business_days",
+                            "notes": "Prazo exclusivamente demonstrativo.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_supplier_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": 8,
+                            "value_type": "integer"
+                          }
+                        ],
+                        "opportunity_id": "OPP-CASE-VIABLE-001",
+                        "risk_flags": [],
+                        "scoring_context": {
+                          "calculation_quality": "high",
+                          "economic_inputs_evidence_id": "OBS-VIABLE-ECONOMICS",
+                          "independent_source_ids": [
+                            "fixture://viable-supplier",
+                            "fixture://viable-market-signals"
+                          ],
+                          "logistics_evidence_id": "OBS-VIABLE-LOGISTICS",
+                          "minimum_test_cost_evidence_id": "OBS-VIABLE-MINIMUM-TEST-COST",
+                          "operational_fit_evidence_id": "OBS-VIABLE-OPERATIONAL-FIT",
+                          "operator_budget_evidence_id": "OBS-VIABLE-OPERATOR-BUDGET"
+                        },
+                        "source_urls": [
+                          "fixture://viable-supplier",
+                          "fixture://viable-market-signals"
+                        ]
+                      }
+                    ],
+                    "requested_output_language": "pt-BR",
+                    "schema_version": "1.0.0",
+                    "score_configuration": {
+                      "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+                      "engine": "deterministic-score-engine",
+                      "version": "SCORE-0.1.0",
+                      "weights": {}
+                    },
+                    "user_context": {
+                      "available_team": [
+                        "media_buyer",
+                        "creative_designer"
+                      ],
+                      "business_model": "ecommerce",
+                      "country": "BR",
+                      "excluded_categories": [],
+                      "experience_level": "intermediate",
+                      "language": "pt-BR",
+                      "maximum_test_days": 7,
+                      "objectives": [
+                        "validate_demand_with_controlled_test"
+                      ],
+                      "operational_constraints": [],
+                      "primary_channel": "meta",
+                      "target_margin_percent": 30,
+                      "test_budget_brl": 1000
+                    }
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest",
+                "description": "Entrada compatível com references/input-schema.json."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisResponse"
+                }
+              }
+            },
+            "description": "Relatório analítico v1.1.0 validado.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599.0,
+                      "minimum": 400.0,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A entrada é estrutural ou semanticamente inválida.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599.0,
+                      "minimum": 400.0,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A análise gerada violou um contrato autoritativo.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Executar análise completa"
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "API e configuração determinística disponíveis.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599.0,
+                      "minimum": 400.0,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A configuração autorizada do core está indisponível.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verificar saúde da API"
+      }
+    },
+    "/api/v1/validate-input": {
+      "post": {
+        "operationId": "validateOpportunityInput",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "insufficient_data": {
+                  "summary": "Oportunidade com dados insuficientes",
+                  "value": {
+                    "analysis_id": "ANL-CASE-INSUFFICIENT-001",
+                    "analysis_mode": "campaign_diagnosis",
+                    "generated_at": "2026-07-20T12:00:00-03:00",
+                    "opportunities": [
+                      {
+                        "calculated_indicators": [
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_economics_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "economics_score",
+                            "indicator_id": "CALC-INSUFFICIENT-ECONOMICS-SCORE",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_evidence_ids": [
+                              "OBS-INSUFFICIENT-ECONOMICS"
+                            ],
+                            "unit": "0-100",
+                            "value": 60,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_competition_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "competitive_attractiveness_score",
+                            "indicator_id": "CALC-INSUFFICIENT-COMPETITIVE-SCORE",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "low",
+                            "source_evidence_ids": [
+                              "OBS-INSUFFICIENT-COMPETITIVE-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 45,
+                            "value_type": "integer",
+                            "warnings": []
+                          }
+                        ],
+                        "category": "general_accessories",
+                        "collection_errors": [
+                          "demand_signals_not_collected"
+                        ],
+                        "data_quality": {
+                          "coverage_percent": 45,
+                          "freshness": "current",
+                          "source_agreement": "unknown",
+                          "status": "partial"
+                        },
+                        "description": "Fixture sintético sem sinais ou indicador de demanda.",
+                        "name": "Oportunidade preliminar demonstrativa",
+                        "observed_evidence": [
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-ECONOMICS",
+                            "field": "economic_inputs",
+                            "notes": "Economia demonstrativa disponível; demanda permanece ausente.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_supplier_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": {
+                              "currency": "BRL",
+                              "other_variable_costs": 0,
+                              "product_cost": 40,
+                              "selling_price": 100,
+                              "shipping_subsidy": 5,
+                              "taxes": 5,
+                              "variable_fees": 10
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-MINIMUM-TEST-COST",
+                            "field": "minimum_test_cost",
+                            "notes": "Custo mínimo demonstrativo.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": 250,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-OPERATOR-BUDGET",
+                            "field": "operator_test_budget",
+                            "notes": "Orçamento demonstrativo.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": 500,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-OPERATIONAL-FIT",
+                            "field": "operational_fit",
+                            "notes": "Fit condicional até que a demanda seja investigada.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": "conditional_fit",
+                            "value_type": "string"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-INSUFFICIENT-COMPETITIVE-SIGNALS",
+                            "field": "competitive_signal_bundle",
+                            "notes": "Não existe OBS-* de demanda neste fixture.",
+                            "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                            "quality": "low",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://insufficient-known-data",
+                            "value": {
+                              "advertiser_diversity": "unknown",
+                              "description": "Sinal competitivo sintético de baixa cobertura."
+                            },
+                            "value_type": "object"
+                          }
+                        ],
+                        "opportunity_id": "OPP-CASE-INSUFFICIENT-001",
+                        "risk_flags": [],
+                        "scoring_context": {
+                          "calculation_quality": "low",
+                          "economic_inputs_evidence_id": "OBS-INSUFFICIENT-ECONOMICS",
+                          "independent_source_ids": [
+                            "fixture://insufficient-known-data"
+                          ],
+                          "minimum_test_cost_evidence_id": "OBS-INSUFFICIENT-MINIMUM-TEST-COST",
+                          "operational_fit_evidence_id": "OBS-INSUFFICIENT-OPERATIONAL-FIT",
+                          "operator_budget_evidence_id": "OBS-INSUFFICIENT-OPERATOR-BUDGET"
+                        },
+                        "source_urls": [
+                          "fixture://insufficient-known-data"
+                        ]
+                      }
+                    ],
+                    "requested_output_language": "pt-BR",
+                    "schema_version": "1.0.0",
+                    "score_configuration": {
+                      "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+                      "engine": "deterministic-score-engine",
+                      "version": "SCORE-0.1.0",
+                      "weights": {}
+                    },
+                    "user_context": {
+                      "available_team": [],
+                      "business_model": "ecommerce",
+                      "country": "BR",
+                      "excluded_categories": [],
+                      "experience_level": "beginner",
+                      "language": "pt-BR",
+                      "maximum_test_days": 7,
+                      "objectives": [
+                        "collect_demand_evidence"
+                      ],
+                      "operational_constraints": [
+                        "demand_not_validated"
+                      ],
+                      "primary_channel": "meta",
+                      "test_budget_brl": 500
+                    }
+                  }
+                },
+                "kill_switch": {
+                  "summary": "Oportunidade reprovada por kill switch",
+                  "value": {
+                    "analysis_id": "ANL-CASE-KILL-SWITCH-001",
+                    "analysis_mode": "campaign_diagnosis",
+                    "generated_at": "2026-07-20T12:00:00-03:00",
+                    "opportunities": [
+                      {
+                        "calculated_indicators": [
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_demand_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "demand_score",
+                            "indicator_id": "CALC-KILL-DEMAND-SCORE",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_evidence_ids": [
+                              "OBS-KILL-DEMAND-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 75,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_economics_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "economics_score",
+                            "indicator_id": "CALC-KILL-ECONOMICS-SCORE",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "high",
+                            "source_evidence_ids": [
+                              "OBS-KILL-ECONOMICS"
+                            ],
+                            "unit": "0-100",
+                            "value": 40,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_competition_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "competitive_attractiveness_score",
+                            "indicator_id": "CALC-KILL-COMPETITIVE-SCORE",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_evidence_ids": [
+                              "OBS-KILL-COMPETITIVE-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 65,
+                            "value_type": "integer",
+                            "warnings": []
+                          }
+                        ],
+                        "category": "general_accessories",
+                        "collection_errors": [],
+                        "data_quality": {
+                          "coverage_percent": 90,
+                          "freshness": "current",
+                          "source_agreement": "medium",
+                          "status": "complete"
+                        },
+                        "description": "Fixture sintético que ativa o filtro de margem de contribuição não positiva.",
+                        "name": "Kit utilitário demonstrativo",
+                        "observed_evidence": [
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-ECONOMICS",
+                            "field": "economic_inputs",
+                            "notes": "Os custos sintéticos totalizam mais que o preço de venda.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "high",
+                            "source_type": "synthetic_supplier_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": {
+                              "currency": "BRL",
+                              "other_variable_costs": 2,
+                              "product_cost": 60,
+                              "selling_price": 80,
+                              "shipping_subsidy": 8,
+                              "taxes": 5,
+                              "variable_fees": 10
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-MINIMUM-TEST-COST",
+                            "field": "minimum_test_cost",
+                            "notes": "Custo demonstrativo dentro do orçamento; a reprovação deve ocorrer pela margem.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": 300,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-OPERATOR-BUDGET",
+                            "field": "operator_test_budget",
+                            "notes": "Orçamento demonstrativo.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": 600,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-OPERATIONAL-FIT",
+                            "field": "operational_fit",
+                            "notes": "O fit não deve sobrepor o filtro econômico.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": "acceptable_fit",
+                            "value_type": "string"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-DEMAND-SIGNALS",
+                            "field": "demand_signal_bundle",
+                            "notes": "Sinais não comprovam vendas.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": {
+                              "description": "Sinais sintéticos que não compensam economia negativa.",
+                              "signal_count": 2
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-KILL-COMPETITIVE-SIGNALS",
+                            "field": "competitive_signal_bundle",
+                            "notes": "Dado exclusivamente demonstrativo.",
+                            "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                            "quality": "medium",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://kill-switch-source",
+                            "value": {
+                              "advertiser_diversity": "medium",
+                              "description": "Concorrência sintética moderada."
+                            },
+                            "value_type": "object"
+                          }
+                        ],
+                        "opportunity_id": "OPP-CASE-KILL-SWITCH-001",
+                        "risk_flags": [
+                          {
+                            "code": "negative_unit_economics",
+                            "severity": "high"
+                          }
+                        ],
+                        "scoring_context": {
+                          "calculation_quality": "high",
+                          "economic_inputs_evidence_id": "OBS-KILL-ECONOMICS",
+                          "independent_source_ids": [
+                            "fixture://kill-switch-source"
+                          ],
+                          "minimum_test_cost_evidence_id": "OBS-KILL-MINIMUM-TEST-COST",
+                          "operational_fit_evidence_id": "OBS-KILL-OPERATIONAL-FIT",
+                          "operator_budget_evidence_id": "OBS-KILL-OPERATOR-BUDGET"
+                        },
+                        "source_urls": [
+                          "fixture://kill-switch-source"
+                        ]
+                      }
+                    ],
+                    "requested_output_language": "pt-BR",
+                    "schema_version": "1.0.0",
+                    "score_configuration": {
+                      "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+                      "engine": "deterministic-score-engine",
+                      "version": "SCORE-0.1.0",
+                      "weights": {}
+                    },
+                    "user_context": {
+                      "available_team": [],
+                      "business_model": "ecommerce",
+                      "country": "BR",
+                      "excluded_categories": [],
+                      "experience_level": "beginner",
+                      "language": "pt-BR",
+                      "maximum_test_days": 7,
+                      "objectives": [
+                        "reject_economically_inviable_offer"
+                      ],
+                      "operational_constraints": [
+                        "limited_working_capital"
+                      ],
+                      "primary_channel": "meta",
+                      "target_margin_percent": 30,
+                      "test_budget_brl": 600
+                    }
+                  }
+                },
+                "viable": {
+                  "summary": "Oportunidade viável",
+                  "value": {
+                    "analysis_id": "ANL-CASE-VIABLE-001",
+                    "analysis_mode": "campaign_diagnosis",
+                    "generated_at": "2026-07-20T12:00:00-03:00",
+                    "opportunities": [
+                      {
+                        "calculated_indicators": [
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_demand_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "demand_score",
+                            "indicator_id": "CALC-VIABLE-DEMAND-SCORE",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_evidence_ids": [
+                              "OBS-VIABLE-DEMAND-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 92,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_economics_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "economics_score",
+                            "indicator_id": "CALC-VIABLE-ECONOMICS-SCORE",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_evidence_ids": [
+                              "OBS-VIABLE-ECONOMICS"
+                            ],
+                            "unit": "0-100",
+                            "value": 88,
+                            "value_type": "integer",
+                            "warnings": []
+                          },
+                          {
+                            "calculated_at": "2026-07-20T11:55:00-03:00",
+                            "calculation_method": "synthetic_normalized_competition_fixture_v1",
+                            "calculation_version": "FIXTURE-1.0.0",
+                            "field": "competitive_attractiveness_score",
+                            "indicator_id": "CALC-VIABLE-COMPETITIVE-SCORE",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_evidence_ids": [
+                              "OBS-VIABLE-COMPETITIVE-SIGNALS"
+                            ],
+                            "unit": "0-100",
+                            "value": 82,
+                            "value_type": "integer",
+                            "warnings": []
+                          }
+                        ],
+                        "category": "home_organization",
+                        "collection_errors": [],
+                        "data_quality": {
+                          "coverage_percent": 95,
+                          "freshness": "current",
+                          "source_agreement": "high",
+                          "status": "complete"
+                        },
+                        "description": "Fixture sintético completo para demonstrar uma oportunidade economicamente viável.",
+                        "name": "Organizador modular demonstrativo",
+                        "observed_evidence": [
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-ECONOMICS",
+                            "field": "economic_inputs",
+                            "notes": "Valores exclusivamente demonstrativos; não representam oferta comercial real.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_supplier_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": {
+                              "currency": "BRL",
+                              "other_variable_costs": 5,
+                              "product_cost": 35,
+                              "selling_price": 149.9,
+                              "shipping_subsidy": 10,
+                              "taxes": 12,
+                              "variable_fees": 15
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-MINIMUM-TEST-COST",
+                            "field": "minimum_test_cost",
+                            "notes": "Custo mínimo demonstrativo calculado fora do motor de score.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": 400,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-OPERATOR-BUDGET",
+                            "field": "operator_test_budget",
+                            "notes": "Orçamento demonstrativo informado no fixture.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": 1000,
+                            "value_type": "number"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-OPERATIONAL-FIT",
+                            "field": "operational_fit",
+                            "notes": "Fit demonstrativo baseado no contexto sintético do operador.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_operator_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": "strong_fit",
+                            "value_type": "string"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-DEMAND-SIGNALS",
+                            "field": "demand_signal_bundle",
+                            "notes": "Sinais sintéticos não comprovam vendas, faturamento ou lucro.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://viable-market-signals",
+                            "value": {
+                              "description": "Conjunto sintético de sinais relativos e concordantes.",
+                              "signal_count": 3,
+                              "window_days": 30
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T11:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-COMPETITIVE-SIGNALS",
+                            "field": "competitive_signal_bundle",
+                            "notes": "Concorrência sintética não demonstra rentabilidade.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_market_fixture",
+                            "source_url": "fixture://viable-market-signals",
+                            "value": {
+                              "advertiser_diversity": "medium",
+                              "description": "Sinais sintéticos de espaço para diferenciação.",
+                              "differentiation_angles": 4
+                            },
+                            "value_type": "object"
+                          },
+                          {
+                            "collected_at": "2026-07-18T10:00:00-03:00",
+                            "collection_method": "synthetic_fixture",
+                            "evidence_id": "OBS-VIABLE-LOGISTICS",
+                            "field": "logistics_lead_time_business_days",
+                            "notes": "Prazo exclusivamente demonstrativo.",
+                            "opportunity_id": "OPP-CASE-VIABLE-001",
+                            "quality": "high",
+                            "source_type": "synthetic_supplier_fixture",
+                            "source_url": "fixture://viable-supplier",
+                            "value": 8,
+                            "value_type": "integer"
+                          }
+                        ],
+                        "opportunity_id": "OPP-CASE-VIABLE-001",
+                        "risk_flags": [],
+                        "scoring_context": {
+                          "calculation_quality": "high",
+                          "economic_inputs_evidence_id": "OBS-VIABLE-ECONOMICS",
+                          "independent_source_ids": [
+                            "fixture://viable-supplier",
+                            "fixture://viable-market-signals"
+                          ],
+                          "logistics_evidence_id": "OBS-VIABLE-LOGISTICS",
+                          "minimum_test_cost_evidence_id": "OBS-VIABLE-MINIMUM-TEST-COST",
+                          "operational_fit_evidence_id": "OBS-VIABLE-OPERATIONAL-FIT",
+                          "operator_budget_evidence_id": "OBS-VIABLE-OPERATOR-BUDGET"
+                        },
+                        "source_urls": [
+                          "fixture://viable-supplier",
+                          "fixture://viable-market-signals"
+                        ]
+                      }
+                    ],
+                    "requested_output_language": "pt-BR",
+                    "schema_version": "1.0.0",
+                    "score_configuration": {
+                      "calculation_timestamp": "2026-07-20T11:59:00-03:00",
+                      "engine": "deterministic-score-engine",
+                      "version": "SCORE-0.1.0",
+                      "weights": {}
+                    },
+                    "user_context": {
+                      "available_team": [
+                        "media_buyer",
+                        "creative_designer"
+                      ],
+                      "business_model": "ecommerce",
+                      "country": "BR",
+                      "excluded_categories": [],
+                      "experience_level": "intermediate",
+                      "language": "pt-BR",
+                      "maximum_test_days": 7,
+                      "objectives": [
+                        "validate_demand_with_controlled_test"
+                      ],
+                      "operational_constraints": [],
+                      "primary_channel": "meta",
+                      "target_margin_percent": 30,
+                      "test_budget_brl": 1000
+                    }
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest",
+                "description": "Entrada compatível com references/input-schema.json."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InputValidationResponse"
+                }
+              }
+            },
+            "description": "Resultado tipado da validação de entrada.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599.0,
+                      "minimum": 400.0,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "O corpo não satisfaz o contrato HTTP tipado.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599.0,
+                      "minimum": 400.0,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "O validador interno violou seu contrato de resposta.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Validar entrada sem executar o score"
+      }
+    }
+  }
+}
