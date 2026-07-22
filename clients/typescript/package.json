@@ -1,0 +1,23 @@
+{
+  "name": "@opportunity-analyzer/typescript-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "overrides": {
+    "js-yaml": "4.3.0"
+  },
+  "scripts": {
+    "generate": "node scripts/generate.mjs",
+    "typecheck": "tsc --noEmit",
+    "check:generated": "node scripts/check-generated.mjs",
+    "build": "npm run generate && npm run typecheck"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.97.3",
+    "typescript": "5.9.3"
+  }
+}
