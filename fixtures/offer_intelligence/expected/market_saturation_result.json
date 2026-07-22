@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0.0",
+  "intelligence_version": "OFFER-INTELLIGENCE-0.1.0",
+  "analysis_id": "OI-SATURATION-001",
+  "opportunity_id": "OPP-OI-SATURATION-001",
+  "calculated_at": "2026-07-20T12:00:00+00:00",
+  "status": "complete",
+  "indicators": [
+    {
+      "indicator_id": "CALC-ACTIVE-ADS-CURRENT-OPP-OI-SATURATION-001",
+      "opportunity_id": "OPP-OI-SATURATION-001",
+      "field": "active_ads_current",
+      "value": 44,
+      "value_type": "integer",
+      "unit": "ads",
+      "calculation_method": "latest_active_ads_count_in_inclusive_window_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-SATURATION-ADS-CURRENT"
+      ],
+      "quality": "medium",
+      "warnings": []
+    },
+    {
+      "indicator_id": "CALC-ACTIVE-ADS-GROWTH-OPP-OI-SATURATION-001",
+      "opportunity_id": "OPP-OI-SATURATION-001",
+      "field": "active_ads_growth_percent",
+      "value": 10,
+      "value_type": "integer",
+      "unit": "percent",
+      "calculation_method": "latest_minus_baseline_divided_by_baseline_times_100_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-SATURATION-ADS-BASELINE",
+        "OBS-OI-SATURATION-ADS-CURRENT"
+      ],
+      "quality": "medium",
+      "warnings": []
+    },
+    {
+      "indicator_id": "CALC-CREATIVE-CHURN-OPP-OI-SATURATION-001",
+      "opportunity_id": "OPP-OI-SATURATION-001",
+      "field": "creative_churn_percent",
+      "value": 25,
+      "value_type": "integer",
+      "unit": "percent",
+      "calculation_method": "baseline_creatives_not_retained_divided_by_baseline_creatives_times_100_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-SATURATION-ADS-BASELINE",
+        "OBS-OI-SATURATION-ADS-CURRENT"
+      ],
+      "quality": "medium",
+      "warnings": []
+    },
+    {
+      "indicator_id": "CALC-ADVERTISER-DENSITY-OPP-OI-SATURATION-001",
+      "opportunity_id": "OPP-OI-SATURATION-001",
+      "field": "advertiser_density_per_100_offers",
+      "value": 100,
+      "value_type": "integer",
+      "unit": "advertisers_per_100_offers",
+      "calculation_method": "distinct_advertisers_divided_by_valid_active_offers_times_100_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-SATURATION-TARGET",
+        "OBS-OI-SATURATION-MARKET-001",
+        "OBS-OI-SATURATION-MARKET-002",
+        "OBS-OI-SATURATION-MARKET-003",
+        "OBS-OI-SATURATION-MARKET-004",
+        "OBS-OI-SATURATION-MARKET-005",
+        "OBS-OI-SATURATION-MARKET-006"
+      ],
+      "quality": "medium",
+      "warnings": []
+    },
+    {
+      "indicator_id": "CALC-PRICE-POSITION-OPP-OI-SATURATION-001",
+      "opportunity_id": "OPP-OI-SATURATION-001",
+      "field": "price_position_percentile",
+      "value": 75,
+      "value_type": "integer",
+      "unit": "percentile_0_100",
+      "calculation_method": "midrank_percentile_within_same_currency_market_sample_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-SATURATION-TARGET",
+        "OBS-OI-SATURATION-MARKET-001",
+        "OBS-OI-SATURATION-MARKET-002",
+        "OBS-OI-SATURATION-MARKET-003",
+        "OBS-OI-SATURATION-MARKET-004",
+        "OBS-OI-SATURATION-MARKET-005",
+        "OBS-OI-SATURATION-MARKET-006"
+      ],
+      "quality": "medium",
+      "warnings": []
+    },
+    {
+      "indicator_id": "CALC-OFFER-FORMAT-SHARE-QUIZ-OPP-OI-SATURATION-001",
+      "opportunity_id": "OPP-OI-SATURATION-001",
+      "field": "offer_format_share_quiz_percent",
+      "value": 60,
+      "value_type": "integer",
+      "unit": "percent",
+      "calculation_method": "quiz_offers_divided_by_recognized_format_offers_times_100_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-SATURATION-TARGET",
+        "OBS-OI-SATURATION-MARKET-001",
+        "OBS-OI-SATURATION-MARKET-002",
+        "OBS-OI-SATURATION-MARKET-003",
+        "OBS-OI-SATURATION-MARKET-004",
+        "OBS-OI-SATURATION-MARKET-005"
+      ],
+      "quality": "medium",
+      "warnings": []
+    },
+    {
+      "indicator_id": "CALC-OFFER-FORMAT-SHARE-VSL-OPP-OI-SATURATION-001",
+      "opportunity_id": "OPP-OI-SATURATION-001",
+      "field": "offer_format_share_vsl_percent",
+      "value": 20,
+      "value_type": "integer",
+      "unit": "percent",
+      "calculation_method": "vsl_offers_divided_by_recognized_format_offers_times_100_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-SATURATION-TARGET",
+        "OBS-OI-SATURATION-MARKET-001",
+        "OBS-OI-SATURATION-MARKET-002",
+        "OBS-OI-SATURATION-MARKET-003",
+        "OBS-OI-SATURATION-MARKET-004",
+        "OBS-OI-SATURATION-MARKET-005"
+      ],
+      "quality": "medium",
+      "warnings": []
+    },
+    {
+      "indicator_id": "CALC-OFFER-FORMAT-SHARE-DIRECT-OPP-OI-SATURATION-001",
+      "opportunity_id": "OPP-OI-SATURATION-001",
+      "field": "offer_format_share_direct_percent",
+      "value": 20,
+      "value_type": "integer",
+      "unit": "percent",
+      "calculation_method": "direct_offers_divided_by_recognized_format_offers_times_100_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-SATURATION-TARGET",
+        "OBS-OI-SATURATION-MARKET-001",
+        "OBS-OI-SATURATION-MARKET-002",
+        "OBS-OI-SATURATION-MARKET-003",
+        "OBS-OI-SATURATION-MARKET-004",
+        "OBS-OI-SATURATION-MARKET-005"
+      ],
+      "quality": "medium",
+      "warnings": []
+    }
+  ],
+  "missing_inputs": [],
+  "warnings": []
+}

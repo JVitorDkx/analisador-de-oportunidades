@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "intelligence_version": "OFFER-INTELLIGENCE-0.1.0",
+  "analysis_id": "OI-INSUFFICIENT-001",
+  "opportunity_id": "OPP-OI-INSUFFICIENT-001",
+  "calculated_at": "2026-07-20T12:00:00+00:00",
+  "status": "partial",
+  "indicators": [
+    {
+      "indicator_id": "CALC-ACTIVE-ADS-CURRENT-OPP-OI-INSUFFICIENT-001",
+      "opportunity_id": "OPP-OI-INSUFFICIENT-001",
+      "field": "active_ads_current",
+      "value": 3,
+      "value_type": "integer",
+      "unit": "ads",
+      "calculation_method": "latest_active_ads_count_in_inclusive_window_v1",
+      "calculation_version": "OFFER-INTELLIGENCE-0.1.0",
+      "calculated_at": "2026-07-20T12:00:00Z",
+      "source_evidence_ids": [
+        "OBS-OI-INSUFFICIENT-ADS-CURRENT"
+      ],
+      "quality": "low",
+      "warnings": []
+    }
+  ],
+  "missing_inputs": [
+    {
+      "indicator_field": "active_ads_growth_percent",
+      "required_inputs": [
+        "ad_snapshots[2].active_ads_count"
+      ],
+      "reason": "At least 2 comparable snapshots are required."
+    },
+    {
+      "indicator_field": "creative_churn_percent",
+      "required_inputs": [
+        "ad_snapshots[2].creative_ids"
+      ],
+      "reason": "At least 2 comparable creative snapshots are required."
+    },
+    {
+      "indicator_field": "advertiser_density_per_100_offers",
+      "required_inputs": [
+        "market_sample[5].advertiser_id"
+      ],
+      "reason": "At least 5 valid active offers are required."
+    },
+    {
+      "indicator_field": "price_position_percentile",
+      "required_inputs": [
+        "market_sample[5].ticket_amount",
+        "market_sample[5].currency=BRL"
+      ],
+      "reason": "At least 5 same-currency prices are required."
+    },
+    {
+      "indicator_field": "offer_format_share_quiz_percent",
+      "required_inputs": [
+        "market_sample[5].offer_format"
+      ],
+      "reason": "At least 5 recognized offer formats are required."
+    },
+    {
+      "indicator_field": "offer_format_share_vsl_percent",
+      "required_inputs": [
+        "market_sample[5].offer_format"
+      ],
+      "reason": "At least 5 recognized offer formats are required."
+    },
+    {
+      "indicator_field": "offer_format_share_direct_percent",
+      "required_inputs": [
+        "market_sample[5].offer_format"
+      ],
+      "reason": "At least 5 recognized offer formats are required."
+    }
+  ],
+  "warnings": []
+}
