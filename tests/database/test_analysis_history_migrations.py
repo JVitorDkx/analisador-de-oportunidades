@@ -20,6 +20,7 @@ class AnalysisHistorySchemaTests(unittest.TestCase):
         cls.quota = migration("202607230002_entitlements_and_quota.sql")
         cls.rls = migration("202607230003_analysis_rls_policies.sql")
         cls.entitlement_projection = migration("202607230004_entitlement_projection.sql")
+        cls.persistence = migration("202607230005_analysis_persistence_rpcs.sql")
 
     def test_history_schema_is_tenant_scoped_and_idempotent(self) -> None:
         self.assertIn("create table if not exists public.analyses", self.history)
@@ -113,6 +114,38 @@ class AnalysisHistorySchemaTests(unittest.TestCase):
         self.assertNotRegex(
             self.entitlement_projection,
             r"grant\s+(?:insert|update|delete|all).*?to authenticated",
+        )
+
+    def test_persistence_rpcs_are_user_bound_and_transactional(self) -> None:
+        for function in (
+            "public.reserve_analysis_quota",
+            "public.complete_analysis",
+            "public.release_analysis_quota",
+        ):
+            self.assertIn(f"create or replace function {function}", self.persistence)
+        self.assertGreaterEqual(self.persistence.count("security definer"), 3)
+        self.assertGreaterEqual(self.persistence.count("set search_path = ''"), 3)
+        self.assertIn("membership.user_id = auth.uid()", self.persistence)
+        self.assertIn("ledger.user_id = auth.uid()", self.persistence)
+        self.assertIn("insert into public.analyses", self.persistence)
+        self.assertIn("set status = 'consumed'", self.persistence)
+        self.assertIn("target_result_payload", self.persistence)
+
+    def test_private_quota_mutators_are_no_longer_client_executable(self) -> None:
+        self.assertIn(
+            "revoke execute on function private.reserve_analysis_quota(uuid, text) "
+            "from authenticated",
+            " ".join(self.persistence.split()),
+        )
+        self.assertIn(
+            "revoke execute on function private.finalize_analysis_quota("
+            "uuid, uuid, uuid, boolean) from authenticated",
+            " ".join(self.persistence.split()),
+        )
+        self.assertIn(
+            "grant execute on function public.reserve_analysis_quota(uuid, text) "
+            "to authenticated",
+            " ".join(self.persistence.split()),
         )
 
 

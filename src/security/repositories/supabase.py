@@ -43,6 +43,10 @@ class PostgrestUnavailable(PostgrestRequestError):
     """The Data API was unavailable or returned an invalid response."""
 
 
+class PostgrestQuotaExceeded(PostgrestRequestError):
+    """The database rejected an analysis after atomically checking quota."""
+
+
 class SupabasePostgrestClient:
     """Issue stateless requests with a publishable key and one user's JWT."""
 
@@ -94,6 +98,16 @@ class SupabasePostgrestClient:
         if response.status_code >= 500:
             raise PostgrestUnavailable("Supabase Data API is unavailable")
         if response.status_code >= 400:
+            try:
+                error = response.json()
+            except (TypeError, ValueError):
+                error = None
+            if (
+                isinstance(error, dict)
+                and error.get("code") == "P0001"
+                and error.get("message") == "analysis quota exceeded"
+            ):
+                raise PostgrestQuotaExceeded("analysis quota exceeded")
             raise PostgrestRequestError("Supabase Data API rejected the request")
         try:
             data = response.json()

@@ -949,6 +949,10 @@ export type AnalyzeOpportunityData = {
     body: AnalyzeRequest;
     headers?: {
         /**
+         * Idempotency-Key
+         */
+        'Idempotency-Key'?: string | null;
+        /**
          * X-Tenant-Id
          */
         'X-Tenant-ID'?: string | null;
@@ -1017,6 +1021,58 @@ export type AnalyzeOpportunityErrors = {
      * A entrada é estrutural ou semanticamente inválida.
      */
     422: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * A quota mensal de análises do tenant foi atingida.
+     */
+    429: {
         /**
          * Code
          */

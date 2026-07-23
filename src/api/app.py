@@ -33,6 +33,14 @@ from src.api.models import (
     ProblemError,
     SessionResponse,
 )
+from src.api.persistence import (
+    AnalysisPersistenceDenied,
+    AnalysisPersistenceUnavailable,
+    AnalysisQuotaExceeded,
+    AnalysisRepository,
+    execute_persisted_analysis,
+    production_analysis_repository,
+)
 from src.api.service import (
     AnalysisContractError,
     InvalidAnalysisInput,
@@ -135,6 +143,7 @@ def _validation_pointer(location: tuple[str | int, ...]) -> str:
 def create_app(
     *,
     security: ApiSecurityDependencies | None = None,
+    analysis_repository: AnalysisRepository | None = None,
 ) -> FastAPI:
     """Create the ASGI application without modifying the deterministic core."""
 
@@ -162,6 +171,9 @@ def create_app(
             authorization=authorization,
             tenant_id=x_tenant_id,
         )
+
+    def persistence_repository() -> AnalysisRepository:
+        return analysis_repository or production_analysis_repository()
 
     @application.middleware("http")
     async def add_request_id(
@@ -240,6 +252,48 @@ def create_app(
             code="authentication_unavailable",
             title="Authentication unavailable",
             detail="The service cannot safely verify tenant identity at this time.",
+        )
+
+    @application.exception_handler(AnalysisPersistenceDenied)
+    async def persistence_denied(
+        request: Request,
+        exc: AnalysisPersistenceDenied,
+    ) -> JSONResponse:
+        logger.info("Analysis persistence denied [%s]: %s", _request_id(request), exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            code="authentication_required",
+            title="Authentication required",
+            detail="A valid Supabase user session and tenant selection are required.",
+        )
+
+    @application.exception_handler(AnalysisQuotaExceeded)
+    async def quota_exceeded(
+        request: Request,
+        exc: AnalysisQuotaExceeded,
+    ) -> JSONResponse:
+        logger.info("Analysis quota exceeded [%s]: %s", _request_id(request), exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            code="analysis_quota_exceeded",
+            title="Analysis quota exceeded",
+            detail="The tenant has reached its current monthly analysis limit.",
+        )
+
+    @application.exception_handler(AnalysisPersistenceUnavailable)
+    async def persistence_unavailable(
+        request: Request,
+        exc: AnalysisPersistenceUnavailable,
+    ) -> JSONResponse:
+        logger.error("Analysis persistence unavailable [%s]: %s", _request_id(request), exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            code="analysis_persistence_unavailable",
+            title="Analysis persistence unavailable",
+            detail="The service cannot safely persist analysis history at this time.",
         )
 
     @application.exception_handler(AnalysisContractError)
@@ -362,6 +416,7 @@ def create_app(
             },
             401: _problem_response_spec("O JWT ou o tenant selecionado não são válidos."),
             422: _problem_response_spec("A entrada é estrutural ou semanticamente inválida."),
+            429: _problem_response_spec("A quota mensal de análises do tenant foi atingida."),
             500: _problem_response_spec("A análise gerada violou um contrato autoritativo."),
             503: _problem_response_spec("A autenticação ou a consulta de assinatura está indisponível."),
         },
@@ -369,8 +424,24 @@ def create_app(
     def analyze(
         payload: AnnotatedAnalyzeRequest,
         _authenticated: AuthenticatedSession = Depends(protected_session),
+        repository: AnalysisRepository = Depends(persistence_repository),
+        idempotency_key: Annotated[
+            str | None,
+            Header(
+                alias="Idempotency-Key",
+                min_length=8,
+                max_length=128,
+                pattern=r"^[A-Za-z0-9._:-]+$",
+            ),
+        ] = None,
     ) -> AnalysisResponse:
-        return analyze_payload(payload)
+        return execute_persisted_analysis(
+            repository=repository,
+            principal=_authenticated.principal,
+            idempotency_key=idempotency_key or f"analysis:{payload.analysis_id}",
+            payload=payload,
+            analyze=analyze_payload,
+        )
 
     return application
 

@@ -174,9 +174,12 @@ class OpenApiContractTests(unittest.TestCase):
         self.assertIn("X-Request-ID", analyze["responses"]["200"]["headers"])
         self.assertEqual(
             set(analyze["responses"]),
-            {"200", "401", "422", "500", "503"},
+            {"200", "401", "422", "429", "500", "503"},
         )
         self.assertEqual(analyze["security"], [{"SupabaseBearer": []}])
+        self.assertTrue(
+            any(parameter["name"] == "Idempotency-Key" for parameter in analyze["parameters"])
+        )
 
         validate_input = self.schema["paths"]["/api/v1/validate-input"]["post"]
         self.assertEqual(set(validate_input["responses"]), {"200", "401", "422", "500", "503"})
