@@ -430,6 +430,11 @@ Uma oportunidade também pode ser reprovada por um filtro eliminatório autoriza
 
 ## Segurança e limitações
 
+As regras obrigatórias para preços, webhooks, isolamento multi-tenant e
+prevenção de escalação de privilégios estão em `SECURITY_POLICY.md`. A suíte
+negativa correspondente fica em `tests/security/` e deve acompanhar qualquer
+futura funcionalidade SaaS.
+
 O projeto:
 
 - não estima faturamento sem um modelo autorizado;
@@ -447,8 +452,9 @@ O score ajuda a priorizar hipóteses e próximos testes. Ele não garante que um
 O workflow `.github/workflows/ci.yml` é executado em pull requests e em pushes
 para `main`. As validações ficam separadas em dois jobs independentes:
 
-- `Python test suite`: instala `requirements.txt` e executa os 97 testes e
-  seus subtests com warnings tratados como erro;
+- `Python test suite`: instala `requirements.txt` e executa toda a suíte,
+  incluindo os testes de segurança e seus subtests, com warnings tratados como
+  erro;
 - `TypeScript SDK`: instala pelo `package-lock.json`, executa
   `npm run typecheck` e confirma com `npm run check:generated` que o cliente
   versionado corresponde ao snapshot OpenAPI.
