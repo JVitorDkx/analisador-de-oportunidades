@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AnalyzeOpportunityData, AnalyzeOpportunityErrors, AnalyzeOpportunityResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetSessionData, GetSessionErrors, GetSessionResponses, ValidateOpportunityInputData, ValidateOpportunityInputErrors, ValidateOpportunityInputResponses } from './types.gen';
+import type { AnalyzeOpportunityData, AnalyzeOpportunityErrors, AnalyzeOpportunityResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetSessionData, GetSessionErrors, GetSessionResponses, GetTenantAnalysisData, GetTenantAnalysisErrors, GetTenantAnalysisResponses, GetTenantDashboardData, GetTenantDashboardErrors, GetTenantDashboardResponses, ListTenantAnalysesData, ListTenantAnalysesErrors, ListTenantAnalysesResponses, ValidateOpportunityInputData, ValidateOpportunityInputErrors, ValidateOpportunityInputResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -42,6 +42,33 @@ export const getHealth = <ThrowOnError extends boolean = false>(options?: Option
 export const getSession = <ThrowOnError extends boolean = false>(options?: Options<GetSessionData, ThrowOnError>) => (options?.client ?? client).get<GetSessionResponses, GetSessionErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/session',
+    ...options
+});
+
+/**
+ * Listar histórico de análises do tenant
+ */
+export const listTenantAnalyses = <ThrowOnError extends boolean = false>(options: Options<ListTenantAnalysesData, ThrowOnError>) => (options.client ?? client).get<ListTenantAnalysesResponses, ListTenantAnalysesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/tenants/{tenant_id}/analyses',
+    ...options
+});
+
+/**
+ * Obter uma análise salva
+ */
+export const getTenantAnalysis = <ThrowOnError extends boolean = false>(options: Options<GetTenantAnalysisData, ThrowOnError>) => (options.client ?? client).get<GetTenantAnalysisResponses, GetTenantAnalysisErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/tenants/{tenant_id}/analyses/{analysis_id}',
+    ...options
+});
+
+/**
+ * Obter métricas consolidadas do tenant
+ */
+export const getTenantDashboard = <ThrowOnError extends boolean = false>(options: Options<GetTenantDashboardData, ThrowOnError>) => (options.client ?? client).get<GetTenantDashboardResponses, GetTenantDashboardErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/tenants/{tenant_id}/dashboard',
     ...options
 });
 

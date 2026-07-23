@@ -140,6 +140,9 @@ class OpenApiContractTests(unittest.TestCase):
             {
                 "/api/v1/health": "getHealth",
                 "/api/v1/session": "getSession",
+                "/api/v1/tenants/{tenant_id}/analyses": "listTenantAnalyses",
+                "/api/v1/tenants/{tenant_id}/analyses/{analysis_id}": "getTenantAnalysis",
+                "/api/v1/tenants/{tenant_id}/dashboard": "getTenantDashboard",
                 "/api/v1/validate-input": "validateOpportunityInput",
                 "/api/v1/analyze": "analyzeOpportunity",
             },

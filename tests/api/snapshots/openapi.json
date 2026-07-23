@@ -1,6 +1,189 @@
 {
   "components": {
     "schemas": {
+      "AnalysisDetailResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AnalysisResponse"
+          },
+          "tenant_id": {
+            "format": "uuid",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "tenant_id",
+          "created_at",
+          "result"
+        ],
+        "title": "AnalysisDetailResponse",
+        "type": "object"
+      },
+      "AnalysisHistoryItem": {
+        "additionalProperties": false,
+        "properties": {
+          "analysis_mode": {
+            "enum": [
+              "pre_test",
+              "campaign_diagnosis",
+              "reassessment"
+            ],
+            "title": "Analysis Mode",
+            "type": "string"
+          },
+          "client_analysis_id": {
+            "minLength": 1,
+            "title": "Client Analysis Id",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "moderate",
+              "low",
+              "inconclusive"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "executive_summary": {
+            "minLength": 1,
+            "title": "Executive Summary",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "input_status": {
+            "enum": [
+              "sufficient",
+              "partial",
+              "insufficient",
+              "invalid"
+            ],
+            "title": "Input Status",
+            "type": "string"
+          },
+          "official_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Score"
+          },
+          "processed_at": {
+            "format": "date-time",
+            "title": "Processed At",
+            "type": "string"
+          },
+          "recommendation": {
+            "enum": [
+              "prioritize_test",
+              "test_with_conditions",
+              "collect_more_data",
+              "continue_collecting",
+              "consider_limited_scale",
+              "iterate_creative",
+              "iterate_offer",
+              "inspect_landing_page",
+              "inspect_checkout",
+              "pause_for_review",
+              "run_controlled_test",
+              "deprioritize",
+              "reject_for_now",
+              "insufficient_data"
+            ],
+            "title": "Recommendation",
+            "type": "string"
+          },
+          "recommended_opportunity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommended Opportunity Id"
+          }
+        },
+        "required": [
+          "id",
+          "client_analysis_id",
+          "analysis_mode",
+          "input_status",
+          "recommendation",
+          "confidence",
+          "recommended_opportunity_id",
+          "official_score",
+          "executive_summary",
+          "processed_at",
+          "created_at"
+        ],
+        "title": "AnalysisHistoryItem",
+        "type": "object"
+      },
+      "AnalysisHistoryResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AnalysisHistoryItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "minimum": 0.0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "AnalysisHistoryResponse",
+        "type": "object"
+      },
       "AnalysisResponse": {
         "additionalProperties": false,
         "properties": {
@@ -454,6 +637,93 @@
           "explanation"
         ],
         "title": "ContextAssessmentResponse",
+        "type": "object"
+      },
+      "DashboardResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "average_official_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Official Score"
+          },
+          "insufficient_analyses": {
+            "minimum": 0.0,
+            "title": "Insufficient Analyses",
+            "type": "integer"
+          },
+          "monthly_limit": {
+            "minimum": 1.0,
+            "title": "Monthly Limit",
+            "type": "integer"
+          },
+          "quota_remaining": {
+            "minimum": 0.0,
+            "title": "Quota Remaining",
+            "type": "integer"
+          },
+          "quota_used": {
+            "minimum": 0.0,
+            "title": "Quota Used",
+            "type": "integer"
+          },
+          "recommendation_counts": {
+            "additionalProperties": {
+              "minimum": 0.0,
+              "type": "integer"
+            },
+            "title": "Recommendation Counts",
+            "type": "object"
+          },
+          "rejected_analyses": {
+            "minimum": 0.0,
+            "title": "Rejected Analyses",
+            "type": "integer"
+          },
+          "scored_analyses": {
+            "minimum": 0.0,
+            "title": "Scored Analyses",
+            "type": "integer"
+          },
+          "sufficient_analyses": {
+            "minimum": 0.0,
+            "title": "Sufficient Analyses",
+            "type": "integer"
+          },
+          "tier": {
+            "enum": [
+              "free",
+              "pro"
+            ],
+            "title": "Tier",
+            "type": "string"
+          },
+          "total_analyses": {
+            "minimum": 0.0,
+            "title": "Total Analyses",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tier",
+          "monthly_limit",
+          "quota_used",
+          "quota_remaining",
+          "total_analyses",
+          "scored_analyses",
+          "average_official_score",
+          "sufficient_analyses",
+          "insufficient_analyses",
+          "rejected_analyses",
+          "recommendation_counts"
+        ],
+        "title": "DashboardResponse",
         "type": "object"
       },
       "DataQualityRequest": {
@@ -3553,6 +3823,1452 @@
           }
         ],
         "summary": "Obter sessão e plano efetivos"
+      }
+    },
+    "/api/v1/tenants/{tenant_id}/analyses": {
+      "get": {
+        "operationId": "listTenantAnalyses",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Tenant-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisHistoryResponse"
+                }
+              }
+            },
+            "description": "Histórico paginado e limitado pela retenção do plano."
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A sessão não é válida.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "O tenant não está disponível para a sessão.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A paginação ou o identificador é inválido.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "O histórico está temporariamente indisponível.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseBearer": []
+          }
+        ],
+        "summary": "Listar histórico de análises do tenant"
+      }
+    },
+    "/api/v1/tenants/{tenant_id}/analyses/{analysis_id}": {
+      "get": {
+        "operationId": "getTenantAnalysis",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "analysis_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Analysis Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Tenant-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisDetailResponse"
+                }
+              }
+            },
+            "description": "Relatório validado salvo no histórico."
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A sessão não é válida.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A análise não existe ou não está visível.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Um identificador é inválido.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "O histórico está temporariamente indisponível.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseBearer": []
+          }
+        ],
+        "summary": "Obter uma análise salva"
+      }
+    },
+    "/api/v1/tenants/{tenant_id}/dashboard": {
+      "get": {
+        "operationId": "getTenantDashboard",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Tenant-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            },
+            "description": "Métricas reais de histórico, plano e quota."
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A sessão não é válida.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "O tenant não está disponível para a sessão.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "O identificador do tenant é inválido.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$defs": {
+                    "ProblemError": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "code": {
+                          "minLength": 1,
+                          "title": "Code",
+                          "type": "string"
+                        },
+                        "detail": {
+                          "minLength": 1,
+                          "title": "Detail",
+                          "type": "string"
+                        },
+                        "pointer": {
+                          "minLength": 1,
+                          "title": "Pointer",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pointer",
+                        "code",
+                        "detail"
+                      ],
+                      "title": "ProblemError",
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "minLength": 1,
+                      "title": "Code",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "minLength": 1,
+                      "title": "Detail",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "$ref": "#/$defs/ProblemError"
+                      },
+                      "title": "Errors",
+                      "type": "array"
+                    },
+                    "instance": {
+                      "minLength": 1,
+                      "title": "Instance",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "minLength": 1,
+                      "title": "Request Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "maximum": 599,
+                      "minimum": 400,
+                      "title": "Status",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "title": "Title",
+                      "type": "string"
+                    },
+                    "type": {
+                      "minLength": 1,
+                      "title": "Type",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance",
+                    "code",
+                    "request_id"
+                  ],
+                  "title": "ProblemDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "As métricas estão temporariamente indisponíveis.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Identificador de rastreabilidade recebido ou gerado pela API.",
+                "schema": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseBearer": []
+          }
+        ],
+        "summary": "Obter métricas consolidadas do tenant"
       }
     },
     "/api/v1/validate-input": {

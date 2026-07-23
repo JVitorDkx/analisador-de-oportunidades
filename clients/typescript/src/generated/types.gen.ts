@@ -5,6 +5,97 @@ export type ClientOptions = {
 };
 
 /**
+ * AnalysisDetailResponse
+ */
+export type AnalysisDetailResponse = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    result: AnalysisResponse;
+    /**
+     * Tenant Id
+     */
+    tenant_id: string;
+};
+
+/**
+ * AnalysisHistoryItem
+ */
+export type AnalysisHistoryItem = {
+    /**
+     * Analysis Mode
+     */
+    analysis_mode: 'pre_test' | 'campaign_diagnosis' | 'reassessment';
+    /**
+     * Client Analysis Id
+     */
+    client_analysis_id: string;
+    /**
+     * Confidence
+     */
+    confidence: 'high' | 'moderate' | 'low' | 'inconclusive';
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Executive Summary
+     */
+    executive_summary: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Input Status
+     */
+    input_status: 'sufficient' | 'partial' | 'insufficient' | 'invalid';
+    /**
+     * Official Score
+     */
+    official_score: number | null;
+    /**
+     * Processed At
+     */
+    processed_at: string;
+    /**
+     * Recommendation
+     */
+    recommendation: 'prioritize_test' | 'test_with_conditions' | 'collect_more_data' | 'continue_collecting' | 'consider_limited_scale' | 'iterate_creative' | 'iterate_offer' | 'inspect_landing_page' | 'inspect_checkout' | 'pause_for_review' | 'run_controlled_test' | 'deprioritize' | 'reject_for_now' | 'insufficient_data';
+    /**
+     * Recommended Opportunity Id
+     */
+    recommended_opportunity_id: string | null;
+};
+
+/**
+ * AnalysisHistoryResponse
+ */
+export type AnalysisHistoryResponse = {
+    /**
+     * Items
+     */
+    items: Array<AnalysisHistoryItem>;
+    /**
+     * Limit
+     */
+    limit: number;
+    /**
+     * Offset
+     */
+    offset: number;
+    /**
+     * Total
+     */
+    total: number;
+};
+
+/**
  * AnalysisResponse
  */
 export type AnalysisResponse = {
@@ -219,6 +310,58 @@ export type ContextAssessmentResponse = {
      * Operational Constraints
      */
     operational_constraints: Array<string>;
+};
+
+/**
+ * DashboardResponse
+ */
+export type DashboardResponse = {
+    /**
+     * Average Official Score
+     */
+    average_official_score: number | null;
+    /**
+     * Insufficient Analyses
+     */
+    insufficient_analyses: number;
+    /**
+     * Monthly Limit
+     */
+    monthly_limit: number;
+    /**
+     * Quota Remaining
+     */
+    quota_remaining: number;
+    /**
+     * Quota Used
+     */
+    quota_used: number;
+    /**
+     * Recommendation Counts
+     */
+    recommendation_counts: {
+        [key: string]: number;
+    };
+    /**
+     * Rejected Analyses
+     */
+    rejected_analyses: number;
+    /**
+     * Scored Analyses
+     */
+    scored_analyses: number;
+    /**
+     * Sufficient Analyses
+     */
+    sufficient_analyses: number;
+    /**
+     * Tier
+     */
+    tier: 'free' | 'pro';
+    /**
+     * Total Analyses
+     */
+    total_analyses: number;
 };
 
 /**
@@ -1491,6 +1634,739 @@ export type GetSessionResponses = {
 };
 
 export type GetSessionResponse = GetSessionResponses[keyof GetSessionResponses];
+
+export type ListTenantAnalysesData = {
+    body?: never;
+    headers?: {
+        /**
+         * X-Tenant-Id
+         */
+        'X-Tenant-ID'?: string | null;
+    };
+    path: {
+        /**
+         * Tenant Id
+         */
+        tenant_id: string;
+    };
+    query?: {
+        /**
+         * Limit
+         */
+        limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
+    };
+    url: '/api/v1/tenants/{tenant_id}/analyses';
+};
+
+export type ListTenantAnalysesErrors = {
+    /**
+     * ProblemDetail
+     *
+     * A sessão não é válida.
+     */
+    401: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * O tenant não está disponível para a sessão.
+     */
+    404: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * A paginação ou o identificador é inválido.
+     */
+    422: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * O histórico está temporariamente indisponível.
+     */
+    503: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+};
+
+export type ListTenantAnalysesError = ListTenantAnalysesErrors[keyof ListTenantAnalysesErrors];
+
+export type ListTenantAnalysesResponses = {
+    /**
+     * Histórico paginado e limitado pela retenção do plano.
+     */
+    200: AnalysisHistoryResponse;
+};
+
+export type ListTenantAnalysesResponse = ListTenantAnalysesResponses[keyof ListTenantAnalysesResponses];
+
+export type GetTenantAnalysisData = {
+    body?: never;
+    headers?: {
+        /**
+         * X-Tenant-Id
+         */
+        'X-Tenant-ID'?: string | null;
+    };
+    path: {
+        /**
+         * Tenant Id
+         */
+        tenant_id: string;
+        /**
+         * Analysis Id
+         */
+        analysis_id: string;
+    };
+    query?: never;
+    url: '/api/v1/tenants/{tenant_id}/analyses/{analysis_id}';
+};
+
+export type GetTenantAnalysisErrors = {
+    /**
+     * ProblemDetail
+     *
+     * A sessão não é válida.
+     */
+    401: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * A análise não existe ou não está visível.
+     */
+    404: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * Um identificador é inválido.
+     */
+    422: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * O histórico está temporariamente indisponível.
+     */
+    503: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+};
+
+export type GetTenantAnalysisError = GetTenantAnalysisErrors[keyof GetTenantAnalysisErrors];
+
+export type GetTenantAnalysisResponses = {
+    /**
+     * Relatório validado salvo no histórico.
+     */
+    200: AnalysisDetailResponse;
+};
+
+export type GetTenantAnalysisResponse = GetTenantAnalysisResponses[keyof GetTenantAnalysisResponses];
+
+export type GetTenantDashboardData = {
+    body?: never;
+    headers?: {
+        /**
+         * X-Tenant-Id
+         */
+        'X-Tenant-ID'?: string | null;
+    };
+    path: {
+        /**
+         * Tenant Id
+         */
+        tenant_id: string;
+    };
+    query?: never;
+    url: '/api/v1/tenants/{tenant_id}/dashboard';
+};
+
+export type GetTenantDashboardErrors = {
+    /**
+     * ProblemDetail
+     *
+     * A sessão não é válida.
+     */
+    401: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * O tenant não está disponível para a sessão.
+     */
+    404: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * O identificador do tenant é inválido.
+     */
+    422: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * As métricas estão temporariamente indisponíveis.
+     */
+    503: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+};
+
+export type GetTenantDashboardError = GetTenantDashboardErrors[keyof GetTenantDashboardErrors];
+
+export type GetTenantDashboardResponses = {
+    /**
+     * Métricas reais de histórico, plano e quota.
+     */
+    200: DashboardResponse;
+};
+
+export type GetTenantDashboardResponse = GetTenantDashboardResponses[keyof GetTenantDashboardResponses];
 
 export type ValidateOpportunityInputData = {
     /**

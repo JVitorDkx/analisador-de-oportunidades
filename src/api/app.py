@@ -8,9 +8,9 @@ import re
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Annotated
-from uuid import uuid4
+from uuid import UUID, uuid4
 
-from fastapi import Body, Depends, FastAPI, Header, Request, status
+from fastapi import Body, Depends, FastAPI, Header, Query, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -25,8 +25,11 @@ from src.api.auth import (
     production_api_security_dependencies,
 )
 from src.api.models import (
+    AnalysisDetailResponse,
+    AnalysisHistoryResponse,
     AnalysisResponse,
     AnalyzeRequest,
+    DashboardResponse,
     HealthResponse,
     InputValidationResponse,
     ProblemDetail,
@@ -34,6 +37,7 @@ from src.api.models import (
     SessionResponse,
 )
 from src.api.persistence import (
+    AnalysisNotFound,
     AnalysisPersistenceDenied,
     AnalysisPersistenceUnavailable,
     AnalysisQuotaExceeded,
@@ -296,6 +300,20 @@ def create_app(
             detail="The service cannot safely persist analysis history at this time.",
         )
 
+    @application.exception_handler(AnalysisNotFound)
+    async def analysis_not_found(
+        request: Request,
+        exc: AnalysisNotFound,
+    ) -> JSONResponse:
+        logger.info("Analysis not found [%s]: %s", _request_id(request), exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_404_NOT_FOUND,
+            code="analysis_not_found",
+            title="Analysis not found",
+            detail="The requested analysis is not available to this tenant.",
+        )
+
     @application.exception_handler(AnalysisContractError)
     async def analysis_contract_error(
         request: Request,
@@ -380,6 +398,80 @@ def create_app(
             monthly_analysis_limit=authenticated.entitlement.monthly_analysis_limit,
             history_retention_days=authenticated.entitlement.history_retention_days,
         )
+
+    def tenant_principal(
+        tenant_id: UUID,
+        authenticated: AuthenticatedSession,
+    ):
+        if str(tenant_id) != authenticated.principal.tenant_id:
+            raise AnalysisNotFound("tenant resource not found")
+        return authenticated.principal
+
+    @application.get(
+        "/api/v1/tenants/{tenant_id}/analyses",
+        response_model=AnalysisHistoryResponse,
+        operation_id="listTenantAnalyses",
+        summary="Listar histórico de análises do tenant",
+        responses={
+            200: {"description": "Histórico paginado e limitado pela retenção do plano."},
+            401: _problem_response_spec("A sessão não é válida."),
+            404: _problem_response_spec("O tenant não está disponível para a sessão."),
+            422: _problem_response_spec("A paginação ou o identificador é inválido."),
+            503: _problem_response_spec("O histórico está temporariamente indisponível."),
+        },
+    )
+    def list_tenant_analyses(
+        tenant_id: UUID,
+        limit: Annotated[int, Query(ge=1, le=100)] = 20,
+        offset: Annotated[int, Query(ge=0)] = 0,
+        authenticated: AuthenticatedSession = Depends(protected_session),
+        repository: AnalysisRepository = Depends(persistence_repository),
+    ) -> AnalysisHistoryResponse:
+        principal = tenant_principal(tenant_id, authenticated)
+        return repository.list_history(principal, limit=limit, offset=offset)
+
+    @application.get(
+        "/api/v1/tenants/{tenant_id}/analyses/{analysis_id}",
+        response_model=AnalysisDetailResponse,
+        operation_id="getTenantAnalysis",
+        summary="Obter uma análise salva",
+        responses={
+            200: {"description": "Relatório validado salvo no histórico."},
+            401: _problem_response_spec("A sessão não é válida."),
+            404: _problem_response_spec("A análise não existe ou não está visível."),
+            422: _problem_response_spec("Um identificador é inválido."),
+            503: _problem_response_spec("O histórico está temporariamente indisponível."),
+        },
+    )
+    def get_tenant_analysis(
+        tenant_id: UUID,
+        analysis_id: UUID,
+        authenticated: AuthenticatedSession = Depends(protected_session),
+        repository: AnalysisRepository = Depends(persistence_repository),
+    ) -> AnalysisDetailResponse:
+        principal = tenant_principal(tenant_id, authenticated)
+        return repository.get_analysis(principal, analysis_id=analysis_id)
+
+    @application.get(
+        "/api/v1/tenants/{tenant_id}/dashboard",
+        response_model=DashboardResponse,
+        operation_id="getTenantDashboard",
+        summary="Obter métricas consolidadas do tenant",
+        responses={
+            200: {"description": "Métricas reais de histórico, plano e quota."},
+            401: _problem_response_spec("A sessão não é válida."),
+            404: _problem_response_spec("O tenant não está disponível para a sessão."),
+            422: _problem_response_spec("O identificador do tenant é inválido."),
+            503: _problem_response_spec("As métricas estão temporariamente indisponíveis."),
+        },
+    )
+    def get_tenant_dashboard(
+        tenant_id: UUID,
+        authenticated: AuthenticatedSession = Depends(protected_session),
+        repository: AnalysisRepository = Depends(persistence_repository),
+    ) -> DashboardResponse:
+        principal = tenant_principal(tenant_id, authenticated)
+        return repository.get_dashboard(principal)
 
     @application.post(
         "/api/v1/validate-input",

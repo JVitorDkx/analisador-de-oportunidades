@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Annotated, Literal
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
@@ -290,6 +291,48 @@ class AnalysisResponse(StrictTransportModel):
     conditions_that_would_change_recommendation: list[str]
     human_review: HumanReviewResponse
     disclaimer: str
+
+
+class AnalysisHistoryItem(StrictTransportModel):
+    id: UUID
+    client_analysis_id: NonEmptyString
+    analysis_mode: AnalysisMode
+    input_status: Literal["sufficient", "partial", "insufficient", "invalid"]
+    recommendation: RecommendationAction
+    confidence: Literal["high", "moderate", "low", "inconclusive"]
+    recommended_opportunity_id: str | None
+    official_score: float | None
+    executive_summary: NonEmptyString
+    processed_at: datetime
+    created_at: datetime
+
+
+class AnalysisHistoryResponse(StrictTransportModel):
+    items: list[AnalysisHistoryItem]
+    total: Annotated[int, Field(ge=0)]
+    limit: Annotated[int, Field(ge=1, le=100)]
+    offset: Annotated[int, Field(ge=0)]
+
+
+class AnalysisDetailResponse(StrictTransportModel):
+    id: UUID
+    tenant_id: UUID
+    created_at: datetime
+    result: AnalysisResponse
+
+
+class DashboardResponse(StrictTransportModel):
+    tier: Literal["free", "pro"]
+    monthly_limit: PositiveInteger
+    quota_used: Annotated[int, Field(ge=0)]
+    quota_remaining: Annotated[int, Field(ge=0)]
+    total_analyses: Annotated[int, Field(ge=0)]
+    scored_analyses: Annotated[int, Field(ge=0)]
+    average_official_score: float | None
+    sufficient_analyses: Annotated[int, Field(ge=0)]
+    insufficient_analyses: Annotated[int, Field(ge=0)]
+    rejected_analyses: Annotated[int, Field(ge=0)]
+    recommendation_counts: dict[str, Annotated[int, Field(ge=0)]]
 
 
 class ValidationIssueResponse(StrictTransportModel):

@@ -75,6 +75,44 @@ def analysis_contracts() -> tuple[AnalyzeRequest, AnalysisResponse]:
 
 
 class SupabaseAnalysisRepositoryTests(unittest.TestCase):
+    def test_list_history_uses_tenant_bound_rpc_and_pagination(self) -> None:
+        _payload, result = analysis_contracts()
+        repo, transport = repository(
+            FakeResponse(
+                200,
+                [
+                    {
+                        "id": STORED_ANALYSIS_ID,
+                        "client_analysis_id": result.analysis_id,
+                        "analysis_mode": result.analysis_mode,
+                        "input_status": result.input_status,
+                        "recommendation": result.recommendation,
+                        "confidence": result.confidence,
+                        "recommended_opportunity_id": result.recommended_opportunity_id,
+                        "official_score": result.ranking[0].official_score,
+                        "executive_summary": result.executive_summary,
+                        "processed_at": result.processed_at.isoformat(),
+                        "created_at": result.processed_at.isoformat(),
+                        "total_count": 1,
+                    }
+                ],
+            )
+        )
+
+        history = repo.list_history(principal(), limit=10, offset=5)
+
+        self.assertEqual(history.total, 1)
+        request = transport.requests[0]
+        self.assertTrue(request["url"].endswith("/rest/v1/rpc/list_tenant_analyses"))
+        self.assertEqual(
+            request["json"],
+            {
+                "target_tenant_id": TENANT_ID,
+                "target_limit": 10,
+                "target_offset": 5,
+            },
+        )
+
     def test_reserve_uses_user_token_tenant_and_idempotency_key(self) -> None:
         repo, transport = repository(
             FakeResponse(

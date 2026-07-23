@@ -9,7 +9,14 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, JsonValue, ValidationError
 
-from src.api.models import AnalysisResponse, AnalyzeRequest
+from src.api.models import (
+    AnalysisDetailResponse,
+    AnalysisHistoryItem,
+    AnalysisHistoryResponse,
+    AnalysisResponse,
+    AnalyzeRequest,
+    DashboardResponse,
+)
 from src.api.service import AnalysisContractError
 from src.security.config import SecurityConfigurationError, SupabaseSettings
 from src.security.models import Principal
@@ -32,6 +39,10 @@ class AnalysisPersistenceDenied(PermissionError):
 
 class AnalysisPersistenceUnavailable(RuntimeError):
     """Raised when analysis history cannot be changed safely."""
+
+
+class AnalysisNotFound(LookupError):
+    """Raised when an analysis is absent or outside the visible retention window."""
 
 
 class PersistenceModel(BaseModel):
@@ -63,6 +74,16 @@ ModelT = TypeVar("ModelT", bound=BaseModel)
 
 
 class AnalysisRepository(Protocol):
+    def list_history(
+        self, principal: Principal, *, limit: int, offset: int
+    ) -> AnalysisHistoryResponse: ...
+
+    def get_analysis(
+        self, principal: Principal, *, analysis_id: UUID
+    ) -> AnalysisDetailResponse: ...
+
+    def get_dashboard(self, principal: Principal) -> DashboardResponse: ...
+
     def reserve(
         self,
         principal: Principal,
@@ -92,6 +113,83 @@ class SupabaseAnalysisRepository:
 
     def __init__(self, client: SupabasePostgrestClient) -> None:
         self._client = client
+
+    def list_history(
+        self,
+        principal: Principal,
+        *,
+        limit: int,
+        offset: int,
+    ) -> AnalysisHistoryResponse:
+        rows = self._rpc(
+            principal,
+            "list_tenant_analyses",
+            {
+                "target_tenant_id": principal.tenant_id,
+                "target_limit": limit,
+                "target_offset": offset,
+            },
+        )
+        try:
+            total = int(rows[0].pop("total_count")) if rows else 0
+            items = [AnalysisHistoryItem.model_validate(row) for row in rows]
+            return AnalysisHistoryResponse(items=items, total=total, limit=limit, offset=offset)
+        except (TypeError, ValueError, ValidationError) as exc:
+            raise AnalysisPersistenceUnavailable("analysis history returned invalid data") from exc
+
+    def get_analysis(
+        self,
+        principal: Principal,
+        *,
+        analysis_id: UUID,
+    ) -> AnalysisDetailResponse:
+        rows = self._rpc(
+            principal,
+            "get_tenant_analysis",
+            {
+                "target_tenant_id": principal.tenant_id,
+                "target_analysis_id": str(analysis_id),
+            },
+        )
+        if not rows:
+            raise AnalysisNotFound("analysis not found")
+        row = rows[0]
+        try:
+            return AnalysisDetailResponse(
+                id=str(row["id"]),
+                tenant_id=str(row["tenant_id"]),
+                created_at=row["created_at"],
+                result=AnalysisResponse.model_validate(row["result_payload"]),
+            )
+        except (KeyError, ValidationError) as exc:
+            raise AnalysisPersistenceUnavailable("analysis detail returned invalid data") from exc
+
+    def get_dashboard(self, principal: Principal) -> DashboardResponse:
+        rows = self._rpc(
+            principal,
+            "get_tenant_dashboard",
+            {"target_tenant_id": principal.tenant_id},
+        )
+        return _one_model(rows, DashboardResponse, "tenant dashboard")
+
+    def _rpc(
+        self,
+        principal: Principal,
+        name: str,
+        payload: dict[str, object],
+    ) -> list[dict[str, object]]:
+        try:
+            return self._client.rows(
+                "POST",
+                f"rpc/{name}",
+                access_token=_access_token(principal),
+                params={},
+                payload=payload,
+            )
+        except PostgrestAccessDenied as exc:
+            raise AnalysisPersistenceDenied("analysis history denied") from exc
+        except (PostgrestRequestError, PostgrestUnavailable) as exc:
+            raise AnalysisPersistenceUnavailable("analysis history unavailable") from exc
 
     def reserve(
         self,
