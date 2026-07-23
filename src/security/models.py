@@ -42,7 +42,8 @@ class Principal(StrictSecurityModel):
 
     user_id: NonEmptyString
     tenant_id: NonEmptyString
-    role: Literal["member", "admin"]
+    role: Literal["owner", "admin", "member"]
+    access_token: Annotated[str | None, Field(min_length=1, exclude=True, repr=False)] = None
 
 
 class TenantResource(StrictSecurityModel):
@@ -63,7 +64,7 @@ class Profile(StrictSecurityModel):
     user_id: NonEmptyString
     tenant_id: NonEmptyString
     display_name: NonEmptyString
-    role: Literal["member", "admin"]
+    role: Literal["owner", "admin", "member"]
 
 
 class ProfileUpdateRequest(StrictSecurityModel):

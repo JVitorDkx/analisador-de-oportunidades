@@ -6,7 +6,7 @@ from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response, status
 
-from src.security.identity import ProfileService, StaticSessionAuthenticator, UnauthenticatedError
+from src.security.identity import Authenticator, UnauthenticatedError
 from src.security.models import (
     CheckoutRequest,
     CheckoutResponse,
@@ -18,7 +18,12 @@ from src.security.models import (
     WebhookAcceptedResponse,
 )
 from src.security.pricing import CheckoutService, UnknownPlanError
-from src.security.tenancy import InMemoryTenantRepository, TenantResourceNotFound
+from src.security.repositories.contracts import (
+    ProfileRepository,
+    SecurityRepositoryUnavailable,
+    TenantRepository,
+)
+from src.security.tenancy import TenantResourceNotFound
 from src.security.webhooks import InvalidWebhookSignature, WebhookVerifier
 
 
@@ -26,9 +31,9 @@ def create_security_app(
     *,
     checkout_service: CheckoutService,
     webhook_verifier: WebhookVerifier,
-    authenticator: StaticSessionAuthenticator,
-    tenant_repository: InMemoryTenantRepository,
-    profile_service: ProfileService,
+    authenticator: Authenticator,
+    tenant_repository: TenantRepository,
+    profile_service: ProfileRepository,
 ) -> FastAPI:
     """Create an isolated reference boundary without changing the v1 API."""
 
@@ -36,11 +41,17 @@ def create_security_app(
 
     def authenticated_principal(
         authorization: Annotated[str | None, Header()] = None,
+        x_tenant_id: Annotated[str | None, Header(alias="X-Tenant-ID")] = None,
     ) -> Principal:
         try:
-            return authenticator.authenticate(authorization)
+            return authenticator.authenticate(authorization, x_tenant_id)
         except UnauthenticatedError as exc:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc)) from exc
+        except SecurityRepositoryUnavailable as exc:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="authentication service is unavailable",
+            ) from exc
 
     @application.post(
         "/security/v1/checkout",
@@ -83,6 +94,11 @@ def create_security_app(
             return tenant_repository.get(principal, resource_id)
         except TenantResourceNotFound as exc:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+        except SecurityRepositoryUnavailable as exc:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="repository is unavailable",
+            ) from exc
 
     @application.patch("/security/v1/resources/{resource_id}", response_model=TenantResource)
     def update_resource(
@@ -94,6 +110,11 @@ def create_security_app(
             return tenant_repository.update(principal, resource_id, name=payload.name)
         except TenantResourceNotFound as exc:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+        except SecurityRepositoryUnavailable as exc:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="repository is unavailable",
+            ) from exc
 
     @application.delete(
         "/security/v1/resources/{resource_id}",
@@ -107,6 +128,11 @@ def create_security_app(
             tenant_repository.delete(principal, resource_id)
         except TenantResourceNotFound as exc:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+        except SecurityRepositoryUnavailable as exc:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="repository is unavailable",
+            ) from exc
         return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     @application.patch("/security/v1/profile", response_model=Profile)
@@ -118,5 +144,10 @@ def create_security_app(
             return profile_service.update(principal, payload)
         except UnauthenticatedError as exc:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc)) from exc
+        except SecurityRepositoryUnavailable as exc:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="repository is unavailable",
+            ) from exc
 
     return application

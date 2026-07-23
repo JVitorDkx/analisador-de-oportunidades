@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from typing import Protocol
 
 from src.security.models import Principal, Profile, ProfileUpdateRequest
 
@@ -11,20 +12,37 @@ class UnauthenticatedError(PermissionError):
     """Raised when a session token is absent or not recognized."""
 
 
+class Authenticator(Protocol):
+    """Authenticate a request and derive its server-authoritative principal."""
+
+    def authenticate(
+        self,
+        authorization: str | None,
+        tenant_id: str | None = None,
+    ) -> Principal: ...
+
+
 class StaticSessionAuthenticator:
     """Deterministic session adapter used by the security integration suite."""
 
     def __init__(self, sessions: Mapping[str, Principal]) -> None:
         self._sessions = dict(sessions)
 
-    def authenticate(self, authorization: str | None) -> Principal:
+    def authenticate(
+        self,
+        authorization: str | None,
+        tenant_id: str | None = None,
+    ) -> Principal:
         scheme, separator, token = (authorization or "").partition(" ")
         if not separator or scheme.lower() != "bearer" or not token:
             raise UnauthenticatedError("a valid bearer session is required")
         try:
-            return self._sessions[token]
+            principal = self._sessions[token]
         except KeyError as exc:
             raise UnauthenticatedError("a valid bearer session is required") from exc
+        if tenant_id is not None and tenant_id != principal.tenant_id:
+            raise UnauthenticatedError("a valid bearer session is required")
+        return principal
 
 
 class ProfileService:
