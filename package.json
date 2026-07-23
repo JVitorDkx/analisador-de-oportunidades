@@ -11,6 +11,7 @@
     "web:build": "npm run build --workspace @opportunity-analyzer/web",
     "web:lint": "npm run lint --workspace @opportunity-analyzer/web",
     "web:typecheck": "npm run typecheck --workspace @opportunity-analyzer/web",
+    "web:test": "npm run test --workspace @opportunity-analyzer/web",
     "sdk:typecheck": "npm run typecheck --workspace @opportunity-analyzer/typescript-sdk",
     "sdk:check-generated": "npm run check:generated --workspace @opportunity-analyzer/typescript-sdk"
   },

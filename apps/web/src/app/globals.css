@@ -90,3 +90,38 @@ body {
     linear-gradient(to bottom, oklch(0.83 0.018 78 / 0.35) 1px, transparent 1px);
   background-size: 28px 28px;
 }
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.form-input {
+  min-height: 2.75rem;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  padding: 0.625rem 0.75rem;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.form-input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-input:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px oklch(0.48 0.075 163 / 0.16);
+}
+
+.form-input[aria-invalid="true"] {
+  border-color: oklch(0.52 0.16 28);
+}
