@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AnalyzeOpportunityData, AnalyzeOpportunityErrors, AnalyzeOpportunityResponses, GetHealthData, GetHealthErrors, GetHealthResponses, ValidateOpportunityInputData, ValidateOpportunityInputErrors, ValidateOpportunityInputResponses } from './types.gen';
+import type { AnalyzeOpportunityData, AnalyzeOpportunityErrors, AnalyzeOpportunityResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetSessionData, GetSessionErrors, GetSessionResponses, ValidateOpportunityInputData, ValidateOpportunityInputErrors, ValidateOpportunityInputResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -22,6 +22,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  * Executar análise completa
  */
 export const analyzeOpportunity = <ThrowOnError extends boolean = false>(options: Options<AnalyzeOpportunityData, ThrowOnError>) => (options.client ?? client).post<AnalyzeOpportunityResponses, AnalyzeOpportunityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/analyze',
     ...options,
     headers: {
@@ -36,9 +37,19 @@ export const analyzeOpportunity = <ThrowOnError extends boolean = false>(options
 export const getHealth = <ThrowOnError extends boolean = false>(options?: Options<GetHealthData, ThrowOnError>) => (options?.client ?? client).get<GetHealthResponses, GetHealthErrors, ThrowOnError>({ url: '/api/v1/health', ...options });
 
 /**
+ * Obter sessão e plano efetivos
+ */
+export const getSession = <ThrowOnError extends boolean = false>(options?: Options<GetSessionData, ThrowOnError>) => (options?.client ?? client).get<GetSessionResponses, GetSessionErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/session',
+    ...options
+});
+
+/**
  * Validar entrada sem executar o score
  */
 export const validateOpportunityInput = <ThrowOnError extends boolean = false>(options: Options<ValidateOpportunityInputData, ThrowOnError>) => (options.client ?? client).post<ValidateOpportunityInputResponses, ValidateOpportunityInputErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/validate-input',
     ...options,
     headers: {

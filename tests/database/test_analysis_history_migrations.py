@@ -19,6 +19,7 @@ class AnalysisHistorySchemaTests(unittest.TestCase):
         cls.history = migration("202607230001_analysis_history.sql")
         cls.quota = migration("202607230002_entitlements_and_quota.sql")
         cls.rls = migration("202607230003_analysis_rls_policies.sql")
+        cls.entitlement_projection = migration("202607230004_entitlement_projection.sql")
 
     def test_history_schema_is_tenant_scoped_and_idempotent(self) -> None:
         self.assertIn("create table if not exists public.analyses", self.history)
@@ -96,6 +97,23 @@ class AnalysisHistorySchemaTests(unittest.TestCase):
         self.assertIn("grant select (", self.rls)
         self.assertNotIn("input_payload,", self.rls)
         self.assertNotIn("result_payload,", self.rls)
+
+    def test_entitlement_projection_uses_invoker_rls_and_is_read_only(self) -> None:
+        self.assertIn(
+            "create or replace view public.tenant_entitlements",
+            self.entitlement_projection,
+        )
+        self.assertIn("security_invoker = true", self.entitlement_projection)
+        self.assertIn("private.tenant_entitlement(tenant.id)", self.entitlement_projection)
+        self.assertIn(
+            "revoke all on table public.tenant_entitlements from anon, authenticated",
+            self.entitlement_projection,
+        )
+        self.assertIn("grant select (", self.entitlement_projection)
+        self.assertNotRegex(
+            self.entitlement_projection,
+            r"grant\s+(?:insert|update|delete|all).*?to authenticated",
+        )
 
 
 if __name__ == "__main__":

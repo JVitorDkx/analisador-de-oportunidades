@@ -335,3 +335,12 @@ class HealthResponse(StrictTransportModel):
     api_version: Literal["1.0.0"]
     score_version: Literal["SCORE-0.1.0"]
     checks: HealthChecksResponse
+
+
+class SessionResponse(StrictTransportModel):
+    user_id: NonEmptyString
+    tenant_id: NonEmptyString
+    role: Literal["owner", "admin", "member"]
+    tier: Literal["free", "pro"]
+    monthly_analysis_limit: PositiveInteger
+    history_retention_days: PositiveInteger | None

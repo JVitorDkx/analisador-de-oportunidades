@@ -5,10 +5,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from fastapi.testclient import TestClient
-
 from src.api.app import create_app
 from src.api.service import AnalysisContractError, ServiceUnavailableError
+from tests.api.support import authenticated_client
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -21,7 +20,7 @@ def load_fixture(name: str) -> dict:
 
 class ApiInfrastructureTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.client = TestClient(create_app())
+        self.client = authenticated_client()
 
     def test_health_reports_core_versions_and_request_id(self) -> None:
         response = self.client.get(
@@ -86,7 +85,7 @@ class ApiInfrastructureTests(unittest.TestCase):
         self.assertTrue(response.headers["X-Request-ID"])
 
     def test_contract_failure_uses_problem_json_without_internal_details(self) -> None:
-        client = TestClient(create_app(), raise_server_exceptions=False)
+        client = authenticated_client(raise_server_exceptions=False)
         with patch(
             "src.api.app.analyze_payload",
             side_effect=AnalysisContractError("sensitive internal detail"),
@@ -140,6 +139,7 @@ class OpenApiContractTests(unittest.TestCase):
             },
             {
                 "/api/v1/health": "getHealth",
+                "/api/v1/session": "getSession",
                 "/api/v1/validate-input": "validateOpportunityInput",
                 "/api/v1/analyze": "analyzeOpportunity",
             },
@@ -172,11 +172,24 @@ class OpenApiContractTests(unittest.TestCase):
             self.assertIn("application/problem+json", response["content"])
             self.assertIn("X-Request-ID", response["headers"])
         self.assertIn("X-Request-ID", analyze["responses"]["200"]["headers"])
+        self.assertEqual(
+            set(analyze["responses"]),
+            {"200", "401", "422", "500", "503"},
+        )
+        self.assertEqual(analyze["security"], [{"SupabaseBearer": []}])
 
         validate_input = self.schema["paths"]["/api/v1/validate-input"]["post"]
-        self.assertEqual(set(validate_input["responses"]), {"200", "422", "500"})
+        self.assertEqual(set(validate_input["responses"]), {"200", "401", "422", "500", "503"})
+        self.assertEqual(validate_input["security"], [{"SupabaseBearer": []}])
+        session = self.schema["paths"]["/api/v1/session"]["get"]
+        self.assertEqual(set(session["responses"]), {"200", "401", "422", "503"})
+        self.assertEqual(session["security"], [{"SupabaseBearer": []}])
+        self.assertTrue(
+            any(parameter["name"] == "X-Tenant-ID" for parameter in session["parameters"])
+        )
         health = self.schema["paths"]["/api/v1/health"]["get"]
         self.assertEqual(set(health["responses"]), {"200", "503"})
+        self.assertNotIn("security", health)
 
 
 class OpenApiSnapshotTests(unittest.TestCase):

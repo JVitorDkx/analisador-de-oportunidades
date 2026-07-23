@@ -11,6 +11,7 @@ from src.security.repositories.contracts import SecurityRepositoryUnavailable
 from src.security.repositories.supabase import (
     SupabasePostgrestClient,
     SupabaseProfileRepository,
+    SupabaseTenantEntitlementResolver,
     SupabaseTenantMembershipResolver,
     SupabaseTenantRepository,
 )
@@ -91,6 +92,52 @@ class SupabaseTenantMembershipResolverTests(unittest.TestCase):
                 user_id=USER_ID,
                 tenant_id=TENANT_ID,
             )
+
+
+class SupabaseTenantEntitlementResolverTests(unittest.TestCase):
+    def test_resolves_entitlement_through_user_scoped_projection(self) -> None:
+        client, transport = build_client(
+            FakeResponse(
+                200,
+                [
+                    {
+                        "tier": "pro",
+                        "monthly_analysis_limit": 100,
+                        "history_retention_days": None,
+                    }
+                ],
+            )
+        )
+
+        entitlement = SupabaseTenantEntitlementResolver(client).resolve(principal())
+
+        self.assertEqual(entitlement.tier, "pro")
+        self.assertEqual(entitlement.monthly_analysis_limit, 100)
+        request = transport.requests[0]
+        self.assertEqual(request["method"], "GET")
+        self.assertTrue(request["url"].endswith("/rest/v1/tenant_entitlements"))
+        self.assertEqual(request["headers"]["Authorization"], f"Bearer {ACCESS_TOKEN}")
+        self.assertEqual(request["params"]["tenant_id"], f"eq.{TENANT_ID}")
+
+    def test_rejects_missing_or_invalid_entitlement_projection(self) -> None:
+        missing_client, _transport = build_client(FakeResponse(200, []))
+        with self.assertRaises(UnauthenticatedError):
+            SupabaseTenantEntitlementResolver(missing_client).resolve(principal())
+
+        invalid_client, _transport = build_client(
+            FakeResponse(
+                200,
+                [
+                    {
+                        "tier": "enterprise",
+                        "monthly_analysis_limit": 0,
+                        "history_retention_days": None,
+                    }
+                ],
+            )
+        )
+        with self.assertRaises(SecurityRepositoryUnavailable):
+            SupabaseTenantEntitlementResolver(invalid_client).resolve(principal())
 
 
 class SupabaseTenantRepositoryTests(unittest.TestCase):

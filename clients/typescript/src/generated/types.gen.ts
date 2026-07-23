@@ -775,6 +775,36 @@ export type SecurityStatusResponse = {
 };
 
 /**
+ * SessionResponse
+ */
+export type SessionResponse = {
+    /**
+     * History Retention Days
+     */
+    history_retention_days: number | null;
+    /**
+     * Monthly Analysis Limit
+     */
+    monthly_analysis_limit: number;
+    /**
+     * Role
+     */
+    role: 'owner' | 'admin' | 'member';
+    /**
+     * Tenant Id
+     */
+    tenant_id: string;
+    /**
+     * Tier
+     */
+    tier: 'free' | 'pro';
+    /**
+     * User Id
+     */
+    user_id: string;
+};
+
+/**
  * SourceConflictResponse
  */
 export type SourceConflictResponse = {
@@ -917,12 +947,70 @@ export type AnalyzeOpportunityData = {
      * Entrada compatível com references/input-schema.json.
      */
     body: AnalyzeRequest;
+    headers?: {
+        /**
+         * X-Tenant-Id
+         */
+        'X-Tenant-ID'?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/api/v1/analyze';
 };
 
 export type AnalyzeOpportunityErrors = {
+    /**
+     * ProblemDetail
+     *
+     * O JWT ou o tenant selecionado não são válidos.
+     */
+    401: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
     /**
      * ProblemDetail
      *
@@ -981,6 +1069,58 @@ export type AnalyzeOpportunityErrors = {
      * A análise gerada violou um contrato autoritativo.
      */
     500: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * A autenticação ou a consulta de assinatura está indisponível.
+     */
+    503: {
         /**
          * Code
          */
@@ -1113,17 +1253,258 @@ export type GetHealthResponses = {
 
 export type GetHealthResponse = GetHealthResponses[keyof GetHealthResponses];
 
+export type GetSessionData = {
+    body?: never;
+    headers?: {
+        /**
+         * X-Tenant-Id
+         */
+        'X-Tenant-ID'?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/session';
+};
+
+export type GetSessionErrors = {
+    /**
+     * ProblemDetail
+     *
+     * O JWT ou o tenant selecionado não são válidos.
+     */
+    401: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * Um cabeçalho da sessão não satisfaz o contrato HTTP.
+     */
+    422: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * A autenticação ou a consulta de assinatura está indisponível.
+     */
+    503: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+};
+
+export type GetSessionError = GetSessionErrors[keyof GetSessionErrors];
+
+export type GetSessionResponses = {
+    /**
+     * Identidade, tenant, função e plano derivados no servidor.
+     */
+    200: SessionResponse;
+};
+
+export type GetSessionResponse = GetSessionResponses[keyof GetSessionResponses];
+
 export type ValidateOpportunityInputData = {
     /**
      * Entrada compatível com references/input-schema.json.
      */
     body: AnalyzeRequest;
+    headers?: {
+        /**
+         * X-Tenant-Id
+         */
+        'X-Tenant-ID'?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/api/v1/validate-input';
 };
 
 export type ValidateOpportunityInputErrors = {
+    /**
+     * ProblemDetail
+     *
+     * O JWT ou o tenant selecionado não são válidos.
+     */
+    401: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
     /**
      * ProblemDetail
      *
@@ -1182,6 +1563,58 @@ export type ValidateOpportunityInputErrors = {
      * O validador interno violou seu contrato de resposta.
      */
     500: {
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Detail
+         */
+        detail: string;
+        /**
+         * Errors
+         */
+        errors?: Array<{
+            /**
+             * Code
+             */
+            code: string;
+            /**
+             * Detail
+             */
+            detail: string;
+            /**
+             * Pointer
+             */
+            pointer: string;
+        }>;
+        /**
+         * Instance
+         */
+        instance: string;
+        /**
+         * Request Id
+         */
+        request_id: string;
+        /**
+         * Status
+         */
+        status: number;
+        /**
+         * Title
+         */
+        title: string;
+        /**
+         * Type
+         */
+        type: string;
+    };
+    /**
+     * ProblemDetail
+     *
+     * A autenticação ou a consulta de assinatura está indisponível.
+     */
+    503: {
         /**
          * Code
          */

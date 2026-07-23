@@ -10,11 +10,20 @@ from pathlib import Path
 from typing import Annotated
 from uuid import uuid4
 
-from fastapi import Body, FastAPI, Request, status
+from fastapi import Body, Depends, FastAPI, Header, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette.responses import Response
 
+from src.api.auth import (
+    ApiAuthenticationError,
+    ApiSecurityDependencies,
+    ApiSecurityUnavailable,
+    AuthenticatedSession,
+    authenticate_session,
+    production_api_security_dependencies,
+)
 from src.api.models import (
     AnalysisResponse,
     AnalyzeRequest,
@@ -22,6 +31,7 @@ from src.api.models import (
     InputValidationResponse,
     ProblemDetail,
     ProblemError,
+    SessionResponse,
 )
 from src.api.service import (
     AnalysisContractError,
@@ -38,6 +48,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 REQUEST_ID_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
 PROBLEM_TYPE_PREFIX = "urn:problem:opportunity-analyzer"
 logger = logging.getLogger(__name__)
+bearer_scheme = HTTPBearer(
+    auto_error=False,
+    scheme_name="SupabaseBearer",
+    description="Supabase Auth access token verified through the project JWKS.",
+)
 
 
 def _fixture_examples() -> dict[str, dict[str, object]]:
@@ -117,7 +132,10 @@ def _validation_pointer(location: tuple[str | int, ...]) -> str:
     return pointer
 
 
-def create_app() -> FastAPI:
+def create_app(
+    *,
+    security: ApiSecurityDependencies | None = None,
+) -> FastAPI:
     """Create the ASGI application without modifying the deterministic core."""
 
     application = FastAPI(
@@ -126,6 +144,24 @@ def create_app() -> FastAPI:
         description="API REST para o pipeline determinístico e o relatório analítico v1.1.0.",
         openapi_version="3.1.0",
     )
+
+    def protected_session(
+        credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+        x_tenant_id: Annotated[str | None, Header(alias="X-Tenant-ID")] = None,
+    ) -> AuthenticatedSession:
+        dependencies = security
+        if dependencies is None:
+            dependencies = production_api_security_dependencies()
+        authorization = (
+            f"{credentials.scheme} {credentials.credentials}"
+            if credentials is not None
+            else None
+        )
+        return authenticate_session(
+            dependencies,
+            authorization=authorization,
+            tenant_id=x_tenant_id,
+        )
 
     @application.middleware("http")
     async def add_request_id(
@@ -176,6 +212,34 @@ def create_app() -> FastAPI:
             title="Analysis input is invalid",
             detail=str(exc),
             errors=errors,
+        )
+
+    @application.exception_handler(ApiAuthenticationError)
+    async def authentication_error(
+        request: Request,
+        exc: ApiAuthenticationError,
+    ) -> JSONResponse:
+        logger.info("Authentication denied [%s]: %s", _request_id(request), exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            code="authentication_required",
+            title="Authentication required",
+            detail="A valid Supabase user session and tenant selection are required.",
+        )
+
+    @application.exception_handler(ApiSecurityUnavailable)
+    async def security_unavailable(
+        request: Request,
+        exc: ApiSecurityUnavailable,
+    ) -> JSONResponse:
+        logger.error("Authentication unavailable [%s]: %s", _request_id(request), exc)
+        return _problem_response(
+            request,
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            code="authentication_unavailable",
+            title="Authentication unavailable",
+            detail="The service cannot safely verify tenant identity at this time.",
         )
 
     @application.exception_handler(AnalysisContractError)
@@ -236,6 +300,33 @@ def create_app() -> FastAPI:
     def health() -> HealthResponse:
         return health_status()
 
+    @application.get(
+        "/api/v1/session",
+        response_model=SessionResponse,
+        operation_id="getSession",
+        summary="Obter sessão e plano efetivos",
+        responses={
+            200: {
+                "description": "Identidade, tenant, função e plano derivados no servidor.",
+                "headers": {"X-Request-ID": _request_id_header_spec()},
+            },
+            401: _problem_response_spec("O JWT ou o tenant selecionado não são válidos."),
+            422: _problem_response_spec("Um cabeçalho da sessão não satisfaz o contrato HTTP."),
+            503: _problem_response_spec("A autenticação ou a consulta de assinatura está indisponível."),
+        },
+    )
+    def session(
+        authenticated: AuthenticatedSession = Depends(protected_session),
+    ) -> SessionResponse:
+        return SessionResponse(
+            user_id=authenticated.principal.user_id,
+            tenant_id=authenticated.principal.tenant_id,
+            role=authenticated.principal.role,
+            tier=authenticated.entitlement.tier,
+            monthly_analysis_limit=authenticated.entitlement.monthly_analysis_limit,
+            history_retention_days=authenticated.entitlement.history_retention_days,
+        )
+
     @application.post(
         "/api/v1/validate-input",
         response_model=InputValidationResponse,
@@ -246,12 +337,15 @@ def create_app() -> FastAPI:
                 "description": "Resultado tipado da validação de entrada.",
                 "headers": {"X-Request-ID": _request_id_header_spec()},
             },
+            401: _problem_response_spec("O JWT ou o tenant selecionado não são válidos."),
             422: _problem_response_spec("O corpo não satisfaz o contrato HTTP tipado."),
             500: _problem_response_spec("O validador interno violou seu contrato de resposta."),
+            503: _problem_response_spec("A autenticação ou a consulta de assinatura está indisponível."),
         },
     )
     def validate_input_endpoint(
         payload: AnnotatedAnalyzeRequest,
+        _authenticated: AuthenticatedSession = Depends(protected_session),
     ) -> InputValidationResponse:
         return validate_payload(payload)
 
@@ -266,12 +360,15 @@ def create_app() -> FastAPI:
                 "description": "Relatório analítico v1.1.0 validado.",
                 "headers": {"X-Request-ID": _request_id_header_spec()},
             },
+            401: _problem_response_spec("O JWT ou o tenant selecionado não são válidos."),
             422: _problem_response_spec("A entrada é estrutural ou semanticamente inválida."),
             500: _problem_response_spec("A análise gerada violou um contrato autoritativo."),
+            503: _problem_response_spec("A autenticação ou a consulta de assinatura está indisponível."),
         },
     )
     def analyze(
         payload: AnnotatedAnalyzeRequest,
+        _authenticated: AuthenticatedSession = Depends(protected_session),
     ) -> AnalysisResponse:
         return analyze_payload(payload)
 

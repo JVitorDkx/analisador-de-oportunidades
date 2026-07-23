@@ -4,7 +4,13 @@ from __future__ import annotations
 
 from typing import Literal, Protocol
 
-from src.security.models import Principal, Profile, ProfileUpdateRequest, TenantResource
+from src.security.models import (
+    Principal,
+    Profile,
+    ProfileUpdateRequest,
+    TenantEntitlement,
+    TenantResource,
+)
 
 
 TenantRole = Literal["owner", "admin", "member"]
@@ -22,6 +28,10 @@ class TenantMembershipResolver(Protocol):
         user_id: str,
         tenant_id: str,
     ) -> TenantRole: ...
+
+
+class TenantEntitlementResolver(Protocol):
+    def resolve(self, principal: Principal) -> TenantEntitlement: ...
 
 
 class TenantRepository(Protocol):

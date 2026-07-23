@@ -9,6 +9,7 @@ from src.security.jwt import SupabaseJwtAuthenticator, SupabaseJwtVerifier
 from src.security.repositories.supabase import (
     SupabasePostgrestClient,
     SupabaseProfileRepository,
+    SupabaseTenantEntitlementResolver,
     SupabaseTenantMembershipResolver,
     SupabaseTenantRepository,
 )
@@ -17,6 +18,7 @@ from src.security.repositories.supabase import (
 @dataclass(frozen=True, slots=True)
 class SupabaseSecurityDependencies:
     authenticator: SupabaseJwtAuthenticator
+    entitlement_resolver: SupabaseTenantEntitlementResolver
     tenant_repository: SupabaseTenantRepository
     profile_repository: SupabaseProfileRepository
 
@@ -34,6 +36,7 @@ def build_supabase_security_dependencies(
             SupabaseJwtVerifier(resolved_settings),
             membership_resolver,
         ),
+        entitlement_resolver=SupabaseTenantEntitlementResolver(client),
         tenant_repository=SupabaseTenantRepository(client),
         profile_repository=SupabaseProfileRepository(client),
     )

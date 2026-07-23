@@ -46,6 +46,14 @@ class Principal(StrictSecurityModel):
     access_token: Annotated[str | None, Field(min_length=1, exclude=True, repr=False)] = None
 
 
+class TenantEntitlement(StrictSecurityModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, frozen=True)
+
+    tier: Literal["free", "pro"]
+    monthly_analysis_limit: Annotated[int, Field(gt=0)]
+    history_retention_days: Annotated[int | None, Field(gt=0)] = None
+
+
 class TenantResource(StrictSecurityModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, frozen=True)
 

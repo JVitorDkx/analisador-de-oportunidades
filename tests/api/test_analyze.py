@@ -5,12 +5,10 @@ import json
 import unittest
 from pathlib import Path
 
-from fastapi.testclient import TestClient
-
-from src.api.app import create_app
 from src.interpretation import derive_input_status
 from src.pipeline import run_pipeline
 from src.validation.validate_output import validate_output
+from tests.api.support import authenticated_client
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -24,7 +22,7 @@ def load_fixture(name: str) -> dict:
 class AnalyzeEndpointTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.client = TestClient(create_app())
+        cls.client = authenticated_client()
 
     def assert_globally_valid(self, payload: dict, analysis: dict) -> None:
         pipeline = run_pipeline(payload)

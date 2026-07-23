@@ -10,7 +10,13 @@ import httpx2
 
 from src.security.config import SupabaseSettings
 from src.security.identity import UnauthenticatedError
-from src.security.models import Principal, Profile, ProfileUpdateRequest, TenantResource
+from src.security.models import (
+    Principal,
+    Profile,
+    ProfileUpdateRequest,
+    TenantEntitlement,
+    TenantResource,
+)
 from src.security.repositories.contracts import SecurityRepositoryUnavailable, TenantRole
 from src.security.tenancy import TenantResourceNotFound
 
@@ -131,6 +137,39 @@ class SupabaseTenantMembershipResolver:
         if len(rows) != 1 or rows[0].get("role") not in {"owner", "admin", "member"}:
             raise UnauthenticatedError("a valid bearer session is required")
         return rows[0]["role"]
+
+
+class SupabaseTenantEntitlementResolver:
+    """Resolve the effective plan through the RLS-aware database projection."""
+
+    def __init__(self, client: SupabasePostgrestClient) -> None:
+        self._client = client
+
+    def resolve(self, principal: Principal) -> TenantEntitlement:
+        try:
+            rows = self._client.rows(
+                "GET",
+                "tenant_entitlements",
+                access_token=_access_token(principal),
+                params={
+                    "select": "tier,monthly_analysis_limit,history_retention_days",
+                    "tenant_id": f"eq.{principal.tenant_id}",
+                    "limit": "1",
+                },
+            )
+        except PostgrestAccessDenied as exc:
+            raise UnauthenticatedError("a valid bearer session is required") from exc
+        except (PostgrestRequestError, PostgrestUnavailable) as exc:
+            raise SecurityRepositoryUnavailable("tenant entitlement could not be verified") from exc
+
+        if len(rows) != 1:
+            raise UnauthenticatedError("a valid bearer session is required")
+        try:
+            return TenantEntitlement.model_validate(rows[0])
+        except (TypeError, ValueError) as exc:
+            raise SecurityRepositoryUnavailable(
+                "tenant entitlement repository returned invalid data"
+            ) from exc
 
 
 class SupabaseTenantRepository:
