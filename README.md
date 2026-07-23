@@ -27,9 +27,27 @@ A versão funcional `1.1.0` inclui:
 - pipeline completo de validação, scoring e enriquecimento;
 - camada determinística de interpretação `INF-*` e recomendação `REC-*`;
 - interface de linha de comando para execução completa;
+- pacote paralelo `OFFER-INTELLIGENCE-0.1.0` para indicadores de anúncios e ofertas;
+- runner isolado para inteligência de ofertas com fixtures contratuais;
+- cliente TypeScript tipado gerado do contrato OpenAPI 3.1;
+- CI com validações independentes para Python e TypeScript;
 - validação opcional do relatório analítico final;
 - contratos JSON versionados;
 - suíte automatizada de testes.
+
+## Fluxos da Fase 2
+
+A Fase 2 adiciona três fluxos sem acoplar novas regras ao score oficial:
+
+1. observações normalizadas de mercado → `OfferIntelligenceEngine` isolado →
+   envelope versionado de indicadores `CALC-*`;
+2. snapshot OpenAPI 3.1 → geração determinística → cliente Fetch e tipos
+   TypeScript versionados;
+3. push ou pull request → jobs independentes de validação Python e TypeScript.
+
+O primeiro fluxo não chama o `ScoreEngine`. O segundo usa o contrato HTTP como
+fonte de verdade, e o terceiro impede que a geração do cliente masque uma
+regressão no núcleo Python.
 
 ## Como o score funciona
 
@@ -61,9 +79,12 @@ As fórmulas econômicas autorizadas calculam margem de contribuição, margem p
 
 ```text
 analisador-de-oportunidades/
+├── .github/workflows/       # validação contínua de Python e TypeScript
+├── clients/typescript/      # cliente Fetch tipado gerado do OpenAPI
 ├── config/                  # configuração versionada do score
 ├── data/results/            # exemplos de resultados analíticos
 ├── fixtures/cases/          # cenários sintéticos executáveis pela CLI e API
+├── fixtures/offer_intelligence/ # cenários do pacote de inteligência de ofertas
 ├── references/              # schemas e políticas do projeto
 ├── requirements.txt         # dependências versionadas da camada Web
 ├── src/
@@ -71,7 +92,7 @@ analisador-de-oportunidades/
 │   ├── cli.py               # interface executável da ferramenta completa
 │   ├── pipeline.py          # execução end-to-end
 │   ├── interpretation/      # geração rastreável de INF-* e REC-*
-│   ├── scoring/             # motor, indicadores e filtros
+│   ├── scoring/             # score oficial e pacote isolado de inteligência
 │   └── validation/          # validadores de entrada e saída
 └── tests/                   # testes e fixtures sintéticos
 ```
@@ -83,12 +104,17 @@ Os principais contratos estão em:
 - `references/calculated-indicator-schema.json`: indicadores determinísticos;
 - `references/output-schema.json`: relatório analítico final;
 - `references/pipeline-output-schema.json`: envelope técnico do pipeline;
-- `config/score-v0.1.json`: regras autorizadas do score.
+- `config/score-v0.1.json`: regras autorizadas do score;
+- `references/offer-intelligence-contract.md`: regras do pacote de inteligência de ofertas;
+- `references/offer-intelligence-input-schema.json`: entrada normalizada do pacote;
+- `references/offer-intelligence-output-schema.json`: envelope independente do pacote;
+- `config/offer-intelligence-v0.1.json`: fórmulas e políticas autorizadas do pacote.
 
 ## Requisitos
 
 - Git;
 - Python 3.11 ou superior.
+- Node.js 22 ou superior e npm, somente para gerar ou validar o cliente TypeScript.
 
 O núcleo determinístico utiliza somente a biblioteca padrão do Python. Para
 executar a API Web, instale as dependências versionadas do projeto:
@@ -120,13 +146,14 @@ No PowerShell:
 
 ```powershell
 $env:PYTHONDONTWRITEBYTECODE = "1"
+$env:PYTHONWARNINGS = "error"
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 No Linux ou macOS:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p "test_*.py" -v
+PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error python3 -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 ## Validar entradas e saídas
@@ -240,6 +267,52 @@ Os três fixtures são integralmente sintéticos e servem somente para
 demonstração e testes. Seus valores não representam produtos, fornecedores,
 mercados ou resultados comerciais reais.
 
+## Executar a inteligência de ofertas
+
+O pacote `OFFER-INTELLIGENCE-0.1.0` calcula, de forma determinística e
+independente, sinais de anúncios e ofertas normalizados. Ele não participa da
+soma ponderada, não aciona kill switches e nunca cria ou altera o
+`official_score` produzido pelo `SCORE-0.1.0`.
+
+Os oito indicadores autorizados cobrem:
+
+- contagem atual e crescimento percentual de anúncios ativos;
+- churn de criativos entre o baseline e o snapshot atual;
+- densidade de anunciantes por 100 ofertas ativas;
+- posição percentil do preço dentro da amostra na mesma moeda;
+- participação dos formatos `quiz`, `vsl` e `direct`.
+
+O pacote recebe observações previamente normalizadas. Coleta, scraping,
+conversão cambial e estimativas de vendas, faturamento, ROAS ou conversão não
+fazem parte desse motor.
+
+Executar o cenário de crescimento de uma oferta:
+
+```bash
+python -m src.scoring.offer_intelligence.cli --input fixtures/offer_intelligence/offer_growth.json --output reports/offer_growth_result.json
+```
+
+Executar o cenário de maior saturação de mercado:
+
+```bash
+python -m src.scoring.offer_intelligence.cli --input fixtures/offer_intelligence/market_saturation.json --output reports/market_saturation_result.json
+```
+
+Executar o cenário com dados de mercado insuficientes:
+
+```bash
+python -m src.scoring.offer_intelligence.cli --input fixtures/offer_intelligence/insufficient_market_data.json --output reports/insufficient_market_data_result.json
+```
+
+Os dois primeiros fixtures geram status `complete`. O terceiro gera status
+`partial`, mantém somente os indicadores calculáveis e lista precisamente os
+dados ausentes. As saídas contratuais esperadas estão em
+`fixtures/offer_intelligence/expected/`.
+
+As fórmulas, amostras mínimas, políticas de ausência e taxonomias estão
+congeladas em `references/offer-intelligence-contract.md`. Qualquer alteração
+nessas regras exige uma nova versão do pacote.
+
 ## Executar a API Web
 
 A API FastAPI expõe o mesmo pipeline usado pela CLI, sem duplicar ou alterar as
@@ -283,6 +356,54 @@ identificador válido enviado pelo cliente ou gera um novo identificador.
 O endpoint preserva `official_score`, indicadores `CALC-*`, kill switches e a
 rastreabilidade `OBS-*` → `CALC-*` → `REC-*`.
 
+## Usar o cliente TypeScript
+
+O diretório `clients/typescript/` contém um cliente Fetch e tipos TypeScript
+gerados a partir do snapshot OpenAPI congelado em
+`tests/api/snapshots/openapi.json`. As operações tipadas preservam os
+`operationId` estáveis da API:
+
+- `analyzeOpportunity`;
+- `getHealth`;
+- `validateOpportunityInput`.
+
+Instalar as dependências fixadas no lockfile e validar o cliente:
+
+```bash
+cd clients/typescript
+npm ci --ignore-scripts
+npm run typecheck
+npm run check:generated
+```
+
+Configuração mínima para consumir a API em uma aplicação TypeScript:
+
+```typescript
+import { client, getHealth } from "./src/index";
+
+client.setConfig({ baseUrl: "http://127.0.0.1:8000" });
+
+const health = await getHealth();
+if (health.error) {
+  throw health.error;
+}
+
+console.log(health.data);
+```
+
+Arquivos em `clients/typescript/src/generated/` não devem ser editados
+manualmente. Depois de uma alteração intencional no contrato OpenAPI, execute:
+
+```bash
+npm run generate
+npm run check:generated
+npm run build
+```
+
+`generate` recria tipos e cliente Fetch, `typecheck` executa `tsc --noEmit`,
+`check:generated` compara uma nova geração com os arquivos versionados e
+`build` executa geração e verificação de tipos.
+
 ## Requisitos do `scoring_context`
 
 Cada oportunidade processada pelo pipeline deve declarar um `scoring_context` compatível com `references/scoring-context-schema.json`.
@@ -321,11 +442,27 @@ O projeto:
 
 O score ajuda a priorizar hipóteses e próximos testes. Ele não garante que uma oportunidade terá vendas ou rentabilidade.
 
+## Integração contínua
+
+O workflow `.github/workflows/ci.yml` é executado em pull requests e em pushes
+para `main`. As validações ficam separadas em dois jobs independentes:
+
+- `Python test suite`: instala `requirements.txt` e executa os 97 testes e
+  seus subtests com warnings tratados como erro;
+- `TypeScript SDK`: instala pelo `package-lock.json`, executa
+  `npm run typecheck` e confirma com `npm run check:generated` que o cliente
+  versionado corresponde ao snapshot OpenAPI.
+
+Essa separação mantém falhas da camada de cliente isoladas do motor Python e
+torna explícito qual contrato precisa de correção.
+
 ## Desenvolvimento
 
 Antes de enviar uma alteração:
 
 1. execute toda a suíte de testes;
-2. valide os exemplos afetados;
-3. confirme que schemas, configuração e documentação continuam coerentes;
-4. não altere pesos, regras ou enums sem versionar o contrato correspondente.
+2. em `clients/typescript/`, execute `npm run typecheck` e
+   `npm run check:generated`;
+3. valide os exemplos afetados;
+4. confirme que schemas, configuração e documentação continuam coerentes;
+5. não altere pesos, regras ou enums sem versionar o contrato correspondente.
