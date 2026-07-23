@@ -1,4 +1,4 @@
-import { Activity, CircleGauge, Crosshair, Layers3, Radar, Settings2 } from "lucide-react";
+import { Activity, CircleGauge, Crosshair, Layers3, Plus, Radar, Settings2 } from "lucide-react";
 
 const navigation = [
   { label: "Visão geral", href: "#overview", icon: CircleGauge, active: true },
@@ -41,15 +41,22 @@ export function AppSidebar() {
             </a>
           );
         })}
+        <a
+          href="/analysis/new"
+          className="mt-4 flex items-center gap-3 rounded-md bg-sidebar-primary px-3 py-2.5 text-sm font-semibold text-sidebar-primary-foreground transition-colors hover:bg-sidebar-primary/90"
+        >
+          <Plus className="size-4" aria-hidden="true" />
+          Nova análise
+        </a>
       </nav>
 
       <div className="border-t border-sidebar-border p-3">
         <a
-          href="#settings"
+          href="/workspace"
           className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-sidebar-muted transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
         >
           <Settings2 className="size-4" aria-hidden="true" />
-          Configurações
+          Trocar workspace
         </a>
         <div className="mt-3 rounded-md border border-sidebar-border p-3">
           <p className="text-xs font-semibold">Ambiente de prévia</p>

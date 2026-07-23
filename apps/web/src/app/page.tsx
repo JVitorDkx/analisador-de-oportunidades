@@ -69,8 +69,8 @@ export default function Home() {
               </p>
             </div>
             <Button asChild>
-              <a href="#opportunities">
-                Ver oportunidade
+              <a href="/analysis/new">
+                Nova análise
                 <ArrowUpRight aria-hidden="true" />
               </a>
             </Button>
