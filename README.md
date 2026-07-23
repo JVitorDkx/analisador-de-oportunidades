@@ -356,6 +356,46 @@ identificador válido enviado pelo cliente ou gera um novo identificador.
 O endpoint preserva `official_score`, indicadores `CALC-*`, kill switches e a
 rastreabilidade `OBS-*` → `CALC-*` → `REC-*`.
 
+### Teste visual local sem Supabase
+
+O modo demonstrativo executa o motor determinístico completo sem autenticação,
+persistência ou consumo de cota. Ele é bloqueado em ambiente de produção e
+permanece desativado por padrão nos arquivos de exemplo.
+
+Crie um `.env.local` na raiz:
+
+```dotenv
+APP_ENV=development
+ENABLE_DEMO_MODE=true
+```
+
+E um `apps/web/.env.local`:
+
+```dotenv
+APP_ENV=development
+ENABLE_DEMO_MODE=true
+API_URL=http://127.0.0.1:8000
+```
+
+Abra dois terminais na raiz do projeto. No primeiro, inicie o backend:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn src.api.app:app --reload
+```
+
+No segundo, inicie a interface:
+
+```powershell
+npm run web:dev
+```
+
+Acesse `http://127.0.0.1:3000`. A resposta de demonstração inclui o score
+oficial, diagnóstico, recomendações e filtros eliminatórios calculados pelo
+mesmo core usado em produção. Como o Supabase não participa desse fluxo, o
+histórico e o dashboard persistente não são atualizados. Para restaurar o
+comportamento SaaS protegido, defina `ENABLE_DEMO_MODE=false` ou remova os
+arquivos locais e reinicie os dois processos.
+
 ## Usar o cliente TypeScript
 
 O diretório `clients/typescript/` contém um cliente Fetch e tipos TypeScript

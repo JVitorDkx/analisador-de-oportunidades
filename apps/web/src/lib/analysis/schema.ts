@@ -1,5 +1,32 @@
 import { z } from "zod";
 
+export function parseLocalizedNumber(value: unknown): unknown {
+  if (typeof value === "number") {
+    return value;
+  }
+  if (typeof value !== "string") {
+    return value;
+  }
+  const compact = value.trim().replace(/\s/g, "");
+  if (compact === "") {
+    return undefined;
+  }
+  const comma = compact.lastIndexOf(",");
+  const point = compact.lastIndexOf(".");
+  let normalized = compact;
+  if (comma >= 0 && point >= 0) {
+    const decimalSeparator = comma > point ? "," : ".";
+    const thousandsSeparator = decimalSeparator === "," ? "." : ",";
+    normalized = compact.split(thousandsSeparator).join("").replace(decimalSeparator, ".");
+  } else if (comma >= 0) {
+    normalized = compact.replace(",", ".");
+  }
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : value;
+}
+
+const localizedNumber = z.preprocess(parseLocalizedNumber, z.number());
+
 const optionalSourceUrl = z
   .string()
   .trim()
@@ -14,23 +41,24 @@ export const analysisFormSchema = z
     sourceUrl: optionalSourceUrl,
     businessModel: z.enum(["ecommerce", "dropshipping", "marketplace", "infoproduct", "affiliate"]),
     primaryChannel: z.enum(["meta", "tiktok", "google", "organic", "marketplace", "mixed"]),
-    sellingPrice: z.number().positive("O preço precisa ser maior que zero.").max(10_000_000),
-    productCost: z.number().min(0).max(10_000_000),
-    variableFees: z.number().min(0).max(10_000_000),
-    taxes: z.number().min(0).max(10_000_000),
-    shippingSubsidy: z.number().min(0).max(10_000_000),
-    otherVariableCosts: z.number().min(0).max(10_000_000),
-    minimumTestCost: z.number().min(0).max(10_000_000),
-    testBudget: z.number().positive("Informe um orçamento maior que zero.").max(10_000_000),
-    maximumTestDays: z.number().int().min(1).max(365),
-    demandScore: z.number().min(0).max(100),
-    economicsScore: z.number().min(0).max(100),
-    competitiveScore: z.number().min(0).max(100),
+    sellingPrice: localizedNumber.pipe(z.number().positive("O preço precisa ser maior que zero.").max(10_000_000)),
+    productCost: localizedNumber.pipe(z.number().min(0).max(10_000_000)),
+    variableFees: localizedNumber.pipe(z.number().min(0).max(10_000_000)),
+    taxes: localizedNumber.pipe(z.number().min(0).max(10_000_000)),
+    shippingSubsidy: localizedNumber.pipe(z.number().min(0).max(10_000_000)),
+    otherVariableCosts: localizedNumber.pipe(z.number().min(0).max(10_000_000)),
+    minimumTestCost: localizedNumber.pipe(z.number().min(0).max(10_000_000)),
+    testBudget: localizedNumber.pipe(z.number().positive("Informe um orçamento maior que zero.").max(10_000_000)),
+    maximumTestDays: localizedNumber.pipe(z.number().int().min(1).max(365)),
+    demandScore: localizedNumber.pipe(z.number().min(0).max(100)),
+    economicsScore: localizedNumber.pipe(z.number().min(0).max(100)),
+    competitiveScore: localizedNumber.pipe(z.number().min(0).max(100)),
     operationalFit: z.enum(["strong_fit", "acceptable_fit", "conditional_fit", "poor_fit", "unknown"]),
   })
   .strict();
 
-export type AnalysisFormValues = z.infer<typeof analysisFormSchema>;
+export type AnalysisFormInput = z.input<typeof analysisFormSchema>;
+export type AnalysisFormValues = z.output<typeof analysisFormSchema>;
 
 export const syntheticAnalysisExample: AnalysisFormValues = {
   name: "Organizador modular demonstrativo",

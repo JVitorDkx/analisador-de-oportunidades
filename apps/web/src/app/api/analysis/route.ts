@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { buildAnalyzeRequest } from "@/lib/analysis/payload";
 import { analysisFormSchema } from "@/lib/analysis/schema";
+import { isDemoMode } from "@/lib/demo-mode";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
@@ -47,9 +48,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const demoMode = isDemoMode();
   const supabaseConfig = getSupabaseConfig();
   const forwardedHeaders: Record<string, string> = {};
-  if (supabaseConfig) {
+  if (!demoMode && supabaseConfig) {
     const supabase = await createClient();
     const { data: claimsData } = await supabase.auth.getClaims();
     const claims = claimsData?.claims;
@@ -82,7 +84,7 @@ export async function POST(request: NextRequest) {
     }
     forwardedHeaders.Authorization = `Bearer ${session.access_token}`;
     forwardedHeaders["X-Tenant-ID"] = tenantId;
-  } else if (process.env.NODE_ENV === "production") {
+  } else if (!demoMode && process.env.NODE_ENV === "production") {
     return problem(503, "Autenticação não configurada", "A configuração do Supabase é obrigatória em produção.");
   }
 

@@ -39,4 +39,22 @@ describe("new analysis form contract", () => {
       }).success,
     ).toBe(false);
   });
+
+  it("accepts comma or point decimal formatting", () => {
+    const comma = analysisFormSchema.parse({
+      ...syntheticAnalysisExample,
+      sellingPrice: "149,90",
+      productCost: "1.234,56",
+    });
+    const point = analysisFormSchema.parse({
+      ...syntheticAnalysisExample,
+      sellingPrice: "149.90",
+      productCost: "1234.56",
+    });
+
+    expect(comma.sellingPrice).toBe(149.9);
+    expect(comma.productCost).toBe(1234.56);
+    expect(point.sellingPrice).toBe(149.9);
+    expect(point.productCost).toBe(1234.56);
+  });
 });

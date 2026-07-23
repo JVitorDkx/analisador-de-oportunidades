@@ -12,7 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   analysisFormSchema,
+  parseLocalizedNumber,
   syntheticAnalysisExample,
+  type AnalysisFormInput,
   type AnalysisFormValues,
 } from "@/lib/analysis/schema";
 
@@ -39,7 +41,7 @@ function FieldMessage({ error }: { error?: FieldError }) {
 
 export function AnalysisForm() {
   const resultRef = useRef<HTMLDivElement>(null);
-  const form = useForm<AnalysisFormValues>({
+  const form = useForm<AnalysisFormInput, unknown, AnalysisFormValues>({
     resolver: zodResolver(analysisFormSchema),
     defaultValues: syntheticAnalysisExample,
   });
@@ -53,8 +55,8 @@ export function AnalysisForm() {
     }
   }, [mutation.data]);
 
-  const numberRegistration = (name: keyof AnalysisFormValues) =>
-    form.register(name, { valueAsNumber: true });
+  const numberRegistration = (name: keyof AnalysisFormInput) =>
+    form.register(name, { setValueAs: parseLocalizedNumber });
 
   return (
     <div className="space-y-7">
@@ -153,14 +155,14 @@ export function AnalysisForm() {
             ].map(([name, label]) => (
               <div key={name}>
                 <label className="form-label" htmlFor={name}>{label}</label>
-                <input className="form-input font-mono" id={name} type="number" step="0.01" min="0" {...numberRegistration(name as keyof AnalysisFormValues)} />
-                <FieldMessage error={form.formState.errors[name as keyof AnalysisFormValues] as FieldError | undefined} />
+                <input className="form-input font-mono" id={name} type="text" inputMode="decimal" {...numberRegistration(name as keyof AnalysisFormInput)} />
+                <FieldMessage error={form.formState.errors[name as keyof AnalysisFormInput] as FieldError | undefined} />
               </div>
             ))}
             <div>
               <label className="form-label" htmlFor="maximumTestDays">Janela máxima (dias)</label>
               <input className="form-input font-mono" id="maximumTestDays" type="number" min="1" max="365" {...numberRegistration("maximumTestDays")} />
-              <FieldMessage error={form.formState.errors.maximumTestDays} />
+              <FieldMessage error={form.formState.errors.maximumTestDays as FieldError | undefined} />
             </div>
           </div>
         </section>
@@ -181,8 +183,8 @@ export function AnalysisForm() {
             ].map(([name, label]) => (
               <div key={name}>
                 <label className="form-label" htmlFor={name}>{label}</label>
-                <input className="form-input font-mono" id={name} type="number" min="0" max="100" {...numberRegistration(name as keyof AnalysisFormValues)} />
-                <FieldMessage error={form.formState.errors[name as keyof AnalysisFormValues] as FieldError | undefined} />
+                <input className="form-input font-mono" id={name} type="number" min="0" max="100" {...numberRegistration(name as keyof AnalysisFormInput)} />
+                <FieldMessage error={form.formState.errors[name as keyof AnalysisFormInput] as FieldError | undefined} />
               </div>
             ))}
             <div>

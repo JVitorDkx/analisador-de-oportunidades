@@ -24,6 +24,7 @@ from src.api.auth import (
     authenticate_session,
     production_api_security_dependencies,
 )
+from src.api.config import demo_mode_enabled
 from src.api.models import (
     AnalysisDetailResponse,
     AnalysisHistoryResponse,
@@ -148,9 +149,11 @@ def create_app(
     *,
     security: ApiSecurityDependencies | None = None,
     analysis_repository: AnalysisRepository | None = None,
+    demo_mode: bool | None = None,
 ) -> FastAPI:
     """Create the ASGI application without modifying the deterministic core."""
 
+    resolved_demo_mode = False if demo_mode is None else demo_mode
     application = FastAPI(
         title="Analisador de Oportunidades API",
         version=API_VERSION,
@@ -178,6 +181,14 @@ def create_app(
 
     def persistence_repository() -> AnalysisRepository:
         return analysis_repository or production_analysis_repository()
+
+    def analysis_session(
+        credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+        x_tenant_id: Annotated[str | None, Header(alias="X-Tenant-ID")] = None,
+    ) -> AuthenticatedSession | None:
+        if resolved_demo_mode:
+            return None
+        return protected_session(credentials, x_tenant_id)
 
     @application.middleware("http")
     async def add_request_id(
@@ -515,8 +526,8 @@ def create_app(
     )
     def analyze(
         payload: AnnotatedAnalyzeRequest,
-        _authenticated: AuthenticatedSession = Depends(protected_session),
-        repository: AnalysisRepository = Depends(persistence_repository),
+        response: Response,
+        _authenticated: AuthenticatedSession | None = Depends(analysis_session),
         idempotency_key: Annotated[
             str | None,
             Header(
@@ -527,8 +538,13 @@ def create_app(
             ),
         ] = None,
     ) -> AnalysisResponse:
+        if resolved_demo_mode:
+            response.headers["X-Demo-Mode"] = "true"
+            return analyze_payload(payload)
+        if _authenticated is None:
+            raise ApiAuthenticationError("authenticated session is required")
         return execute_persisted_analysis(
-            repository=repository,
+            repository=persistence_repository(),
             principal=_authenticated.principal,
             idempotency_key=idempotency_key or f"analysis:{payload.analysis_id}",
             payload=payload,
@@ -547,4 +563,4 @@ AnnotatedAnalyzeRequest = Annotated[
 ]
 
 
-app = create_app()
+app = create_app(demo_mode=demo_mode_enabled())
