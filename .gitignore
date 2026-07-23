@@ -14,3 +14,9 @@ htmlcov/
 reports/
 supabase/.branches/
 supabase/.temp/
+node_modules/
+.next/
+out/
+.turbo/
+.vercel/
+*.tsbuildinfo

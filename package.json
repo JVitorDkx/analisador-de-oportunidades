@@ -1,0 +1,20 @@
+{
+  "name": "analisador-de-oportunidades",
+  "version": "1.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "clients/typescript"
+  ],
+  "scripts": {
+    "web:dev": "npm run dev --workspace @opportunity-analyzer/web",
+    "web:build": "npm run build --workspace @opportunity-analyzer/web",
+    "web:lint": "npm run lint --workspace @opportunity-analyzer/web",
+    "web:typecheck": "npm run typecheck --workspace @opportunity-analyzer/web",
+    "sdk:typecheck": "npm run typecheck --workspace @opportunity-analyzer/typescript-sdk",
+    "sdk:check-generated": "npm run check:generated --workspace @opportunity-analyzer/typescript-sdk"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
