@@ -1,0 +1,12 @@
+project_id = "analisador-de-oportunidades"
+
+[db]
+major_version = 15
+
+[db.migrations]
+enabled = true
+schema_paths = []
+
+[db.seed]
+enabled = false
+sql_paths = []

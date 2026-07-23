@@ -12,3 +12,5 @@ coverage.xml
 .coverage
 htmlcov/
 reports/
+supabase/.branches/
+supabase/.temp/
